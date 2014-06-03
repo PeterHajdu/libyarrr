@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 git submodule update --init
-make test && cat test/valgrind.log
+make test && ./check_valgrind_log test/valgrind.log
 
