@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
 git submodule update --init
-make test && ./check_valgrind_log test/valgrind.log
+YARRUTIL_DIR=~/deploy/bin
+make test && $YARRUTIL_DIR/check_valgrind_log test/valgrind.log
 
