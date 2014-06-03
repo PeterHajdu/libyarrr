@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-cmake CMakeLists.txt && make
+cmake CMakeLists.txt && make yarrr
 
