@@ -9,6 +9,7 @@ endif(UNIX)
 
 
 set(LIBS ${LIBS})
+SET(deploy_directory ~/deploy)
 
 if(UNIX)
     if(enable_libc++)
@@ -46,6 +47,5 @@ endif(sanitize)
 
 add_subdirectory(src)
 add_subdirectory(test)
+add_subdirectory(include)
 
-## Install section
-install(DIRECTORY include DESTINATION .)
