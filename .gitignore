@@ -1,5 +1,6 @@
 src/libyarrr.a
 test/test_runner
+test/valgrind.log
 
 *swp
 *.cmake
