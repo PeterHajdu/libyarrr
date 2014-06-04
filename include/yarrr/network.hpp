@@ -48,7 +48,7 @@ namespace yarrr
         }
 
         const int queue_length( 5 );
-        if ( listen( m_listeningSocket.fd, queue_length ) < 0 )
+        if ( ::listen( m_listeningSocket.fd, queue_length ) < 0 )
         {
           return false;
         }
