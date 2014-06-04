@@ -71,7 +71,7 @@ namespace yarrr
 
           for ( auto& poll_descriptor : m_poll_descriptors )
           {
-            const bool no_event( !poll_descriptor.revents & POLLIN );
+            const bool no_event( !( poll_descriptor.revents & POLLIN) );
             if ( no_event )
             {
               continue;
