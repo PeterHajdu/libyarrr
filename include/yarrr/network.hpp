@@ -26,6 +26,8 @@ namespace yarrr
   class SocketPool
   {
     public:
+      //todo: should be a default constructor
+      //listen should register listening sockets
       SocketPool( int port )
         : m_listeningSocket(  socket( AF_INET, SOCK_STREAM, 0 ) )
         , m_port( port )
