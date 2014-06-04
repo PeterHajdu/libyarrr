@@ -52,6 +52,8 @@ namespace yarrr
         {
           return false;
         }
+
+        return true;
       }
 
       void start()
