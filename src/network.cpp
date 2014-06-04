@@ -1,6 +1,7 @@
 #include <yarrr/network.hpp>
 #include <unistd.h>
 #include <array>
+#include <iterator>
 
 //todo: remove iostream and inet.h
 #include <iostream>
