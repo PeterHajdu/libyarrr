@@ -28,23 +28,19 @@ namespace yarrr
   class SocketPool
   {
     public:
-      //todo: should be a default constructor
-      //listen should register listening sockets
-      SocketPool( int port )
-        : m_listeningSocket(  socket( AF_INET, SOCK_STREAM, 0 ) )
-        , m_port( port )
-      {
-      }
-
-      bool listen()
+      SocketPool()
+        : m_listeningSocket( socket( AF_INET, SOCK_STREAM, 0 ) )
       {
         m_listeningSocket.allow_address_reuse();
+      }
 
+      bool listen( int port )
+      {
         struct sockaddr_in address;
         memset( &address, 0, sizeof( address ) );
         address.sin_family = AF_INET;
         address.sin_addr.s_addr = INADDR_ANY;
-        address.sin_port = htons( m_port );
+        address.sin_port = htons( port );
 
         if ( bind( m_listeningSocket.fd, (struct sockaddr *) &address, sizeof( address ) ) < 0 )
         {
@@ -125,7 +121,6 @@ namespace yarrr
 
       std::vector<pollfd> m_fds;
       const Socket m_listeningSocket;
-      const int m_port;
   };
 }
 

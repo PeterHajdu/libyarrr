@@ -14,7 +14,7 @@ Describe(a_socket_pool)
 {
   It( is_instantiable )
   {
-    yarrr::SocketPool< DummyMessageFactory > pool( 2000 );
+    yarrr::SocketPool< DummyMessageFactory > pool;
   }
 };
 
