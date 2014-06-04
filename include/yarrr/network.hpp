@@ -20,6 +20,8 @@ namespace yarrr
       Socket( int fd );
       ~Socket();
       const int fd;
+
+      void allow_address_reuse() const;
   };
 
   template < typename MessageFactory >
@@ -36,6 +38,8 @@ namespace yarrr
 
       bool listen()
       {
+        m_listeningSocket.allow_address_reuse();
+
         struct sockaddr_in address;
         memset( &address, 0, sizeof( address ) );
         address.sin_family = AF_INET;
@@ -74,6 +78,7 @@ namespace yarrr
       }
 
     private:
+
       bool has_connections()
       {
         return m_fds.size() > 1;

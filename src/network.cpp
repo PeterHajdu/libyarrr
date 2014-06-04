@@ -8,6 +8,18 @@ namespace yarrr
   {
   }
 
+  void
+  Socket::allow_address_reuse() const
+  {
+    const int true_value( 1 );
+    setsockopt(
+        fd,
+        SOL_SOCKET,
+        SO_REUSEADDR,
+        &true_value,
+        sizeof( true_value ) );
+  }
+
   Socket::~Socket()
   {
     close( fd );
