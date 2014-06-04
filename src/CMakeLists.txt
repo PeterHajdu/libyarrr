@@ -1,6 +1,6 @@
 
 set(SOURCE_FILES
-  hello.cpp
+  ship.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
