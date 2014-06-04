@@ -9,6 +9,7 @@
 #include <cstring>
 #include <vector>
 #include <poll.h>
+#include <algorithm>
 
 
 namespace yarrr
@@ -53,7 +54,7 @@ namespace yarrr
 
       void start()
       {
-        m_fds.emplace_back({ m_listeningSocket.fd, POLLIN, 0 });
+        m_fds.emplace_back(pollfd{ m_listeningSocket.fd, POLLIN, 0 });
         while ( true )
         {
           const int no_timeout( 0 );
@@ -104,7 +105,7 @@ namespace yarrr
         struct sockaddr_in address;
         socklen_t sin_size = sizeof( address );
 
-        m_fds.emplace_back({
+        m_fds.emplace_back(pollfd{
             accept(m_listeningSocket.fd, (struct sockaddr *) &address, &sin_size),
             POLLIN,
             0 });
