@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace yarrr
 {
   struct Vector
@@ -9,14 +11,14 @@ namespace yarrr
     type y;
   };
 
-  const Vector& operator+=( Vector& l, const Vector& r )
+  inline const Vector& operator+=( Vector& l, const Vector& r )
   {
     l.x += r.x;
     l.y += r.y;
     return l;
   }
 
-  bool operator==( const Vector& l, const Vector& r )
+  inline bool operator==( const Vector& l, const Vector& r )
   {
     return
       l.x == r.x &&

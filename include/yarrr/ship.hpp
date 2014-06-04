@@ -1,5 +1,6 @@
 #pragma once
 #include <yarrr/types.hpp>
+#include <string>
 
 namespace yarrr
 {
@@ -9,11 +10,21 @@ namespace yarrr
 
   struct Ship
   {
+    Ship() = default;
+    Ship( const std::string& binary_data );
+
     Coordinate coordinate;
     Velocity velocity;
     Angle angle;
     Angle vangle;
   };
+
+
+  std::ostream& operator<<( std::ostream& output, const Ship& ship );
+  bool operator==( const Ship& l, const Ship& r );
+
+  const std::string serialize( const Ship& ship );
+  Ship deserialize( const std::string& data );
 
   template <class object>
   void time_step( object& the_object )

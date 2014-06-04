@@ -25,9 +25,16 @@ Describe(a_ship)
     AssertThat( a_ship.angle, !Equals( start_angle ) );
   }
 
+  It(is_serializable)
+  {
+    const std::string binary_data( yarrr::serialize( a_ship ) );
+    const yarrr::Ship deserialized_ship( yarrr::deserialize( binary_data ) );
+    AssertThat( deserialized_ship, Equals( a_ship ) );
+  }
+
   yarrr::Ship a_ship;
-  const yarrr::Coordinate start_position{ 100, 100 };
-  const yarrr::Velocity start_velocity{ 100, 100 };
-  const yarrr::Angle start_angle{ 100 };
+  const yarrr::Coordinate start_position{ 101, 102 };
+  const yarrr::Velocity start_velocity{ 103, 104 };
+  const yarrr::Angle start_angle{ 105 };
 };
 
