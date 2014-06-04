@@ -4,8 +4,8 @@
 
 namespace yarrr
 {
-  typedef Vector Coordinate;
-  typedef Vector Velocity;
+  typedef Vector<int64_t> Coordinate;
+  typedef Vector<int64_t> Velocity;
   typedef int16_t Angle;
 
   struct Ship

@@ -4,21 +4,24 @@
 
 namespace yarrr
 {
+  template <typename T>
   struct Vector
   {
-    typedef int64_t type;
+    typedef T type;
     type x;
     type y;
   };
 
-  inline const Vector& operator+=( Vector& l, const Vector& r )
+  template <typename T>
+  inline const Vector<T>& operator+=( Vector<T>& l, const Vector<T>& r )
   {
     l.x += r.x;
     l.y += r.y;
     return l;
   }
 
-  inline bool operator==( const Vector& l, const Vector& r )
+  template <typename T>
+  inline bool operator==( const Vector<T>& l, const Vector<T>& r )
   {
     return
       l.x == r.x &&
