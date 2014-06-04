@@ -1,5 +1,6 @@
 
 set(SOURCE_FILES
+  network.cpp
   ship.cpp
     )
 
