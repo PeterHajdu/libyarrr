@@ -3,10 +3,6 @@
 #include <array>
 #include <iterator>
 
-//todo: remove iostream and inet.h
-#include <iostream>
-#include <arpa/inet.h>
-
 namespace
 {
   //todo: consider error handling of these system functions
