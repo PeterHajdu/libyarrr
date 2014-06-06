@@ -6,7 +6,7 @@ using namespace igloo;
 
 namespace
 {
-  void new_socket_callback( yarrr::Socket& )
+  void socket_event_callback( yarrr::Socket& )
   {
   }
 
@@ -19,7 +19,7 @@ Describe(a_socket_pool)
 {
   It( is_instantiable )
   {
-    yarrr::SocketPool pool( &new_socket_callback, &read_data_callback );
+    yarrr::SocketPool pool( &socket_event_callback, &socket_event_callback, &read_data_callback );
   }
 };
 
