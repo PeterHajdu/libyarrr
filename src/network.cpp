@@ -132,6 +132,13 @@ namespace yarrr
   }
 
 
+  size_t
+  Socket::send( const char* message, size_t length )
+  {
+    return ::write( fd, message, length );
+  }
+
+
   Socket::~Socket()
   {
     close( fd );

@@ -19,6 +19,8 @@ namespace yarrr
       Socket( int fd );
       virtual ~Socket();
 
+      size_t send( const char* message, size_t length );
+
       const int fd;
       virtual void handle_event() = 0;
   };
