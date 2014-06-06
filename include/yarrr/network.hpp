@@ -36,6 +36,7 @@ namespace yarrr
       //todo: implement address parsing class
       bool connect( const std::string& address, int port );
       void start();
+      void stop();
 
     private:
       void add_socket_with_callback( Socket::Pointer&& socket );
@@ -48,6 +49,8 @@ namespace yarrr
       SocketEventCallback m_new_socket_callback;
       SocketEventCallback m_drop_socket_callback;
       ReadDataCallback m_read_data_callback;
+
+      volatile bool m_should_stop;
   };
 }
 

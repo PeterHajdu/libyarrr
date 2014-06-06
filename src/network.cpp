@@ -152,6 +152,7 @@ namespace yarrr
     : m_new_socket_callback( new_socket )
     , m_drop_socket_callback( drop_socket )
     , m_read_data_callback( read_data )
+    , m_should_stop( false )
   {
   }
 
@@ -200,9 +201,16 @@ namespace yarrr
 
 
   void
+  SocketPool::stop()
+  {
+    m_should_stop = true;
+  }
+
+
+  void
   SocketPool::start()
   {
-    while ( true )
+    while ( !m_should_stop )
     {
       const int no_timeout( 0 );
       if ( poll( &m_poll_descriptors[0], m_poll_descriptors.size(), no_timeout ) < 0 )
