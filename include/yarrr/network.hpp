@@ -27,7 +27,7 @@ namespace yarrr
   {
     public:
       typedef std::function<void(Socket&)> SocketEventCallback;
-      typedef std::function<void(Socket&,char*,size_t)> ReadDataCallback;
+      typedef std::function<void(Socket&,const char*,size_t)> ReadDataCallback;
       SocketPool( SocketEventCallback new_socket, SocketEventCallback drop_socket, ReadDataCallback read_data );
       void listen( int port );
 
