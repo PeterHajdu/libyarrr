@@ -183,7 +183,7 @@ namespace yarrr
     m_drop_socket_callback( socket );
 
     auto new_end( std::remove_if( begin( m_poll_descriptors ), end( m_poll_descriptors ),
-          [ socket ] ( pollfd& poll_descriptor )
+          [ &socket ] ( pollfd& poll_descriptor )
           {
             return poll_descriptor.fd == socket.fd;
           } ) );
