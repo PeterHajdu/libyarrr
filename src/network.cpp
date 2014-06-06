@@ -3,6 +3,7 @@
 #include <netdb.h>
 #include <array>
 #include <string>
+#include <algorithm>
 
 namespace
 {
@@ -48,9 +49,13 @@ namespace
   class ReadingSocket : public yarrr::Socket
   {
     public:
-      ReadingSocket( int socket, yarrr::SocketPool::ReadDataCallback read_data_callback )
+      ReadingSocket(
+          int socket,
+          yarrr::SocketPool::ReadDataCallback read_data_callback,
+          yarrr::SocketPool::SocketEventCallback drop_socket_callback )
         : Socket( socket )
         , m_read_data_callback( read_data_callback )
+        , m_drop_socket_callback( drop_socket_callback )
       {
       }
 
@@ -59,13 +64,20 @@ namespace
         std::array< char, messagebuffer_size > buffer;
         const size_t length( ::read( fd, &buffer[ 0 ], messagebuffer_size ) );
 
-        //todo: handle connection loss here
+        const bool connection_lost( !length );
+        if ( connection_lost )
+        {
+          m_drop_socket_callback( *this );
+          return;
+        }
+
         m_read_data_callback( *this, &buffer[ 0 ], length );
       }
 
     private:
 
       yarrr::SocketPool::ReadDataCallback m_read_data_callback;
+      yarrr::SocketPool::SocketEventCallback m_drop_socket_callback;
   };
 
 
@@ -76,10 +88,12 @@ namespace
       ListeningSocket(
           int port,
           AddSocketCallback add_socket_callback,
-          yarrr::SocketPool::ReadDataCallback read_data_callback )
+          yarrr::SocketPool::ReadDataCallback read_data_callback,
+          yarrr::SocketPool::SocketEventCallback drop_socket_callback )
         : Socket( socket( AF_INET, SOCK_STREAM, 0 ) )
         , m_add_socket_callback( add_socket_callback )
         , m_read_data_callback( read_data_callback )
+        , m_drop_socket_callback( drop_socket_callback )
       {
         allow_address_reuse( fd );
         bind_to_port( port, fd );
@@ -93,7 +107,8 @@ namespace
 
         Socket::Pointer new_socket( new ReadingSocket(
               accept(fd, (struct sockaddr *) &address, &sin_size),
-              m_read_data_callback ) );
+              m_read_data_callback,
+              m_drop_socket_callback ) );
 
         m_add_socket_callback( std::move( new_socket ) );
       }
@@ -102,6 +117,7 @@ namespace
     private:
       AddSocketCallback m_add_socket_callback;
       yarrr::SocketPool::ReadDataCallback m_read_data_callback;
+      yarrr::SocketPool::SocketEventCallback m_drop_socket_callback;
   };
 
 }
@@ -140,7 +156,8 @@ namespace yarrr
           new ListeningSocket(
             port,
             std::bind( &SocketPool::add_socket_with_callback, this, std::placeholders::_1 ),
-            m_read_data_callback ) ) );
+            m_read_data_callback,
+            std::bind( &SocketPool::drop_socket, this, std::placeholders::_1 ) ) ) );
   }
 
 
@@ -157,6 +174,21 @@ namespace yarrr
   {
     m_poll_descriptors.emplace_back( pollfd{ socket->fd, POLLIN, 0 } );
     m_sockets.emplace( std::make_pair( socket->fd, std::move( socket ) ) );
+  }
+
+
+  void
+  SocketPool::drop_socket( Socket& socket )
+  {
+    m_drop_socket_callback( socket );
+
+    auto new_end( std::remove_if( begin( m_poll_descriptors ), end( m_poll_descriptors ),
+          [ socket ] ( pollfd& poll_descriptor )
+          {
+            return poll_descriptor.fd == socket.fd;
+          } ) );
+    m_poll_descriptors.erase( new_end, end( m_poll_descriptors ) );
+    m_sockets.erase( socket.fd );
   }
 
 
@@ -197,7 +229,8 @@ namespace yarrr
 
     Socket::Pointer new_socket( new ReadingSocket(
           socket( PF_INET, SOCK_STREAM, IPPROTO_TCP ),
-          m_read_data_callback ) );
+          m_read_data_callback,
+          std::bind( &SocketPool::drop_socket, this, std::placeholders::_1 ) ) );
 
     if ( ::connect( new_socket->fd, (struct sockaddr *)&serverData, sizeof( serverData ) ) < 0 )
     {

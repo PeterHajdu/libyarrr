@@ -38,6 +38,8 @@ namespace yarrr
     private:
       void add_socket_with_callback( Socket::Pointer&& socket );
       void add_socket( Socket::Pointer&& socket );
+
+      void drop_socket( Socket& socket );
       std::vector<pollfd> m_poll_descriptors;
       std::unordered_map<int, Socket::Pointer> m_sockets;
 
