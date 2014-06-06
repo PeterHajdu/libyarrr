@@ -26,9 +26,9 @@ namespace yarrr
   class SocketPool
   {
     public:
-      typedef std::function<void(Socket&)> NewSocketCallback;
+      typedef std::function<void(Socket&)> SocketEventCallback;
       typedef std::function<void(Socket&,char*,size_t)> ReadDataCallback;
-      SocketPool( NewSocketCallback new_socket, ReadDataCallback read_data );
+      SocketPool( SocketEventCallback new_socket, ReadDataCallback read_data );
       void listen( int port );
 
       //todo: implement address parsing class
@@ -41,7 +41,7 @@ namespace yarrr
       std::vector<pollfd> m_poll_descriptors;
       std::unordered_map<int, Socket::Pointer> m_sockets;
 
-      NewSocketCallback m_new_socket_callback;
+      SocketEventCallback m_new_socket_callback;
       ReadDataCallback m_read_data_callback;
   };
 }

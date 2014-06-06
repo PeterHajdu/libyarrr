@@ -122,7 +122,7 @@ namespace yarrr
   }
 
 
-  SocketPool::SocketPool( NewSocketCallback new_socket, ReadDataCallback read_data )
+  SocketPool::SocketPool( SocketEventCallback new_socket, ReadDataCallback read_data )
     : m_new_socket_callback( new_socket )
     , m_read_data_callback( read_data )
   {
