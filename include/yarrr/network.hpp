@@ -15,7 +15,7 @@ namespace yarrr
   class Socket
   {
     public:
-      typedef std::unique_ptr< Socket > pointer;
+      typedef std::unique_ptr< Socket > Pointer;
       Socket( int fd );
       virtual ~Socket();
 
@@ -26,14 +26,19 @@ namespace yarrr
   class SocketPool
   {
     public:
+      typedef std::function<void(Socket&)> Callback;
+      SocketPool( Callback new_socket, Callback read_data );
       void listen( int port );
-      void add_socket( Socket::pointer&& socket );
       void start();
 
     private:
+      void add_socket_with_callback( Socket::Pointer&& socket );
+      void add_socket( Socket::Pointer&& socket );
       std::vector<pollfd> m_poll_descriptors;
-      std::unordered_map<int, Socket::pointer> m_sockets;
+      std::unordered_map<int, Socket::Pointer> m_sockets;
 
+      Callback m_new_socket_callback;
+      Callback m_read_data_callback;
   };
 }
 

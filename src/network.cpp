@@ -44,35 +44,34 @@ namespace
   class ReadingSocket : public yarrr::Socket
   {
     public:
-      ReadingSocket( int socket )
+      ReadingSocket( int socket, yarrr::SocketPool::Callback read_data_callback )
         : Socket( socket )
+        , m_read_data_callback( read_data_callback )
       {
       }
 
       void handle_event() override
       {
-        const size_t size_of_message( read( fd, &m_buffer[0], max_message_size ) );
-        std::cout
-          << "read " << size_of_message << " bytes -> ";
-        std::copy(
-            begin( m_buffer ), end( m_buffer ),
-            std::ostream_iterator< char >( std::cout ) );
-
+        m_read_data_callback( *this );
       }
 
     private:
-      static const int max_message_size = 1000;
-      std::array<char, max_message_size> m_buffer;
+
+      yarrr::SocketPool::Callback m_read_data_callback;
   };
 
 
   class ListeningSocket : public yarrr::Socket
   {
     public:
-      typedef std::function<void(yarrr::Socket::pointer&&)> AddSocketCallback;
-      ListeningSocket( int port, AddSocketCallback add_socket_callback )
+      typedef std::function<void(yarrr::Socket::Pointer&&)> AddSocketCallback;
+      ListeningSocket(
+          int port,
+          AddSocketCallback add_socket_callback,
+          yarrr::SocketPool::Callback read_data_callback )
         : Socket( socket( AF_INET, SOCK_STREAM, 0 ) )
         , m_add_socket_callback( add_socket_callback )
+        , m_read_data_callback( read_data_callback )
       {
         allow_address_reuse( fd );
         bind_to_port( port, fd );
@@ -84,15 +83,17 @@ namespace
         struct sockaddr_in address;
         socklen_t sin_size = sizeof( address );
 
-        std::cout << "connection from: " << inet_ntoa( address.sin_addr ) << std::endl;
-        Socket::pointer new_socket( new ReadingSocket(
-              accept(fd, (struct sockaddr *) &address, &sin_size) ) );
+        Socket::Pointer new_socket( new ReadingSocket(
+              accept(fd, (struct sockaddr *) &address, &sin_size),
+              m_read_data_callback ) );
+
         m_add_socket_callback( std::move( new_socket ) );
       }
 
 
     private:
       AddSocketCallback m_add_socket_callback;
+      yarrr::SocketPool::Callback m_read_data_callback;
   };
 
 }
@@ -113,18 +114,34 @@ namespace yarrr
   }
 
 
-  void
-  SocketPool::listen( int port )
+  SocketPool::SocketPool( Callback new_socket, Callback read_data )
+    : m_new_socket_callback( new_socket )
+    , m_read_data_callback( read_data )
   {
-    add_socket( Socket::pointer(
-          new ListeningSocket(
-            port,
-            std::bind( &SocketPool::add_socket, this, std::placeholders::_1 ) ) ) );
   }
 
 
   void
-  SocketPool::add_socket( Socket::pointer&& socket )
+  SocketPool::listen( int port )
+  {
+    add_socket( Socket::Pointer(
+          new ListeningSocket(
+            port,
+            std::bind( &SocketPool::add_socket_with_callback, this, std::placeholders::_1 ),
+            m_read_data_callback ) ) );
+  }
+
+
+  void
+  SocketPool::add_socket_with_callback( Socket::Pointer&& socket )
+  {
+    m_new_socket_callback( *socket );
+    add_socket( std::move( socket ) );
+  }
+
+
+  void
+  SocketPool::add_socket( Socket::Pointer&& socket )
   {
     m_poll_descriptors.emplace_back( pollfd{ socket->fd, POLLIN, 0 } );
     m_sockets.emplace( std::make_pair( socket->fd, std::move( socket ) ) );
