@@ -10,7 +10,7 @@ namespace
   {
   }
 
-  void read_data_callback( yarrr::Socket& )
+  void read_data_callback( yarrr::Socket&, char*, size_t )
   {
   }
 }

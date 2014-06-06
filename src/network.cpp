@@ -19,13 +19,20 @@ namespace
   }
 
 
-  void bind_to_port( int port, int socket )
+  sockaddr_in create_base_sockaddr( int port )
   {
     struct sockaddr_in address;
     memset( &address, 0, sizeof( address ) );
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons( port );
+    return address;
+  }
+
+
+  void bind_to_port( int port, int socket )
+  {
+    struct sockaddr_in address( create_base_sockaddr( port ) );
+    address.sin_addr.s_addr = INADDR_ANY;
 
     bind( socket, (struct sockaddr *) &address, sizeof( address ) );
   }
@@ -37,11 +44,11 @@ namespace
   }
 
 
-
+  const int messagebuffer_size( 1000 );
   class ReadingSocket : public yarrr::Socket
   {
     public:
-      ReadingSocket( int socket, yarrr::SocketPool::Callback read_data_callback )
+      ReadingSocket( int socket, yarrr::SocketPool::ReadDataCallback read_data_callback )
         : Socket( socket )
         , m_read_data_callback( read_data_callback )
       {
@@ -49,12 +56,16 @@ namespace
 
       void handle_event() override
       {
-        m_read_data_callback( *this );
+        std::array< char, messagebuffer_size > buffer;
+        const size_t length( ::read( fd, &buffer[ 0 ], messagebuffer_size ) );
+
+        //todo: handle connection loss here
+        m_read_data_callback( *this, &buffer[ 0 ], length );
       }
 
     private:
 
-      yarrr::SocketPool::Callback m_read_data_callback;
+      yarrr::SocketPool::ReadDataCallback m_read_data_callback;
   };
 
 
@@ -65,7 +76,7 @@ namespace
       ListeningSocket(
           int port,
           AddSocketCallback add_socket_callback,
-          yarrr::SocketPool::Callback read_data_callback )
+          yarrr::SocketPool::ReadDataCallback read_data_callback )
         : Socket( socket( AF_INET, SOCK_STREAM, 0 ) )
         , m_add_socket_callback( add_socket_callback )
         , m_read_data_callback( read_data_callback )
@@ -90,7 +101,7 @@ namespace
 
     private:
       AddSocketCallback m_add_socket_callback;
-      yarrr::SocketPool::Callback m_read_data_callback;
+      yarrr::SocketPool::ReadDataCallback m_read_data_callback;
   };
 
 }
@@ -111,7 +122,7 @@ namespace yarrr
   }
 
 
-  SocketPool::SocketPool( Callback new_socket, Callback read_data )
+  SocketPool::SocketPool( NewSocketCallback new_socket, ReadDataCallback read_data )
     : m_new_socket_callback( new_socket )
     , m_read_data_callback( read_data )
   {
@@ -175,20 +186,16 @@ namespace yarrr
   {
     struct hostent *serverHost( gethostbyname( address.c_str() ) );
 
-    struct sockaddr_in serverData;
-    bzero( &serverData, sizeof( serverData ) );
+    struct sockaddr_in serverData( create_base_sockaddr( port ) );
     serverData.sin_family = AF_INET;
-    serverData.sin_port = htons( port );
 
-    bcopy( serverHost->h_addr, &(serverData.sin_addr.s_addr), serverHost->h_length);
+    memcpy( serverHost->h_addr, &(serverData.sin_addr.s_addr), serverHost->h_length);
 
     Socket::Pointer new_socket( new ReadingSocket(
           socket( PF_INET, SOCK_STREAM, IPPROTO_TCP ),
           m_read_data_callback ) );
 
-    if ( ::connect( new_socket->fd,
-          (struct sockaddr *)&serverData,
-          sizeof( serverData ) ) < 0 )
+    if ( ::connect( new_socket->fd, (struct sockaddr *)&serverData, sizeof( serverData ) ) < 0 )
     {
       return false;
     }
