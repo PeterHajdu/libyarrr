@@ -29,6 +29,9 @@ namespace yarrr
       typedef std::function<void(Socket&)> Callback;
       SocketPool( Callback new_socket, Callback read_data );
       void listen( int port );
+
+      //todo: implement address parsing class
+      bool connect( const std::string& address, int port );
       void start();
 
     private:

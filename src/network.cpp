@@ -1,7 +1,8 @@
 #include <yarrr/network.hpp>
 #include <unistd.h>
+#include <netdb.h>
 #include <array>
-#include <iterator>
+#include <string>
 
 namespace
 {
@@ -167,6 +168,33 @@ namespace yarrr
       }
 
     }
+  }
+
+
+  bool SocketPool::connect( const std::string& address, int port )
+  {
+    struct hostent *serverHost( gethostbyname( address.c_str() ) );
+
+    struct sockaddr_in serverData;
+    bzero( &serverData, sizeof( serverData ) );
+    serverData.sin_family = AF_INET;
+    serverData.sin_port = htons( port );
+
+    bcopy( serverHost->h_addr, &(serverData.sin_addr.s_addr), serverHost->h_length);
+
+    Socket::Pointer new_socket( new ReadingSocket(
+          socket( PF_INET, SOCK_STREAM, IPPROTO_TCP ),
+          m_read_data_callback ) );
+
+    if ( ::connect( new_socket->fd,
+          (struct sockaddr *)&serverData,
+          sizeof( serverData ) ) < 0 )
+    {
+      return false;
+    }
+
+    add_socket_with_callback( std::move( new_socket ) );
+    return true;
   }
 
 }
