@@ -1,6 +1,6 @@
 
 set(SOURCE_FILES
-  network.cpp
+  socket_pool.cpp
   ship.cpp
     )
 

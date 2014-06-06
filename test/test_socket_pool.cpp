@@ -1,6 +1,6 @@
 
 #include <igloo/igloo_alt.h>
-#include <yarrr/network.hpp>
+#include <yarrr/socket_pool.hpp>
 
 using namespace igloo;
 
