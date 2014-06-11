@@ -7,9 +7,7 @@ if(UNIX)
     option(enable_libc++ "Enable looking for LLVM's libc++ and using it as standard library if found")
 endif(UNIX)
 
-
 set(LIBS ${LIBS})
-SET(deploy_directory ~/deploy)
 
 if(UNIX)
     if(enable_libc++)

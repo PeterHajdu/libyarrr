@@ -6,7 +6,6 @@ include_directories(igloo)
 set(TEST_SOURCE_FILES
     test_runner.cpp
     test_ship.cpp
-    test_socket_pool.cpp
     )
 
 
