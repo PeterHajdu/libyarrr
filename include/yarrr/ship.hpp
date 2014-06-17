@@ -13,6 +13,7 @@ namespace yarrr
     Ship() = default;
     Ship( const std::string& binary_data );
 
+    int id;
     Coordinate coordinate;
     Velocity velocity;
     Angle angle;

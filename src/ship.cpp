@@ -9,6 +9,8 @@ namespace yarrr
     std::string somestring;
     input >> somestring;
     input >> somestring;
+    id = std::stoll( somestring );
+    input >> somestring;
     coordinate.x = std::stoll( somestring );
     input >> somestring;
     coordinate.y = std::stoll( somestring );
@@ -37,6 +39,7 @@ namespace yarrr
   std::ostream& operator<<( std::ostream& output, const Ship& ship )
   {
     output << "Ship "
+      << ship.id << " "
       << ship.coordinate.x << " "
       << ship.coordinate.y << " "
       << ship.velocity.x << " "
