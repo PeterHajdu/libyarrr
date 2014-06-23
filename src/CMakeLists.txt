@@ -1,6 +1,6 @@
 
 set(SOURCE_FILES
-  ship.cpp
+  object.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

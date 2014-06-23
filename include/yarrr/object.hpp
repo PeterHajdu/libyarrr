@@ -8,10 +8,10 @@ namespace yarrr
   typedef Vector<int64_t> Velocity;
   typedef int16_t Angle;
 
-  struct Ship
+  struct Object
   {
-    Ship() = default;
-    Ship( const std::string& binary_data );
+    Object() = default;
+    Object( const std::string& binary_data );
 
     int id;
     Coordinate coordinate;
@@ -21,11 +21,11 @@ namespace yarrr
   };
 
 
-  std::ostream& operator<<( std::ostream& output, const Ship& ship );
-  bool operator==( const Ship& l, const Ship& r );
+  std::ostream& operator<<( std::ostream& output, const Object& object );
+  bool operator==( const Object& l, const Object& r );
 
-  const std::string serialize( const Ship& ship );
-  Ship deserialize( const std::string& data );
+  const std::string serialize( const Object& object );
+  Object deserialize( const std::string& data );
 
   template <class object>
   void time_step( object& the_object )

@@ -1,9 +1,9 @@
-#include <yarrr/ship.hpp>
+#include <yarrr/object.hpp>
 #include <sstream>
 
 namespace yarrr
 {
-  Ship::Ship( const std::string& binary_data )
+  Object::Object( const std::string& binary_data )
   {
     std::stringstream input( binary_data );
     std::string somestring;
@@ -24,34 +24,34 @@ namespace yarrr
     vangle = std::stoll( somestring );
   }
 
-  const std::string serialize( const Ship& ship )
+  const std::string serialize( const Object& object )
   {
     std::stringstream output;
-    output << ship;
+    output << object;
     return output.str();
   }
 
-  Ship deserialize( const std::string& data )
+  Object deserialize( const std::string& data )
   {
-    return Ship( data );
+    return Object( data );
   }
 
-  std::ostream& operator<<( std::ostream& output, const Ship& ship )
+  std::ostream& operator<<( std::ostream& output, const Object& object )
   {
-    output << "Ship "
-      << ship.id << " "
-      << ship.coordinate.x << " "
-      << ship.coordinate.y << " "
-      << ship.velocity.x << " "
-      << ship.velocity.y << " "
-      << ship.angle << " "
-      << ship.vangle << " "
+    output << "object "
+      << object.id << " "
+      << object.coordinate.x << " "
+      << object.coordinate.y << " "
+      << object.velocity.x << " "
+      << object.velocity.y << " "
+      << object.angle << " "
+      << object.vangle << " "
       << "\n";
 
     return output;
   }
 
-  bool operator==( const Ship& l, const Ship& r )
+  bool operator==( const Object& l, const Object& r )
   {
     return
       l.coordinate == r.coordinate &&
