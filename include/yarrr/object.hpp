@@ -1,5 +1,6 @@
 #pragma once
 #include <yarrr/types.hpp>
+#include <thetime/clock.hpp>
 #include <string>
 
 namespace yarrr
