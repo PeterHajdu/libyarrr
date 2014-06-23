@@ -5,10 +5,6 @@
 
 namespace yarrr
 {
-  typedef Vector<int64_t> Coordinate;
-  typedef Vector<int64_t> Velocity;
-  typedef int16_t Angle;
-
   struct Object
   {
     Object() = default;
@@ -19,6 +15,7 @@ namespace yarrr
     Velocity velocity;
     Angle angle;
     Angle vangle;
+    the::time::Clock::Time timestamp;
   };
 
 
@@ -29,10 +26,13 @@ namespace yarrr
   Object deserialize( const std::string& data );
 
   template <class object>
-  void time_step( object& the_object )
+  void advance_time_to( const the::time::Clock::Time& timestamp, object& the_object )
   {
-    the_object.coordinate+=the_object.velocity;
-    the_object.angle+=the_object.vangle;
+    const the::time::Clock::Time duration( timestamp - the_object.timestamp );
+    const float ratio( duration * 1.0 / the::time::Clock::ticks_per_second );
+    the_object.coordinate+=the_object.velocity * ratio;
+    the_object.angle+=the_object.vangle * ratio;
+    the_object.timestamp = timestamp;
   }
 
 }
