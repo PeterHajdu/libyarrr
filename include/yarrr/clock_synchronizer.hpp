@@ -7,6 +7,51 @@ namespace yarrr
 {
 namespace clock_sync
 {
+  enum Id : char { protocol_id = 1 };
+
+template < typename Clock, typename Connection >
+class Server : public the::net::NetworkTask
+{
+  public:
+    Server( Clock& clock, Connection& connection )
+      : m_connection( connection )
+      , m_clock( clock )
+    {
+    }
+
+    virtual void wake_up() override
+    {
+    }
+
+    virtual void on_message_from_network( const the::net::Data& message ) override
+    {
+      if ( is_malformed( message ) )
+      {
+        return;
+      }
+
+      the::net::Data response( begin( message ), begin( message ) + 9 );
+
+      uint64_t timestamp( m_clock.now() );
+      const char* timestamp_pointer( reinterpret_cast< const char * >( &timestamp ) );
+      response.insert( end( response ), timestamp_pointer, timestamp_pointer + sizeof( timestamp ) );
+      m_connection.send_on_network_thread( std::move( response ) );
+    }
+
+  private:
+    bool is_malformed( const the::net::Data& message ) const
+    {
+      if ( message.size() != 9 )
+      {
+        return true;
+      }
+
+      return message[ 0 ] != protocol_id;
+    }
+
+    Connection& m_connection;
+    Clock& m_clock;
+};
 
 template < typename Clock, typename Connection >
 class Client : public the::net::NetworkTask
@@ -25,11 +70,11 @@ class Client : public the::net::NetworkTask
       const uint64_t timestamp( m_clock.now() );
       const char* timestamp_pointer( reinterpret_cast< const char * >( &timestamp ) );
 
-      the::net::Data initiating_message( 1, 1 );
+      the::net::Data initiating_message( 1, protocol_id );
       initiating_message.insert(
           end( initiating_message ),
           timestamp_pointer, timestamp_pointer + sizeof( timestamp ) );
-      m_connection.send_from_network_thread( std::move( initiating_message ) );
+      m_connection.send_on_network_thread( std::move( initiating_message ) );
     }
 
     virtual void on_message_from_network( const the::net::Data& message ) override
@@ -69,7 +114,7 @@ class Client : public the::net::NetworkTask
         return true;
       }
 
-      return message[0] != 1;
+      return message[0] != protocol_id;
     }
 
     Connection& m_connection;

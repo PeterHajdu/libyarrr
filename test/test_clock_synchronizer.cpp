@@ -32,20 +32,29 @@ namespace
   class TestConnection
   {
       static const size_t length_of_type{ 1 };
+      static const size_t length_of_timestamp{ 8 };
     public:
       bool message_was_sent{ false };
-      uint64_t time_sent_in_last_message{ 0 };
-      void send_from_network_thread( the::net::Data&& message )
+      uint64_t init_time_sent_in_last_message{ 0 };
+      uint64_t response_time_sent_in_last_message{ 0 };
+      void send_on_network_thread( the::net::Data&& message )
       {
         message_was_sent = true;
-        time_sent_in_last_message = extract_timestamp_from( message );
+        extract_timestamps_from( message );
       }
 
-      uint64_t extract_timestamp_from( const the::net::Data& message )
+      void extract_timestamps_from( const the::net::Data& message )
       {
         assert( message.size() >= length_of_type + sizeof( uint64_t ) );
-        const uint64_t* timestamp( reinterpret_cast< const uint64_t* >( &message[ length_of_type ] ) );
-        return *timestamp;
+        init_time_sent_in_last_message = *reinterpret_cast< const uint64_t* >( &message[ length_of_type ] );
+
+        if ( message.size() < length_of_type + sizeof( uint64_t ) * 2 )
+        {
+          return;
+        }
+
+        response_time_sent_in_last_message = *reinterpret_cast< const uint64_t* >(
+            &message[ length_of_type + length_of_timestamp ] );
       }
   };
 }
@@ -74,25 +83,24 @@ Describe(a_client_clock_synchronizer)
   It( sends_the_current_time_when_initiated )
   {
     initiate();
-    AssertThat( test_connection->time_sent_in_last_message, Equals( test_clock->last_time_returned ) );
+    AssertThat( test_connection->init_time_sent_in_last_message, Equals( test_clock->last_time_returned ) );
   }
 
-  the::net::Data create_answer_message( uint64_t init_time, uint64_t response_time )
+  the::net::Data create_answer_message()
   {
-    const char* init_time_on_client_side_pointer( reinterpret_cast< const char * >( &init_time ) );
-    const char* response_time_on_server_side_pointer( reinterpret_cast< const char * >( &response_time ) );
-    the::net::Data response( 1, 1 );
+    const char* init_time_on_client_side_pointer( reinterpret_cast< const char * >( &init_time_on_client_side ) );
+    const char* response_time_on_server_side_pointer( reinterpret_cast< const char * >( &response_time_on_server_side ) );
+    the::net::Data response( 1, yarrr::clock_sync::protocol_id );
     response.insert( end( response ),
-        init_time_on_client_side_pointer, init_time_on_client_side_pointer + sizeof( init_time ) );
+        init_time_on_client_side_pointer, init_time_on_client_side_pointer + sizeof( init_time_on_client_side ) );
     response.insert( end( response ),
-        response_time_on_server_side_pointer, response_time_on_server_side_pointer + sizeof( response_time ) );
+        response_time_on_server_side_pointer, response_time_on_server_side_pointer + sizeof( response_time_on_server_side ) );
     return response;
   }
 
   It( calculates_network_latency_from_the_answer_message )
   {
-    test_synchronizer->on_message_from_network(
-        create_answer_message( init_time_on_client_side, response_time_on_server_side ) );
+    test_synchronizer->on_message_from_network( create_answer_message() );
 
     const uint64_t expected_network_latency( ( answer_arrive_time_client_side - init_time_on_client_side ) / 2 );
     AssertThat( test_synchronizer->network_latency(), Equals( expected_network_latency ) );
@@ -100,8 +108,7 @@ Describe(a_client_clock_synchronizer)
 
   It( calculates_server_client_clock_offset_from_the_answer_message )
   {
-    test_synchronizer->on_message_from_network(
-        create_answer_message( init_time_on_client_side, response_time_on_server_side ) );
+    test_synchronizer->on_message_from_network( create_answer_message() );
 
     const uint64_t network_latency( ( answer_arrive_time_client_side - init_time_on_client_side ) / 2 );
     const int64_t expected_offset( response_time_on_server_side - network_latency - init_time_on_client_side );
@@ -110,15 +117,14 @@ Describe(a_client_clock_synchronizer)
 
   It( sets_clock_offset )
   {
-    test_synchronizer->on_message_from_network( create_answer_message( init_time_on_client_side, response_time_on_server_side ) );
+    test_synchronizer->on_message_from_network( create_answer_message() );
     test_synchronizer->synchronize_local_clock();
     AssertThat( test_clock->last_set_offset, Equals( test_synchronizer->clock_offset() ) );
   }
 
   It( should_parse_only_time_sync_messages )
   {
-    the::net::Data malformed_answer_message(
-        create_answer_message( init_time_on_client_side, response_time_on_server_side ));
+    the::net::Data malformed_answer_message( create_answer_message() );
     malformed_answer_message[ 0 ] = 123;
     test_synchronizer->on_message_from_network( malformed_answer_message );
 
@@ -133,8 +139,7 @@ Describe(a_client_clock_synchronizer)
 
   It( should_drop_malformed_messages )
   {
-    the::net::Data malformed_answer_message(
-        create_answer_message( init_time_on_client_side, response_time_on_server_side ));
+    the::net::Data malformed_answer_message( create_answer_message() );
     malformed_answer_message.erase( end( malformed_answer_message ) - 2 );
     test_synchronizer->on_message_from_network( malformed_answer_message );
 
@@ -148,6 +153,69 @@ Describe(a_client_clock_synchronizer)
   std::unique_ptr< TestClock > test_clock;
   std::unique_ptr< TestConnection > test_connection;
   typedef yarrr::clock_sync::Client< TestClock, TestConnection > TestSynchronizer;
+  std::unique_ptr< TestSynchronizer > test_synchronizer;
+};
+
+Describe(a_server_clock_synchronizer)
+{
+  void SetUp()
+  {
+    test_clock.reset( new TestClock() );
+    test_clock->set_time( response_time_on_server_side );
+    test_connection.reset( new TestConnection() );
+    test_synchronizer.reset( new TestSynchronizer( *test_clock, *test_connection ) );
+  }
+
+  the::net::Data create_request_message()
+  {
+    const char* init_time_on_client_side_pointer( reinterpret_cast< const char * >( &init_time_on_client_side ) );
+    the::net::Data request( 1, yarrr::clock_sync::protocol_id );
+    request.insert( end( request ),
+        init_time_on_client_side_pointer, init_time_on_client_side_pointer + sizeof( init_time_on_client_side ) );
+    return request;
+  }
+
+  It( answers_to_clock_sync_requests )
+  {
+    test_synchronizer->on_message_from_network( create_request_message() );
+    AssertThat( test_connection->message_was_sent, Equals( true ) );
+  }
+
+  It( drops_empty_messages )
+  {
+    test_synchronizer->on_message_from_network( the::net::Data() );
+    AssertThat( test_connection->message_was_sent, Equals( false ) );
+  }
+
+  It( drops_malformed_messages )
+  {
+    the::net::Data malformed_message( create_request_message() );
+    malformed_message.erase( end( malformed_message ) - 2 );
+    test_synchronizer->on_message_from_network( malformed_message );
+    AssertThat( test_connection->message_was_sent, Equals( false ) );
+  }
+
+  It( parses_only_time_sync_messages )
+  {
+    the::net::Data malformed_message( create_request_message() );
+    malformed_message[ 0 ] = 200;
+    test_synchronizer->on_message_from_network( malformed_message );
+    AssertThat( test_connection->message_was_sent, Equals( false ) );
+  }
+
+  It( sends_back_the_original_timestamp_and_the_server_time )
+  {
+    test_synchronizer->on_message_from_network( create_request_message() );
+    AssertThat( test_connection->message_was_sent, Equals( true ) );
+    AssertThat( test_connection->init_time_sent_in_last_message, Equals( init_time_on_client_side ) );
+    AssertThat( test_connection->response_time_sent_in_last_message, Equals( response_time_on_server_side ) );
+  }
+
+  const uint64_t init_time_on_client_side{ 1000 };
+  const uint64_t response_time_on_server_side{ 200000 };
+  std::unique_ptr< TestClock > test_clock;
+  std::unique_ptr< TestConnection > test_connection;
+  typedef yarrr::clock_sync::Server< TestClock, TestConnection > TestSynchronizer;
   std::unique_ptr< TestSynchronizer > test_synchronizer;
 };
 
