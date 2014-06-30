@@ -46,7 +46,7 @@ class Client : public the::net::NetworkTask
       return m_latency.load();
     }
 
-    uint64_t clock_offset() const
+    int64_t clock_offset() const
     {
       return m_offset.load();
     }
@@ -60,7 +60,7 @@ class Client : public the::net::NetworkTask
     Connection& m_connection;
     Clock& m_clock;
     std::atomic<uint64_t> m_latency;
-    std::atomic<uint64_t> m_offset;
+    std::atomic<int64_t> m_offset;
 };
 
 }
