@@ -7,6 +7,7 @@ set(TEST_SOURCE_FILES
     test_runner.cpp
     test_object.cpp
     test_vector.cpp
+    test_clock_synchronizer.cpp
     )
 
 
