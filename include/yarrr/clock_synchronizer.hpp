@@ -34,6 +34,11 @@ class Client : public the::net::NetworkTask
 
     virtual void on_message_from_network( const the::net::Data& message ) override
     {
+      if ( is_malformed( message ) )
+      {
+        return;
+      }
+
       const uint64_t initiation_time( *reinterpret_cast< const uint64_t* >( &message[ 1 ] ) );
       const uint64_t response_time( *reinterpret_cast< const uint64_t* >( &message[ 9 ] ) );
       const uint64_t response_arrive_time( m_clock.now() );
@@ -57,6 +62,16 @@ class Client : public the::net::NetworkTask
     }
 
   private:
+    bool is_malformed( const the::net::Data& message ) const
+    {
+      if ( message.size() != 17 )
+      {
+        return true;
+      }
+
+      return message[0] != 1;
+    }
+
     Connection& m_connection;
     Clock& m_clock;
     std::atomic<uint64_t> m_latency;

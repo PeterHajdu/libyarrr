@@ -115,6 +115,33 @@ Describe(a_client_clock_synchronizer)
     AssertThat( test_clock->last_set_offset, Equals( test_synchronizer->clock_offset() ) );
   }
 
+  It( should_parse_only_time_sync_messages )
+  {
+    the::net::Data malformed_answer_message(
+        create_answer_message( init_time_on_client_side, response_time_on_server_side ));
+    malformed_answer_message[ 0 ] = 123;
+    test_synchronizer->on_message_from_network( malformed_answer_message );
+
+    AssertThat( test_synchronizer->clock_offset(), Equals( 0 ) );
+    AssertThat( test_synchronizer->network_latency(), Equals( 0u ) );
+  }
+
+  It( should_not_crash_on_empty_message )
+  {
+    test_synchronizer->on_message_from_network( the::net::Data() );
+  }
+
+  It( should_drop_malformed_messages )
+  {
+    the::net::Data malformed_answer_message(
+        create_answer_message( init_time_on_client_side, response_time_on_server_side ));
+    malformed_answer_message.erase( end( malformed_answer_message ) - 2 );
+    test_synchronizer->on_message_from_network( malformed_answer_message );
+
+    AssertThat( test_synchronizer->clock_offset(), Equals( 0 ) );
+    AssertThat( test_synchronizer->network_latency(), Equals( 0u ) );
+  }
+
   const uint64_t init_time_on_client_side{ 1000 };
   const uint64_t response_time_on_server_side{ 200000 };
   const uint64_t answer_arrive_time_client_side{ 1500 };
