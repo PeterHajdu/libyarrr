@@ -104,7 +104,7 @@ Describe(a_client_clock_synchronizer)
         create_answer_message( init_time_on_client_side, response_time_on_server_side ) );
 
     const uint64_t network_latency( ( answer_arrive_time_client_side - init_time_on_client_side ) / 2 );
-    const uint64_t expected_offset( response_time_on_server_side - network_latency - init_time_on_client_side );
+    const int64_t expected_offset( response_time_on_server_side - network_latency - init_time_on_client_side );
     AssertThat( test_synchronizer->clock_offset(), Equals( expected_offset ) );
   }
 
