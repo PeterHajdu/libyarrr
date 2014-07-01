@@ -60,7 +60,8 @@ namespace yarrr
       l.coordinate == r.coordinate &&
       l.velocity == r.velocity &&
       l.angle == r.angle &&
-      l.vangle == r.vangle;
+      l.vangle == r.vangle &&
+      l.timestamp == r.timestamp;
   }
 
 }
