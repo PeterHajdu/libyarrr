@@ -26,10 +26,10 @@ namespace yarrr
   Object deserialize( const std::string& data );
 
   template <class object>
-  void advance_time_to( const the::time::Clock::Time& timestamp, object& the_object )
+  void travel_in_time_to( const the::time::Clock::Time& timestamp, object& the_object )
   {
-    const the::time::Clock::Time duration( timestamp - the_object.timestamp );
-    const float ratio( duration * 1.0 / the::time::Clock::ticks_per_second );
+    const the::time::Difference delta( timestamp - the_object.timestamp );
+    const float ratio( delta * 1.0 / the::time::Clock::ticks_per_second );
     the_object.coordinate+=the_object.velocity * ratio;
     the_object.angle+=the_object.vangle * ratio;
     the_object.timestamp = timestamp;
