@@ -62,11 +62,17 @@ class Client : public the::net::NetworkTask
       , m_clock( clock )
       , m_latency( 0 )
       , m_offset( 0 )
+      , m_last_initiated( 0 )
     {
     }
 
     virtual void wake_up() override
     {
+      if ( m_last_initiated )
+      {
+        return;
+      }
+
       const uint64_t timestamp( m_clock.now() );
       const char* timestamp_pointer( reinterpret_cast< const char * >( &timestamp ) );
 
@@ -75,6 +81,7 @@ class Client : public the::net::NetworkTask
           end( initiating_message ),
           timestamp_pointer, timestamp_pointer + sizeof( timestamp ) );
       m_connection.send_on_network_thread( std::move( initiating_message ) );
+      m_last_initiated = timestamp;
     }
 
     virtual void on_message_from_network( const the::net::Data& message ) override
@@ -121,6 +128,7 @@ class Client : public the::net::NetworkTask
     Clock& m_clock;
     std::atomic<uint64_t> m_latency;
     std::atomic<int64_t> m_offset;
+    uint64_t m_last_initiated;
 };
 
 }

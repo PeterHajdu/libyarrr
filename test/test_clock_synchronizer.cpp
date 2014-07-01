@@ -34,6 +34,13 @@ namespace
       static const size_t length_of_type{ 1 };
       static const size_t length_of_timestamp{ 8 };
     public:
+      void reset()
+      {
+        message_was_sent = false;
+        init_time_sent_in_last_message = 0;
+        response_time_sent_in_last_message = 0;
+      }
+
       bool message_was_sent{ false };
       uint64_t init_time_sent_in_last_message{ 0 };
       uint64_t response_time_sent_in_last_message{ 0 };
@@ -72,12 +79,15 @@ Describe(a_client_clock_synchronizer)
   void initiate()
   {
     test_synchronizer->wake_up();
-    AssertThat( test_connection->message_was_sent, Equals( true ) );
   }
 
-  It( initiates_clock_synchronization_on_the_first_wake_up )
+  It( initiates_clock_synchronization_only_on_the_first_wake_up )
   {
     initiate();
+    AssertThat( test_connection->message_was_sent, Equals( true ) );
+    test_connection->reset();
+    initiate();
+    AssertThat( test_connection->message_was_sent, Equals( false ) );
   }
 
   It( sends_the_current_time_when_initiated )
