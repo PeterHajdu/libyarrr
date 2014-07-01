@@ -31,7 +31,7 @@ void Serializer::push_back( const T& value )
       start_of_value + sizeof( value ) );
 }
 
-template <>
+template <> inline
 void Serializer::push_back< std::string >( const std::string& value )
 {
   push_back( static_cast<uint32_t>( value.size() ) );
@@ -63,7 +63,7 @@ T Deserializer::pop_front()
   return *reinterpret_cast< const T* >( position );
 }
 
-template <>
+template <> inline
 std::string Deserializer::pop_front<std::string>()
 {
   const uint32_t length( pop_front< uint32_t >() );
