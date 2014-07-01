@@ -22,6 +22,8 @@ namespace yarrr
     angle = std::stoll( somestring );
     input >> somestring;
     vangle = std::stoll( somestring );
+    input >> somestring;
+    timestamp = std::stoull( somestring );
   }
 
   const std::string serialize( const Object& object )
@@ -46,6 +48,7 @@ namespace yarrr
       << object.velocity.y << " "
       << object.angle << " "
       << object.vangle << " "
+      << object.timestamp << " "
       << "\n";
 
     return output;
