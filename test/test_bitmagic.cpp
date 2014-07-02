@@ -43,11 +43,22 @@ Describe(a_serializer)
     compare_values_at_position( unsigned_64, sizeof( signed_8 ) );
   }
 
+  void check_string_at( const std::string& string, const char* buffer )
+  {
+    const uint32_t length( *reinterpret_cast<const uint32_t*>( buffer ) );
+    AssertThat( length, Equals( string.size() ) );
+    const char* const start_of_string( buffer + sizeof( length ) );
+    AssertThat( std::string( start_of_string, start_of_string + length ), Equals( string ) );
+  }
+
   It( can_serialize_strings )
   {
     test_serializer->push_back( first_string );
-    const std::string value_in_buffer( begin( test_buffer ), end( test_buffer ) );
-    AssertThat( value_in_buffer, Equals( first_string ) );
+    test_serializer->push_back( second_string );
+
+    check_string_at( first_string, &test_buffer[0] );
+    const size_t length_of_length( 4 );
+    check_string_at( second_string, &test_buffer[ length_of_length + first_string.size() ] );
   }
 
   const std::string first_string{ "alma" };
@@ -57,5 +68,46 @@ Describe(a_serializer)
   typedef yarrr::Data TestBuffer;
   TestBuffer test_buffer;
   std::unique_ptr< yarrr::Serializer > test_serializer;
+};
+
+Describe(a_deserializer)
+{
+  void SetUp()
+  {
+    test_buffer.clear();
+    test_serializer.reset( new yarrr::Serializer( test_buffer ) );
+  }
+
+  void set_up_deserializer()
+  {
+    test_deserializer.reset( new yarrr::Deserializer( test_buffer ) );
+  }
+
+  It( can_deserialize_serialized_integral_data )
+  {
+    test_serializer->push_back( signed_8 );
+    test_serializer->push_back( unsigned_64 );
+    set_up_deserializer();
+    AssertThat( test_deserializer->pop_front< int8_t >(), Equals( signed_8 ) );
+    AssertThat( test_deserializer->pop_front< uint64_t >(), Equals( unsigned_64 ) );
+  }
+
+  It( can_deserialize_strings )
+  {
+    test_serializer->push_back( first_string );
+    test_serializer->push_back( second_string );
+    set_up_deserializer();
+    AssertThat( test_deserializer->pop_front< std::string >(), Equals( first_string ) );
+    AssertThat( test_deserializer->pop_front< std::string >(), Equals( second_string ) );
+  }
+
+  const std::string first_string{ "alma" };
+  const std::string second_string{ "fa" };
+  const uint64_t unsigned_64{ 1123098348 };
+  const int8_t signed_8{ 13 };
+  typedef yarrr::Data TestBuffer;
+  TestBuffer test_buffer;
+  std::unique_ptr< yarrr::Serializer > test_serializer;
+  std::unique_ptr< yarrr::Deserializer > test_deserializer;
 };
 

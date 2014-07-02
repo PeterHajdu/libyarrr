@@ -34,7 +34,42 @@ void Serializer::push_back( const T& value )
 template <>
 void Serializer::push_back< std::string >( const std::string& value )
 {
+  push_back( static_cast<uint32_t>( value.size() ) );
   m_buffer.insert( std::end( m_buffer ), begin( value ), end( value ) );
+}
+
+class Deserializer
+{
+  public:
+    Deserializer( const Data& buffer )
+      : m_position( &buffer[0] )
+      , m_end_of_buffer( m_position + buffer.size() )
+    {
+    }
+
+    template <typename T>
+    T pop_front();
+
+  private:
+    const char* m_position;
+    const char* m_end_of_buffer;
+};
+
+template <typename T>
+T Deserializer::pop_front()
+{
+  const char * const position( m_position );
+  m_position += sizeof( T );
+  return *reinterpret_cast< const T* >( position );
+}
+
+template <>
+std::string Deserializer::pop_front<std::string>()
+{
+  const uint32_t length( pop_front< uint32_t >() );
+  const char * const position( m_position );
+  m_position += length;
+  return std::string( position, length );
 }
 
 }
