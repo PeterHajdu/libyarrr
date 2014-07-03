@@ -31,7 +31,7 @@ namespace
 
   class TestConnection
   {
-      static const size_t length_of_type{ 4 };
+      static const size_t length_of_protocol_id{ sizeof( the::ctci::Id ) };
       static const size_t length_of_timestamp{ 8 };
     public:
       void reset()
@@ -50,18 +50,16 @@ namespace
         extract_timestamps_from( message );
       }
 
-      void extract_timestamps_from( const the::net::Data& message )
+      void extract_timestamps_from( yarrr::Deserializer message )
       {
-        assert( message.size() >= length_of_type + sizeof( uint64_t ) );
-        init_time_sent_in_last_message = *reinterpret_cast< const uint64_t* >( &message[ length_of_type ] );
-
-        if ( message.size() < length_of_type + sizeof( uint64_t ) * 2 )
+        message.pop_front< the::ctci::Id >();
+        init_time_sent_in_last_message = message.pop_front< uint64_t >();
+        if ( message.bytes_left() < sizeof( uint64_t ) )
         {
           return;
         }
 
-        response_time_sent_in_last_message = *reinterpret_cast< const uint64_t* >(
-            &message[ length_of_type + length_of_timestamp ] );
+        response_time_sent_in_last_message = message.pop_front< uint64_t >();
       }
   };
 }
