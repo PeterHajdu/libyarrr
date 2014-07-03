@@ -7,10 +7,12 @@ namespace yarrr
 {
   struct Object
   {
+    typedef uint64_t Id;
+
     Object() = default;
     Object( const std::string& binary_data );
 
-    int id;
+    Id id;
     Coordinate coordinate;
     Velocity velocity;
     Angle angle;
