@@ -101,6 +101,16 @@ Describe(a_deserializer)
     AssertThat( test_deserializer->pop_front< std::string >(), Equals( second_string ) );
   }
 
+  It( can_return_the_length_left_from_the_buffer )
+  {
+    test_serializer->push_back( signed_8 );
+    test_serializer->push_back( unsigned_64 );
+    set_up_deserializer();
+    AssertThat( test_deserializer->bytes_left(), Equals( 9 ) );
+    test_deserializer->pop_front< int8_t >();
+    AssertThat( test_deserializer->bytes_left(), Equals( 8 ) );
+  }
+
   const std::string first_string{ "alma" };
   const std::string second_string{ "fa" };
   const uint64_t unsigned_64{ 1123098348 };

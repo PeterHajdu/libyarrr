@@ -50,6 +50,11 @@ class Deserializer
     template <typename T>
     T pop_front();
 
+    size_t bytes_left() const
+    {
+      return m_end_of_buffer - m_position;
+    }
+
   private:
     const char* m_position;
     const char* m_end_of_buffer;
