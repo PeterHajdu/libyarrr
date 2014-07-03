@@ -28,34 +28,33 @@ class Server : public the::net::NetworkTask
 
     virtual void on_message_from_network( const the::net::Data& message ) override
     {
-      if ( is_malformed( message ) )
+      yarrr::Deserializer request( message );
+      if ( !is_clock_sync_request( request ) )
       {
         return;
       }
 
-      //todo: use the same deserializer in is_malformed
       const uint64_t timestamp( m_clock.now() );
-      yarrr::Deserializer request( message );
-      request.pop_front<the::ctci::Id>();
 
       yarrr::Data response_buffer;
-      yarrr::Serializer response( response_buffer );
-      response.push_back( protocol_id );
-      response.push_back( request.pop_front<uint64_t>() );
-      response.push_back( timestamp );
+      yarrr::Serializer( response_buffer )
+        .push_back( protocol_id )
+        .push_back( request.pop_front<uint64_t>() )
+        .push_back( timestamp );
       m_connection.send_on_network_thread( std::move( response_buffer ) );
     }
 
   private:
-    bool is_malformed( const the::net::Data& message ) const
+    bool is_clock_sync_request( Deserializer& request ) const
     {
-      if ( message.size() != 12 )
+      const size_t length_of_clock_sync_request( 12 );
+      if ( request.bytes_left() != length_of_clock_sync_request )
       {
-        return true;
+        return false;
       }
 
-      const auto protocol_id_of_message( yarrr::Deserializer( message ).pop_front<the::ctci::Id>() );
-      return protocol_id_of_message != protocol_id;
+      const auto protocol_id_of_message( request.pop_front<the::ctci::Id>() );
+      return protocol_id_of_message == protocol_id;
     }
 
     Connection& m_connection;
@@ -92,18 +91,15 @@ class Client : public the::net::NetworkTask
 
     virtual void on_message_from_network( const the::net::Data& message ) override
     {
-      if ( is_malformed( message ) )
+      yarrr::Deserializer response( message );
+      if ( !is_clock_sync_response( response ) )
       {
         return;
       }
 
-      //todo: use the same deserializer in is_malformed
       const uint64_t response_arrive_time( m_clock.now() );
-
-      yarrr::Deserializer deserializer( message );
-      deserializer.pop_front< the::ctci::Id >();
-      const auto initiation_time( deserializer.pop_front<uint64_t>() );
-      const auto response_time( deserializer.pop_front<uint64_t>() );
+      const auto initiation_time( response.pop_front<uint64_t>() );
+      const auto response_time( response.pop_front<uint64_t>() );
       m_latency.store( ( response_arrive_time - initiation_time ) / 2 );
       m_offset.store( ( response_time - m_latency - initiation_time ) );
     }
@@ -124,15 +120,16 @@ class Client : public the::net::NetworkTask
     }
 
   private:
-    bool is_malformed( const the::net::Data& message ) const
+    bool is_clock_sync_response( Deserializer& response ) const
     {
-      if ( message.size() != 20 )
+      const size_t length_of_clock_sync_response( 20 );
+      if ( response.bytes_left() != length_of_clock_sync_response )
       {
-        return true;
+        return false;
       }
 
-      const auto protocol_id_of_message( yarrr::Deserializer( message ).pop_front<the::ctci::Id>() );
-      return protocol_id_of_message != protocol_id;
+      const auto protocol_id_of_message( response.pop_front<the::ctci::Id>() );
+      return protocol_id_of_message == protocol_id;
     }
 
     Connection& m_connection;
