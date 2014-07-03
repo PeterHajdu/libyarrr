@@ -7,6 +7,12 @@
 namespace yarrr
 {
 
+template < typename T >
+T extract( const char* from )
+{
+  return *reinterpret_cast<const T*>( from );
+}
+
 class Serializer
 {
   public:

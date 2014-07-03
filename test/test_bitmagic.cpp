@@ -128,3 +128,14 @@ Describe(a_deserializer)
   std::unique_ptr< yarrr::Deserializer > test_deserializer;
 };
 
+Describe(a_fast_extractor)
+{
+  It( extracts_integral_types )
+  {
+    const int64_t some_int( 123 );
+    const int64_t extracted_int( yarrr::extract< int64_t >( reinterpret_cast<const char*>( &some_int ) ) );
+    AssertThat( extracted_int, Equals( some_int ) );
+  }
+
+};
+
