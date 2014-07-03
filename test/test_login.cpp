@@ -1,32 +1,12 @@
 #include <yarrr/login.hpp>
+#include <yarrr/object.hpp>
 #include <thectci/id.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
 
-namespace
-{
-  template < typename T >
-  class has_ctci
-  {
-    static const the::ctci::Id id{ T::ctci };
-  };
-}
-
 Describe(a_login_request)
 {
-  It( has_a_default_constructor )
-  {
-    yarrr::LoginRequest login_request;
-    (void)login_request;
-  }
-
-  It( has_a_ctci )
-  {
-    has_ctci< yarrr::LoginRequest > check;
-    (void)check;
-  }
-
   It( contains_a_login_id )
   {
     yarrr::LoginRequest login_request;
@@ -53,3 +33,30 @@ Describe(a_login_request)
   const std::string login_id{ "some id" };
 };
 
+Describe(a_login_response)
+{
+  It( has_a_default_constructor )
+  {
+    yarrr::LoginResponse login_response;
+    (void)login_response;
+  }
+
+  It( can_be_constructed_with_the_id )
+  {
+    yarrr::LoginResponse login_response( object_id );
+    AssertThat( login_response.object_id(), Equals( object_id ) );
+  }
+
+  It( is_serializable_and_deserializable )
+  {
+    yarrr::LoginResponse login_response( object_id );
+    yarrr::Data data( login_response.serialize() );
+
+    yarrr::LoginResponse deserialized_request;
+    deserialized_request.deserialize( data );
+
+    AssertThat( deserialized_request.object_id(), Equals( login_response.object_id() ) );
+  }
+
+  const yarrr::Object::Id object_id{ 123 };
+};
