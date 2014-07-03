@@ -12,6 +12,7 @@ set(TEST_SOURCE_FILES
     test_login.cpp
     test_event.cpp
     test_object_state_update.cpp
+    test_command.cpp
     )
 
 
