@@ -1,7 +1,6 @@
 #include <yarrr/login.hpp>
 #include <yarrr/bitmagic.hpp>
 #include <yarrr/object.hpp>
-#include <cassert>
 
 namespace yarrr
 {
@@ -17,21 +16,15 @@ LoginRequest::login_id() const
   return m_login_id;
 }
 
-yarrr::Data
-LoginRequest::serialize() const
+void
+LoginRequest::do_serialize( Serializer& serializer ) const
 {
-  yarrr::Data buffer;
-  yarrr::Serializer serializer( buffer );
-  serializer.push_back( ctci );
   serializer.push_back( m_login_id );
-  return buffer;
 }
 
 void
-LoginRequest::deserialize( const yarrr::Data& data )
+LoginRequest::do_deserialize( Deserializer& deserializer )
 {
-  yarrr::Deserializer deserializer( data );
-  assert( deserializer.pop_front< the::ctci::Id >() == ctci );
   m_login_id = deserializer.pop_front<std::string>();
 }
 
@@ -46,22 +39,17 @@ LoginResponse::object_id() const
   return m_object_id;
 }
 
-yarrr::Data
-LoginResponse::serialize() const
+void
+LoginResponse::do_serialize( Serializer& serializer ) const
 {
-  yarrr::Data buffer;
-  yarrr::Serializer( buffer )
-    .push_back( ctci )
-    .push_back( m_object_id );
-  return buffer;
+  serializer.push_back( m_object_id );
 }
 
 void
-LoginResponse::deserialize( const yarrr::Data& data )
+LoginResponse::do_deserialize( Deserializer& deserializer )
 {
-  yarrr::Deserializer deserializer( data );
-  assert( deserializer.pop_front< the::ctci::Id >() == ctci );
-  m_object_id = deserializer.pop_front<yarrr::Object::Id>();
+  m_object_id = deserializer.pop_front<Object::Id>();
 }
+
 }
 
