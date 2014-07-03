@@ -113,9 +113,9 @@ Describe(a_deserializer)
     test_serializer->push_back( signed_8 );
     test_serializer->push_back( unsigned_64 );
     set_up_deserializer();
-    AssertThat( test_deserializer->bytes_left(), Equals( 9 ) );
+    AssertThat( test_deserializer->bytes_left(), Equals( 9u ) );
     test_deserializer->pop_front< int8_t >();
-    AssertThat( test_deserializer->bytes_left(), Equals( 8 ) );
+    AssertThat( test_deserializer->bytes_left(), Equals( 8u ) );
   }
 
   const std::string first_string{ "alma" };
