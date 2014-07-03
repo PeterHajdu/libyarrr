@@ -2,6 +2,7 @@
 
 #include <yarrr/types.hpp>
 #include <thectci/id.hpp>
+#include <memory>
 
 namespace yarrr
 {
@@ -11,6 +12,8 @@ class Serializer;
 class Event
 {
   public:
+    typedef std::unique_ptr<Event> Pointer;
+
     add_pure_polymorphic_ctci();
     virtual ~Event() = default;
 
