@@ -15,27 +15,29 @@ class Serializer
     }
 
     template <typename T>
-    void push_back( const T& value );
+    Serializer& push_back( const T& value );
 
   private:
     Data& m_buffer;
 };
 
 template <typename T>
-void Serializer::push_back( const T& value )
+Serializer& Serializer::push_back( const T& value )
 {
   const char* const start_of_value( reinterpret_cast< const char* >( &value ) );
   m_buffer.insert(
       std::end( m_buffer ),
       start_of_value,
       start_of_value + sizeof( value ) );
+  return *this;
 }
 
 template <> inline
-void Serializer::push_back< std::string >( const std::string& value )
+Serializer& Serializer::push_back< std::string >( const std::string& value )
 {
   push_back( static_cast<uint32_t>( value.size() ) );
   m_buffer.insert( std::end( m_buffer ), begin( value ), end( value ) );
+  return *this;
 }
 
 class Deserializer

@@ -61,6 +61,13 @@ Describe(a_serializer)
     check_string_at( second_string, &test_buffer[ length_of_length + first_string.size() ] );
   }
 
+  It( handles_push_back_function_chaining )
+  {
+    yarrr::Serializer( test_buffer )
+      .push_back( first_string )
+      .push_back( second_string );
+  }
+
   const std::string first_string{ "alma" };
   const std::string second_string{ "fa" };
   const uint64_t unsigned_64{ 1123098348 };
