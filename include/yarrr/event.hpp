@@ -11,7 +11,7 @@ class Serializer;
 class Event
 {
   public:
-    add_polymorphic_ctci( "yarrr_event" );
+    add_pure_polymorphic_ctci();
     virtual ~Event() = default;
 
     Data serialize() const;

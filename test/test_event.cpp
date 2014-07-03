@@ -26,7 +26,6 @@ Describe(an_event)
 {
   It( has_polymorphic_ctci )
   {
-    AssertThat( yarrr::Event::ctci, !Equals( base_referenced_test_event.polymorphic_ctci() ) );
     AssertThat( test_event.ctci, Equals( base_referenced_test_event.polymorphic_ctci() ) );
   }
 
