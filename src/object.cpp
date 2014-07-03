@@ -3,65 +3,43 @@
 
 namespace yarrr
 {
-  Object::Object( const std::string& binary_data )
-  {
-    std::stringstream input( binary_data );
-    std::string somestring;
-    input >> somestring;
-    input >> somestring;
-    id = std::stoll( somestring );
-    input >> somestring;
-    coordinate.x = std::stoll( somestring );
-    input >> somestring;
-    coordinate.y = std::stoll( somestring );
-    input >> somestring;
-    velocity.x = std::stoll( somestring );
-    input >> somestring;
-    velocity.y = std::stoll( somestring );
-    input >> somestring;
-    angle = std::stoll( somestring );
-    input >> somestring;
-    vangle = std::stoll( somestring );
-    input >> somestring;
-    timestamp = std::stoull( somestring );
-  }
 
-  const std::string serialize( const Object& object )
-  {
-    std::stringstream output;
-    output << object;
-    return output.str();
-  }
+std::ostream& operator<<( std::ostream& output, const Object& object )
+{
+  output << "object "
+    << object.id << " "
+    << object.coordinate.x << " "
+    << object.coordinate.y << " "
+    << object.velocity.x << " "
+    << object.velocity.y << " "
+    << object.angle << " "
+    << object.vangle << " "
+    << object.timestamp << " "
+    << "\n";
 
-  Object deserialize( const std::string& data )
-  {
-    return Object( data );
-  }
+  return output;
+}
 
-  std::ostream& operator<<( std::ostream& output, const Object& object )
-  {
-    output << "object "
-      << object.id << " "
-      << object.coordinate.x << " "
-      << object.coordinate.y << " "
-      << object.velocity.x << " "
-      << object.velocity.y << " "
-      << object.angle << " "
-      << object.vangle << " "
-      << object.timestamp << " "
-      << "\n";
 
-    return output;
-  }
+bool operator==( const Object& l, const Object& r )
+{
+  return
+    l.coordinate == r.coordinate &&
+    l.velocity == r.velocity &&
+    l.angle == r.angle &&
+    l.vangle == r.vangle &&
+    l.timestamp == r.timestamp;
+}
 
-  bool operator==( const Object& l, const Object& r )
-  {
-    return
-      l.coordinate == r.coordinate &&
-      l.velocity == r.velocity &&
-      l.angle == r.angle &&
-      l.vangle == r.vangle &&
-      l.timestamp == r.timestamp;
-  }
+
+void travel_in_time_to( const the::time::Clock::Time& timestamp, Object& object )
+{
+  const the::time::Difference delta( timestamp - object.timestamp );
+  const float ratio( delta * 1.0 / the::time::Clock::ticks_per_second );
+  object.coordinate+=object.velocity * ratio;
+  object.angle+=object.vangle * ratio;
+  object.timestamp = timestamp;
+}
 
 }
+

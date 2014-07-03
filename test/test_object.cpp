@@ -35,13 +35,6 @@ Describe(an_object)
     AssertThat( an_object.angle, !Equals( start_angle ) );
   }
 
-  It(is_serializable)
-  {
-    const std::string binary_data( yarrr::serialize( an_object ) );
-    const yarrr::Object deserialized_object( yarrr::deserialize( binary_data ) );
-    AssertThat( deserialized_object, Equals( an_object ) );
-  }
-
   It(moves_more_during_a_longer_period)
   {
     yarrr::travel_in_time_to( future, an_object );

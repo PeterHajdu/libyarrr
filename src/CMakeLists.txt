@@ -3,6 +3,7 @@ set(SOURCE_FILES
   object.cpp
   login.cpp
   event.cpp
+  object_state_update.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

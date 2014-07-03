@@ -11,6 +11,7 @@ set(TEST_SOURCE_FILES
     test_bitmagic.cpp
     test_login.cpp
     test_event.cpp
+    test_object_state_update.cpp
     )
 
 
