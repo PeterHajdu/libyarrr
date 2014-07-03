@@ -31,7 +31,7 @@ namespace
 
   class TestConnection
   {
-      static const size_t length_of_type{ 1 };
+      static const size_t length_of_type{ 4 };
       static const size_t length_of_timestamp{ 8 };
     public:
       void reset()
@@ -98,13 +98,11 @@ Describe(a_client_clock_synchronizer)
 
   the::net::Data create_answer_message()
   {
-    const char* init_time_on_client_side_pointer( reinterpret_cast< const char * >( &init_time_on_client_side ) );
-    const char* response_time_on_server_side_pointer( reinterpret_cast< const char * >( &response_time_on_server_side ) );
-    the::net::Data response( 1, yarrr::clock_sync::protocol_id );
-    response.insert( end( response ),
-        init_time_on_client_side_pointer, init_time_on_client_side_pointer + sizeof( init_time_on_client_side ) );
-    response.insert( end( response ),
-        response_time_on_server_side_pointer, response_time_on_server_side_pointer + sizeof( response_time_on_server_side ) );
+    the::net::Data response;
+    yarrr::Serializer serializer( response );
+    serializer.push_back( yarrr::clock_sync::protocol_id );
+    serializer.push_back( init_time_on_client_side );
+    serializer.push_back( response_time_on_server_side );
     return response;
   }
 
@@ -178,10 +176,10 @@ Describe(a_server_clock_synchronizer)
 
   the::net::Data create_request_message()
   {
-    const char* init_time_on_client_side_pointer( reinterpret_cast< const char * >( &init_time_on_client_side ) );
-    the::net::Data request( 1, yarrr::clock_sync::protocol_id );
-    request.insert( end( request ),
-        init_time_on_client_side_pointer, init_time_on_client_side_pointer + sizeof( init_time_on_client_side ) );
+    the::net::Data request;
+    yarrr::Serializer serializer( request );
+    serializer.push_back( yarrr::clock_sync::protocol_id );
+    serializer.push_back( init_time_on_client_side );
     return request;
   }
 

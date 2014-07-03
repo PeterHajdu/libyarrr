@@ -1,13 +1,16 @@
 #pragma once
 
 #include <thenet/network_task.hpp>
+#include <thectci/id.hpp>
+#include <yarrr/bitmagic.hpp>
 #include <atomic>
 
 namespace yarrr
 {
 namespace clock_sync
 {
-  enum Id : char { protocol_id = 1 };
+add_ctci( "clock_sync" );
+enum : the::ctci::Id { protocol_id = ctci };
 
 template < typename Clock, typename Connection >
 class Server : public the::net::NetworkTask
@@ -30,23 +33,29 @@ class Server : public the::net::NetworkTask
         return;
       }
 
-      the::net::Data response( begin( message ), begin( message ) + 9 );
+      //todo: use the same deserializer in is_malformed
+      const uint64_t timestamp( m_clock.now() );
+      yarrr::Deserializer request( message );
+      request.pop_front<the::ctci::Id>();
 
-      uint64_t timestamp( m_clock.now() );
-      const char* timestamp_pointer( reinterpret_cast< const char * >( &timestamp ) );
-      response.insert( end( response ), timestamp_pointer, timestamp_pointer + sizeof( timestamp ) );
-      m_connection.send_on_network_thread( std::move( response ) );
+      yarrr::Data response_buffer;
+      yarrr::Serializer response( response_buffer );
+      response.push_back( protocol_id );
+      response.push_back( request.pop_front<uint64_t>() );
+      response.push_back( timestamp );
+      m_connection.send_on_network_thread( std::move( response_buffer ) );
     }
 
   private:
     bool is_malformed( const the::net::Data& message ) const
     {
-      if ( message.size() != 9 )
+      if ( message.size() != 12 )
       {
         return true;
       }
 
-      return message[ 0 ] != protocol_id;
+      const auto protocol_id_of_message( yarrr::Deserializer( message ).pop_front<the::ctci::Id>() );
+      return protocol_id_of_message != protocol_id;
     }
 
     Connection& m_connection;
@@ -72,16 +81,13 @@ class Client : public the::net::NetworkTask
       {
         return;
       }
+      m_last_initiated = m_clock.now();
 
-      const uint64_t timestamp( m_clock.now() );
-      const char* timestamp_pointer( reinterpret_cast< const char * >( &timestamp ) );
-
-      the::net::Data initiating_message( 1, protocol_id );
-      initiating_message.insert(
-          end( initiating_message ),
-          timestamp_pointer, timestamp_pointer + sizeof( timestamp ) );
+      the::net::Data initiating_message;
+      yarrr::Serializer serializer( initiating_message );
+      serializer.push_back( protocol_id );
+      serializer.push_back( m_last_initiated );
       m_connection.send_on_network_thread( std::move( initiating_message ) );
-      m_last_initiated = timestamp;
     }
 
     virtual void on_message_from_network( const the::net::Data& message ) override
@@ -91,9 +97,13 @@ class Client : public the::net::NetworkTask
         return;
       }
 
-      const uint64_t initiation_time( *reinterpret_cast< const uint64_t* >( &message[ 1 ] ) );
-      const uint64_t response_time( *reinterpret_cast< const uint64_t* >( &message[ 9 ] ) );
+      //todo: use the same deserializer in is_malformed
       const uint64_t response_arrive_time( m_clock.now() );
+
+      yarrr::Deserializer deserializer( message );
+      deserializer.pop_front< the::ctci::Id >();
+      const auto initiation_time( deserializer.pop_front<uint64_t>() );
+      const auto response_time( deserializer.pop_front<uint64_t>() );
       m_latency.store( ( response_arrive_time - initiation_time ) / 2 );
       m_offset.store( ( response_time - m_latency - initiation_time ) );
     }
@@ -116,12 +126,13 @@ class Client : public the::net::NetworkTask
   private:
     bool is_malformed( const the::net::Data& message ) const
     {
-      if ( message.size() != 17 )
+      if ( message.size() != 20 )
       {
         return true;
       }
 
-      return message[0] != protocol_id;
+      const auto protocol_id_of_message( yarrr::Deserializer( message ).pop_front<the::ctci::Id>() );
+      return protocol_id_of_message != protocol_id;
     }
 
     Connection& m_connection;
