@@ -11,19 +11,26 @@ namespace yarrr
 class Command : public Event
 {
   public:
-    typedef uint32_t Id;
+    typedef uint32_t Type;
+    enum : Type
+    {
+      thruster = 1,
+      cw = 2,
+      ccw = 3
+    };
+
     add_polymorphic_ctci( "command" );
 
     Command() = default;
-    Command( Id id, the::time::Time timestamp );
-    Id id() const;
+    Command( Type type, the::time::Time timestamp );
+    Type type() const;
     const the::time::Time& timestamp() const;
 
   private:
     virtual void do_serialize( Serializer& serializer ) const;
     virtual void do_deserialize( Deserializer& deserializer );
 
-    Id m_id;
+    Type m_type;
     the::time::Time m_timestamp;
 };
 
