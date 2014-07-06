@@ -13,6 +13,7 @@ set(TEST_SOURCE_FILES
     test_event.cpp
     test_object_state_update.cpp
     test_command.cpp
+    test_ship_control.cpp
     )
 
 

@@ -5,6 +5,7 @@ set(SOURCE_FILES
   event.cpp
   object_state_update.cpp
   command.cpp
+  ship_control.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
