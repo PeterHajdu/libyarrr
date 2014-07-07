@@ -83,6 +83,13 @@ Describe(the_event_factory)
     AssertThat( bool( event_pointer ), Equals( false ) );
   }
 
+  It( it_returns_nullptr_if_message_is_smaller_than_class_id )
+  {
+    const yarrr::Data small_data( 0, 0 );
+    yarrr::Event::Pointer event_pointer( yarrr::EventFactory::create( small_data ) );
+    AssertThat( bool( event_pointer ), Equals( false ) );
+  }
+
   It( knows_if_a_class_is_registered )
   {
     AssertThat( yarrr::EventFactory::is_registered( TestEvent::ctci ), Equals( true ) );

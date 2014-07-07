@@ -26,6 +26,11 @@ EventFactory::get()
 Event::Pointer
 EventFactory::create( const Data& data )
 {
+  if ( data.size() < sizeof( the::ctci::Id ) )
+  {
+    return nullptr;
+  }
+
   EventFactory& factory( get() );
   Event::Pointer event( factory.m_factory.create( extract< the::ctci::Id >( &data[0] ) ) );
   if ( !event )
