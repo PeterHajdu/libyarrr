@@ -32,5 +32,15 @@ class EventFactory
     std::vector< std::unique_ptr< Creator> > m_creators;
 };
 
+template < typename Event >
+class AutoEventRegister
+{
+  public:
+    AutoEventRegister()
+    {
+      EventFactory::register_class<Event>();
+    }
+};
+
 }
 

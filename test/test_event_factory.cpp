@@ -65,3 +65,20 @@ Describe(the_event_factory)
   yarrr::Event::Pointer event;
 };
 
+Describe(an_auto_register)
+{
+  void SetUp()
+  {
+    yarrr::EventFactory::destroy();
+  }
+
+  It( registers_event_class_to_event_factory )
+  {
+    yarrr::AutoEventRegister<TestEvent>();
+    yarrr::Event::Pointer event(
+        yarrr::EventFactory::create(
+          TestEvent().serialize() ) );
+    AssertThat( event->polymorphic_ctci(), Equals( TestEvent::ctci ) );
+  }
+};
+
