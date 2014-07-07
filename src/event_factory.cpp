@@ -28,9 +28,14 @@ EventFactory::create( const Data& data )
 {
   EventFactory& factory( get() );
   Event::Pointer event( factory.m_factory.create( extract< the::ctci::Id >( &data[0] ) ) );
+  if ( !event )
+  {
+    return event;
+  }
   event->deserialize( data );
   return event;
 }
+
 
 bool
 EventFactory::is_registered( the::ctci::Id id )

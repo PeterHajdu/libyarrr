@@ -8,19 +8,19 @@ using namespace igloo;
 namespace
 {
 
-  class AutoTestEvent : public yarrr::Event
-  {
-    public:
-      add_polymorphic_ctci( "auto_test_event" );
-    private:
-      virtual void do_serialize( yarrr::Serializer& serializer ) const override
-      {
-      }
+class AutoTestEvent : public yarrr::Event
+{
+  public:
+    add_polymorphic_ctci( "auto_test_event" );
+  private:
+    virtual void do_serialize( yarrr::Serializer& serializer ) const override
+    {
+    }
 
-      virtual void do_deserialize( yarrr::Deserializer& deserializer ) override
-      {
-      }
-  };
+    virtual void do_deserialize( yarrr::Deserializer& deserializer ) override
+    {
+    }
+};
 
 class TestEvent : public yarrr::Event
 {
@@ -74,6 +74,13 @@ Describe(the_event_factory)
   {
     const TestEvent& test_event( static_cast<const TestEvent&>( *event ) );
     AssertThat( test_event.data, Equals( test_data ) );
+  }
+
+  It( it_returns_nullptr_if_the_class_is_not_registered )
+  {
+    const yarrr::Data null_data( 10, 0 );
+    yarrr::Event::Pointer event_pointer( yarrr::EventFactory::create( null_data ) );
+    AssertThat( bool( event_pointer ), Equals( false ) );
   }
 
   It( knows_if_a_class_is_registered )
