@@ -23,7 +23,7 @@ class EventFactory
 
     static Event::Pointer create( const Data& );
 
-    static void destroy();
+    static bool is_registered( the::ctci::Id id );
 
   private:
     the::ctci::Factory< yarrr::Event > m_factory;

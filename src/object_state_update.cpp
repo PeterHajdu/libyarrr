@@ -1,6 +1,12 @@
 #include <yarrr/object_state_update.hpp>
 #include <yarrr/object.hpp>
 #include <yarrr/bitmagic.hpp>
+#include <yarrr/event_factory.hpp>
+
+namespace
+{
+  yarrr::AutoEventRegister<yarrr::ObjectStateUpdate> register_object_state_update;
+}
 
 namespace yarrr
 {

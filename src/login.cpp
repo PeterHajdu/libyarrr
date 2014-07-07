@@ -1,6 +1,13 @@
 #include <yarrr/login.hpp>
 #include <yarrr/bitmagic.hpp>
 #include <yarrr/object.hpp>
+#include <yarrr/event_factory.hpp>
+
+namespace
+{
+  yarrr::AutoEventRegister<yarrr::LoginRequest> register_login_request;
+  yarrr::AutoEventRegister<yarrr::LoginResponse> register_login_response;
+}
 
 namespace yarrr
 {

@@ -8,6 +8,20 @@ using namespace igloo;
 namespace
 {
 
+  class AutoTestEvent : public yarrr::Event
+  {
+    public:
+      add_polymorphic_ctci( "auto_test_event" );
+    private:
+      virtual void do_serialize( yarrr::Serializer& serializer ) const override
+      {
+      }
+
+      virtual void do_deserialize( yarrr::Deserializer& deserializer ) override
+      {
+      }
+  };
+
 class TestEvent : public yarrr::Event
 {
   public:
@@ -43,8 +57,10 @@ Describe(the_event_factory)
 {
   void SetUp()
   {
-    yarrr::EventFactory::destroy();
-    yarrr::EventFactory::register_class<TestEvent>();
+    if ( !yarrr::EventFactory::is_registered( TestEvent::ctci ) )
+    {
+      yarrr::EventFactory::register_class<TestEvent>();
+    }
     serialized_event = TestEvent( test_data ).serialize();
     event = yarrr::EventFactory::create( serialized_event );
   }
@@ -60,6 +76,12 @@ Describe(the_event_factory)
     AssertThat( test_event.data, Equals( test_data ) );
   }
 
+  It( knows_if_a_class_is_registered )
+  {
+    AssertThat( yarrr::EventFactory::is_registered( TestEvent::ctci ), Equals( true ) );
+    AssertThat( yarrr::EventFactory::is_registered( 0 ), Equals( false ) );
+  }
+
   int test_data{ 13 };
   yarrr::Data serialized_event;
   yarrr::Event::Pointer event;
@@ -69,16 +91,15 @@ Describe(an_auto_register)
 {
   void SetUp()
   {
-    yarrr::EventFactory::destroy();
   }
 
   It( registers_event_class_to_event_factory )
   {
-    yarrr::AutoEventRegister<TestEvent>();
+    yarrr::AutoEventRegister<AutoTestEvent>();
     yarrr::Event::Pointer event(
         yarrr::EventFactory::create(
-          TestEvent().serialize() ) );
-    AssertThat( event->polymorphic_ctci(), Equals( TestEvent::ctci ) );
+          AutoTestEvent().serialize() ) );
+    AssertThat( event->polymorphic_ctci(), Equals( AutoTestEvent::ctci ) );
   }
 };
 

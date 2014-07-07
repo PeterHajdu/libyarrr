@@ -1,5 +1,6 @@
 #include <yarrr/login.hpp>
 #include <yarrr/object.hpp>
+#include <yarrr/event_factory.hpp>
 #include <thectci/id.hpp>
 #include <igloo/igloo_alt.h>
 
@@ -7,6 +8,11 @@ using namespace igloo;
 
 Describe(a_login_request)
 {
+  It( is_registered_to_event_factory )
+  {
+    AssertThat( yarrr::EventFactory::is_registered( yarrr::LoginRequest::ctci ), Equals( true ) );
+  }
+
   It( contains_a_login_id )
   {
     yarrr::LoginRequest login_request;
@@ -35,6 +41,11 @@ Describe(a_login_request)
 
 Describe(a_login_response)
 {
+  It( is_registered_to_event_factory )
+  {
+    AssertThat( yarrr::EventFactory::is_registered( yarrr::LoginResponse::ctci ), Equals( true ) );
+  }
+
   It( has_a_default_constructor )
   {
     yarrr::LoginResponse login_response;

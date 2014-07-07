@@ -32,11 +32,10 @@ EventFactory::create( const Data& data )
   return event;
 }
 
-void
-EventFactory::destroy()
+bool
+EventFactory::is_registered( the::ctci::Id id )
 {
-  delete instance;
-  instance = nullptr;
+  return get().m_factory.is_registered( id );
 }
 
 }
