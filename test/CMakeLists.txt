@@ -16,6 +16,7 @@ set(TEST_SOURCE_FILES
     test_ship_control.cpp
     test_event_factory.cpp
     test_callback.cpp
+    test_types.cpp
     )
 
 
