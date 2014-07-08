@@ -77,6 +77,11 @@ Describe(a_vector)
     AssertThat( d >> 2, Equals( Vector{ 4, 8 } ) );
   }
 
+  It(has_perpendicular_operation)
+  {
+    AssertThat( yarrr::perpendicular( a ), Equals( Vector( 10, -100 ) ) );
+  }
+
   const Vector a{ 100, 10 };
   const Vector b{ 200, 20 };
 };

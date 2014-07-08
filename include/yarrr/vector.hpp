@@ -122,5 +122,12 @@ namespace yarrr
   {
     return l>>=bits;
   }
+
+  template <typename T>
+  Vector<T> perpendicular( Vector<T> vector )
+  {
+    return Vector<T>( vector.y, -vector.x );
+  }
+
 }
 
