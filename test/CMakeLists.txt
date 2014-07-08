@@ -17,6 +17,7 @@ set(TEST_SOURCE_FILES
     test_event_factory.cpp
     test_callback.cpp
     test_types.cpp
+    test_delete_object.cpp
     )
 
 

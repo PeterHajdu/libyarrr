@@ -7,6 +7,7 @@ set(SOURCE_FILES
   command.cpp
   ship_control.cpp
   event_factory.cpp
+  delete_object.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
