@@ -9,6 +9,12 @@ typedef yarrr::Vector<int> Vector;
 
 Describe(a_vector)
 {
+  It(has_a_constructor)
+  {
+    const Vector vector_with_constructor( 1, 2 );
+    AssertThat( vector_with_constructor.x, Equals( 1 ) );
+    AssertThat( vector_with_constructor.y, Equals( 2 ) );
+  }
 
   It(can_be_pushed_to_a_stream)
   {

@@ -7,6 +7,13 @@ namespace yarrr
   struct Vector
   {
     typedef T type;
+    Vector() = default;
+    Vector( const type& x, const type& y )
+      : x( x )
+      , y( y )
+    {
+    }
+
     type x;
     type y;
   };
