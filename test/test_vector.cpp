@@ -62,6 +62,15 @@ Describe(a_vector)
     AssertThat( a * 2.0, Equals( b ) );
   }
 
+  It(can_shift_bits_in_both_directions)
+  {
+    const Vector c{ 1, 2 };
+    AssertThat( c << 2, Equals( Vector{ 4, 8 } ) );
+
+    const Vector d{ 16, 32 };
+    AssertThat( d >> 2, Equals( Vector{ 4, 8 } ) );
+  }
+
   const Vector a{ 100, 10 };
   const Vector b{ 200, 20 };
 };

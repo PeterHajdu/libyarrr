@@ -87,5 +87,33 @@ namespace yarrr
   {
     return r < l;
   }
+
+  template <typename T>
+  Vector<T>& operator<<=( Vector<T>& l, size_t bits )
+  {
+    l.x <<= bits;
+    l.y <<= bits;
+    return l;
+  }
+
+  template <typename T>
+  Vector<T> operator<<( Vector<T> l, size_t bits )
+  {
+    return l<<=bits;
+  }
+
+  template <typename T>
+  Vector<T>& operator>>=( Vector<T>& l, size_t bits )
+  {
+    l.x >>= bits;
+    l.y >>= bits;
+    return l;
+  }
+
+  template <typename T>
+  Vector<T> operator>>( Vector<T> l, size_t bits )
+  {
+    return l>>=bits;
+  }
 }
 
