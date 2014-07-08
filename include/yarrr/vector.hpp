@@ -124,7 +124,7 @@ namespace yarrr
   }
 
   template <typename T>
-  Vector<T> perpendicular( Vector<T> vector )
+  Vector<T> perpendicular( const Vector<T>& vector )
   {
     return Vector<T>( vector.y, -vector.x );
   }
