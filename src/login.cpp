@@ -1,6 +1,6 @@
 #include <yarrr/login.hpp>
 #include <yarrr/bitmagic.hpp>
-#include <yarrr/object.hpp>
+#include <yarrr/physical_parameters.hpp>
 #include <yarrr/event_factory.hpp>
 
 namespace

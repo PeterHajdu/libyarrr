@@ -1,5 +1,5 @@
 #include <yarrr/ship_control.hpp>
-#include <yarrr/object.hpp>
+#include <yarrr/physical_parameters.hpp>
 #include <yarrr/command.hpp>
 #include <igloo/igloo_alt.h>
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <yarrr/event.hpp>
-#include <yarrr/object.hpp>
+#include <yarrr/physical_parameters.hpp>
 
 namespace yarrr
 {

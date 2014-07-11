@@ -2,7 +2,7 @@
 
 #include <thectci/id.hpp>
 #include <yarrr/types.hpp>
-#include <yarrr/object.hpp>
+#include <yarrr/physical_parameters.hpp>
 #include <yarrr/event.hpp>
 
 #include <string>

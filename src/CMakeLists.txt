@@ -1,6 +1,6 @@
 
 set(SOURCE_FILES
-  object.cpp
+  physical_parameters.cpp
   login.cpp
   event.cpp
   object_state_update.cpp

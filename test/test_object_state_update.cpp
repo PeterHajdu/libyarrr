@@ -1,5 +1,5 @@
 #include <yarrr/object_state_update.hpp>
-#include <yarrr/object.hpp>
+#include <yarrr/physical_parameters.hpp>
 #include <yarrr/event_factory.hpp>
 #include <igloo/igloo_alt.h>
 

@@ -2,7 +2,7 @@
 
 #include <yarrr/event.hpp>
 #include <thectci/id.hpp>
-#include <yarrr/object.hpp>
+#include <yarrr/physical_parameters.hpp>
 
 namespace yarrr
 {

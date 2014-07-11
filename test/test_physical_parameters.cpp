@@ -1,5 +1,5 @@
 #include <igloo/igloo_alt.h>
-#include <yarrr/object.hpp>
+#include <yarrr/physical_parameters.hpp>
 
 using namespace igloo;
 

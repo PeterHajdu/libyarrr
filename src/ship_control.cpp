@@ -1,6 +1,6 @@
 #include <yarrr/ship_control.hpp>
 #include <yarrr/types.hpp>
-#include <yarrr/object.hpp>
+#include <yarrr/physical_parameters.hpp>
 #include <yarrr/command.hpp>
 #include <cmath>
 #include <cstdint>
