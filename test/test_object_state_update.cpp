@@ -32,7 +32,7 @@ Describe(an_object_state_update)
     AssertThat( deserialized_object_state_update.object(), Equals( an_object ) );
   }
 
-  yarrr::Object an_object;
+  yarrr::PhysicalParameters an_object;
   const yarrr::Coordinate start_position{ 101, 102 };
   const yarrr::Velocity start_velocity{ 103, 104 };
   const yarrr::Angle start_angle{ 106 };

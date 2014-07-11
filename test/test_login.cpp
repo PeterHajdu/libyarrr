@@ -69,5 +69,5 @@ Describe(a_login_response)
     AssertThat( deserialized_request.object_id(), Equals( login_response.object_id() ) );
   }
 
-  const yarrr::Object::Id object_id{ 123 };
+  const yarrr::PhysicalParameters::Id object_id{ 123 };
 };

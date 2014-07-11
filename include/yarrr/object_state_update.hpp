@@ -5,7 +5,7 @@
 
 namespace yarrr
 {
-class Object;
+class PhysicalParameters;
 
 class ObjectStateUpdate : public Event
 {
@@ -13,14 +13,14 @@ class ObjectStateUpdate : public Event
     add_polymorphic_ctci( "object_state_update" );
 
     ObjectStateUpdate() = default;
-    ObjectStateUpdate( const Object& );
-    const Object& object() const;
+    ObjectStateUpdate( const PhysicalParameters& );
+    const PhysicalParameters& object() const;
 
   private:
     virtual void do_serialize( Serializer& serializer ) const;
     virtual void do_deserialize( Deserializer& deserializer );
 
-    Object m_object;
+    PhysicalParameters m_object;
 };
 
 }

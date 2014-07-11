@@ -49,8 +49,8 @@ Describe(ship_control)
   yarrr::Command back_engine_command_in_future{ yarrr::Command::thruster, future };
   yarrr::Command cw_command{ yarrr::Command::cw, now };
   yarrr::Command ccw_command{ yarrr::Command::ccw, now };
-  yarrr::Object object;
-  yarrr::Object initiali_state;
+  yarrr::PhysicalParameters object;
+  yarrr::PhysicalParameters initiali_state;
   yarrr::ShipControl test_control{ object };
 };
 

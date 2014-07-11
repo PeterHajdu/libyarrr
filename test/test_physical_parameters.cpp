@@ -22,7 +22,7 @@ Describe(an_object)
 
   It(can_travel_back_in_time)
   {
-    yarrr::Object object_state_now( an_object );
+    yarrr::PhysicalParameters object_state_now( an_object );
     yarrr::travel_in_time_to( past, an_object );
     AssertThat( an_object, !Equals( object_state_now ) );
     yarrr::travel_in_time_to( now, an_object );
@@ -52,7 +52,7 @@ Describe(an_object)
     AssertThat( an_object.timestamp, Equals( future ) );
   }
 
-  yarrr::Object an_object;
+  yarrr::PhysicalParameters an_object;
   const yarrr::Coordinate start_position{ 101, 102 };
   const yarrr::Velocity start_velocity{ 103, 104 };
   const yarrr::Angle start_angle{ 106 };

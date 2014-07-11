@@ -4,7 +4,7 @@
 namespace yarrr
 {
 
-std::ostream& operator<<( std::ostream& output, const Object& object )
+std::ostream& operator<<( std::ostream& output, const PhysicalParameters& object )
 {
   output << "object "
     << object.id << " "
@@ -21,7 +21,7 @@ std::ostream& operator<<( std::ostream& output, const Object& object )
 }
 
 
-bool operator==( const Object& l, const Object& r )
+bool operator==( const PhysicalParameters& l, const PhysicalParameters& r )
 {
   return
     l.coordinate == r.coordinate &&
@@ -32,7 +32,7 @@ bool operator==( const Object& l, const Object& r )
 }
 
 
-void travel_in_time_to( const the::time::Clock::Time& timestamp, Object& object )
+void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParameters& object )
 {
   const the::time::Difference delta( timestamp - object.timestamp );
   const float ratio( delta * 1.0 / the::time::Clock::ticks_per_second );

@@ -13,7 +13,7 @@ namespace
 
 namespace yarrr
 {
-ShipControl::ShipControl( Object& object )
+ShipControl::ShipControl( PhysicalParameters& object )
   : m_object( object )
 {
 }

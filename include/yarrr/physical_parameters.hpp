@@ -6,7 +6,7 @@
 namespace yarrr
 {
 
-  class Object
+  class PhysicalParameters
   {
     public:
       typedef uint64_t Id;
@@ -20,9 +20,9 @@ namespace yarrr
   };
 
 
-  std::ostream& operator<<( std::ostream& output, const Object& object );
-  bool operator==( const Object& l, const Object& r );
-  void travel_in_time_to( const the::time::Clock::Time& timestamp, Object& object );
+  std::ostream& operator<<( std::ostream& output, const PhysicalParameters& object );
+  bool operator==( const PhysicalParameters& l, const PhysicalParameters& r );
+  void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParameters& object );
 
 }
 

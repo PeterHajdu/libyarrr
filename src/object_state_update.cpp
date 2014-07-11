@@ -10,13 +10,13 @@ namespace
 
 namespace yarrr
 {
-ObjectStateUpdate::ObjectStateUpdate( const Object& object )
+ObjectStateUpdate::ObjectStateUpdate( const PhysicalParameters& object )
   : m_object( object )
 {
 }
 
 
-const Object &
+const PhysicalParameters &
 ObjectStateUpdate::object() const
 {
   return m_object;

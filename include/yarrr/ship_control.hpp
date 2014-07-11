@@ -2,13 +2,13 @@
 
 namespace yarrr
 {
-class Object;
+class PhysicalParameters;
 class Command;
 
 class ShipControl
 {
   public:
-    ShipControl( Object& object );
+    ShipControl( PhysicalParameters& object );
     void handle_command( const Command& );
 
   private:
@@ -16,7 +16,7 @@ class ShipControl
     void thruster();
     void spin( int power );
 
-    Object& m_object;
+    PhysicalParameters& m_object;
 };
 
 }
