@@ -13,15 +13,15 @@ namespace
 
 namespace yarrr
 {
-ShipControl::ShipControl( PhysicalParameters& object )
-  : m_object( object )
+ShipControl::ShipControl( PhysicalParameters& physical_parameters )
+  : m_physical_parameters( physical_parameters )
 {
 }
 
 void
 ShipControl::handle_command( const Command& command )
 {
-  yarrr::travel_in_time_to( command.timestamp(), m_object );
+  yarrr::travel_in_time_to( command.timestamp(), m_physical_parameters );
   switch( command.type() )
   {
     case Command::thruster :
@@ -40,15 +40,15 @@ void
 ShipControl::thruster()
 {
   const yarrr::Coordinate heading{
-    static_cast< int64_t >( back_engine_power * cos( m_object.angle * 3.14 / 180.0 / 4.0 ) ),
-    static_cast< int64_t >( back_engine_power * sin( m_object.angle * 3.14 / 180.0 / 4.0 ) ) };
-  m_object.velocity += heading;
+    static_cast< int64_t >( back_engine_power * cos( m_physical_parameters.angle * 3.14 / 180.0 / 4.0 ) ),
+    static_cast< int64_t >( back_engine_power * sin( m_physical_parameters.angle * 3.14 / 180.0 / 4.0 ) ) };
+  m_physical_parameters.velocity += heading;
 }
 
 void
 ShipControl::spin( int power )
 {
-  m_object.vangle += power;
+  m_physical_parameters.vangle += power;
 }
 
 }

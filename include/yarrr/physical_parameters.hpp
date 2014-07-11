@@ -20,9 +20,9 @@ namespace yarrr
   };
 
 
-  std::ostream& operator<<( std::ostream& output, const PhysicalParameters& object );
+  std::ostream& operator<<( std::ostream& output, const PhysicalParameters& );
   bool operator==( const PhysicalParameters& l, const PhysicalParameters& r );
-  void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParameters& object );
+  void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParameters& );
 
 }
 

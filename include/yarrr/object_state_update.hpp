@@ -14,13 +14,13 @@ class ObjectStateUpdate : public Event
 
     ObjectStateUpdate() = default;
     ObjectStateUpdate( const PhysicalParameters& );
-    const PhysicalParameters& object() const;
+    const PhysicalParameters& physical_parameters() const;
 
   private:
     virtual void do_serialize( Serializer& serializer ) const;
     virtual void do_deserialize( Deserializer& deserializer );
 
-    PhysicalParameters m_object;
+    PhysicalParameters m_physical_parameters;
 };
 
 }

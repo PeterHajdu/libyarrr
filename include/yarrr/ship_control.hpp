@@ -8,7 +8,7 @@ class Command;
 class ShipControl
 {
   public:
-    ShipControl( PhysicalParameters& object );
+    ShipControl( PhysicalParameters& );
     void handle_command( const Command& );
 
   private:
@@ -16,7 +16,7 @@ class ShipControl
     void thruster();
     void spin( int power );
 
-    PhysicalParameters& m_object;
+    PhysicalParameters& m_physical_parameters;
 };
 
 }

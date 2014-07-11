@@ -9,8 +9,8 @@ Describe(ship_control)
 {
   void SetUp()
   {
-    object.timestamp = now;
-    initiali_state = object;
+    physical_parameters.timestamp = now;
+    initiali_state = physical_parameters;
   }
 
   It( accepts_commands )
@@ -22,25 +22,25 @@ Describe(ship_control)
   It( can_accelerate_an_object )
   {
     test_control.handle_command( back_engine_command );
-    AssertThat( object.velocity, !Equals( initiali_state.velocity ) );
+    AssertThat( physical_parameters.velocity, !Equals( initiali_state.velocity ) );
   }
 
   It( can_spin_an_object_cw )
   {
     test_control.handle_command( cw_command );
-    AssertThat( object.vangle, IsGreaterThan( initiali_state.vangle ) );
+    AssertThat( physical_parameters.vangle, IsGreaterThan( initiali_state.vangle ) );
   }
 
   It( can_spin_an_object_ccw )
   {
     test_control.handle_command( ccw_command );
-    AssertThat( object.vangle, IsLessThan( initiali_state.vangle ) );
+    AssertThat( physical_parameters.vangle, IsLessThan( initiali_state.vangle ) );
   }
 
   It( travels_object_in_time_to_apply_command )
   {
     test_control.handle_command( back_engine_command_in_future );
-    AssertThat( object.timestamp, IsGreaterThan( initiali_state.timestamp ) );
+    AssertThat( physical_parameters.timestamp, IsGreaterThan( initiali_state.timestamp ) );
   }
 
   uint64_t now{ 0 };
@@ -49,8 +49,8 @@ Describe(ship_control)
   yarrr::Command back_engine_command_in_future{ yarrr::Command::thruster, future };
   yarrr::Command cw_command{ yarrr::Command::cw, now };
   yarrr::Command ccw_command{ yarrr::Command::ccw, now };
-  yarrr::PhysicalParameters object;
+  yarrr::PhysicalParameters physical_parameters;
   yarrr::PhysicalParameters initiali_state;
-  yarrr::ShipControl test_control{ object };
+  yarrr::ShipControl test_control{ physical_parameters };
 };
 

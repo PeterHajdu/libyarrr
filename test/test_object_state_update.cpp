@@ -9,11 +9,11 @@ Describe(an_object_state_update)
 {
   void SetUp()
   {
-    an_object.coordinate = start_position;
-    an_object.velocity = start_velocity;
-    an_object.angle = start_angle;
-    an_object.vangle = -1000;
-    an_object.timestamp = now;
+    physical_parameters.coordinate = start_position;
+    physical_parameters.velocity = start_velocity;
+    physical_parameters.angle = start_angle;
+    physical_parameters.vangle = -1000;
+    physical_parameters.timestamp = now;
   }
 
   It( is_registered_to_event_factory )
@@ -23,16 +23,16 @@ Describe(an_object_state_update)
 
   It( can_recreate_the_object_from_the_deserialized_form )
   {
-    yarrr::ObjectStateUpdate state_update( an_object );
+    yarrr::ObjectStateUpdate state_update( physical_parameters );
     yarrr::Data serialized_object_state_update( state_update.serialize() );
 
     yarrr::ObjectStateUpdate deserialized_object_state_update;
     deserialized_object_state_update.deserialize( serialized_object_state_update );
 
-    AssertThat( deserialized_object_state_update.object(), Equals( an_object ) );
+    AssertThat( deserialized_object_state_update.physical_parameters(), Equals( physical_parameters ) );
   }
 
-  yarrr::PhysicalParameters an_object;
+  yarrr::PhysicalParameters physical_parameters;
   const yarrr::Coordinate start_position{ 101, 102 };
   const yarrr::Velocity start_velocity{ 103, 104 };
   const yarrr::Angle start_angle{ 106 };

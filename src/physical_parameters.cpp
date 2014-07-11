@@ -4,17 +4,17 @@
 namespace yarrr
 {
 
-std::ostream& operator<<( std::ostream& output, const PhysicalParameters& object )
+std::ostream& operator<<( std::ostream& output, const PhysicalParameters& physical_parameters )
 {
-  output << "object "
-    << object.id << " "
-    << object.coordinate.x << " "
-    << object.coordinate.y << " "
-    << object.velocity.x << " "
-    << object.velocity.y << " "
-    << object.angle << " "
-    << object.vangle << " "
-    << object.timestamp << " "
+  output << "physical_parameters "
+    << physical_parameters.id << " "
+    << physical_parameters.coordinate.x << " "
+    << physical_parameters.coordinate.y << " "
+    << physical_parameters.velocity.x << " "
+    << physical_parameters.velocity.y << " "
+    << physical_parameters.angle << " "
+    << physical_parameters.vangle << " "
+    << physical_parameters.timestamp << " "
     << "\n";
 
   return output;
@@ -32,13 +32,13 @@ bool operator==( const PhysicalParameters& l, const PhysicalParameters& r )
 }
 
 
-void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParameters& object )
+void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParameters& physical_parameters )
 {
-  const the::time::Difference delta( timestamp - object.timestamp );
+  const the::time::Difference delta( timestamp - physical_parameters.timestamp );
   const float ratio( delta * 1.0 / the::time::Clock::ticks_per_second );
-  object.coordinate+=object.velocity * ratio;
-  object.angle+=object.vangle * ratio;
-  object.timestamp = timestamp;
+  physical_parameters.coordinate+=physical_parameters.velocity * ratio;
+  physical_parameters.angle+=physical_parameters.vangle * ratio;
+  physical_parameters.timestamp = timestamp;
 }
 
 }
