@@ -44,6 +44,8 @@ class ConnectionWrapper
 
     Connection& connection;
 
+    ConnectionWrapper( const ConnectionWrapper& ) = delete;
+    ConnectionWrapper& operator=( const ConnectionWrapper& ) = delete;
   private:
     typedef std::reference_wrapper< the::ctci::Dispatcher > DispatcherReference;
     std::vector< DispatcherReference > m_dispatchers;
