@@ -3,6 +3,20 @@
 
 using namespace igloo;
 
+namespace
+{
+  bool are_almost_the_same( const yarrr::PhysicalParameters& l, const yarrr::PhysicalParameters& r )
+  {
+    const size_t allowed_angle_delta( 1 );
+    return
+      l.coordinate == r.coordinate &&
+      l.velocity == r.velocity &&
+      l.vangle == r.vangle &&
+      l.timestamp == r.timestamp &&
+      std::abs( l.angle - r.angle ) < allowed_angle_delta;
+  }
+}
+
 Describe(physical_parameters)
 {
   void SetUp()
@@ -26,7 +40,7 @@ Describe(physical_parameters)
     yarrr::travel_in_time_to( past, physical_parameters );
     AssertThat( physical_parameters, !Equals( object_state_now ) );
     yarrr::travel_in_time_to( now, physical_parameters );
-    AssertThat( physical_parameters, Equals( object_state_now ) );
+    AssertThat( are_almost_the_same( physical_parameters, object_state_now ), Equals( true ) );
   }
 
   It(rotates)
