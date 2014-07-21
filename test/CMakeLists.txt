@@ -19,6 +19,7 @@ set(TEST_SOURCE_FILES
     test_types.cpp
     test_delete_object.cpp
     test_object.cpp
+    test_connection_wrapper.cpp
     )
 
 
