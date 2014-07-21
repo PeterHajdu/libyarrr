@@ -24,6 +24,12 @@ class ConnectionWrapper
       while( connection.receive( message ) )
       {
         Event::Pointer event( EventFactory::create( message ) );
+
+        if ( !event )
+        {
+          continue;
+        }
+
         for ( auto& dispatcher : m_dispatchers )
         {
           dispatcher.get().polymorphic_dispatch( *event );

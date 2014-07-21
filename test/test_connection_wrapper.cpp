@@ -28,9 +28,17 @@ namespace
   class TestConnection
   {
     public:
+
+      bool has_one_invalid_event{ false };
       ssize_t number_of_messages{ 0 };
       bool receive( yarrr::Data& data )
       {
+        if ( has_one_invalid_event )
+        {
+          has_one_invalid_event = false;
+          return true;
+        }
+
         if ( empty() )
         {
           return false;
@@ -95,6 +103,12 @@ Describe(a_connection_wrapper)
     test_wrapper->process_incoming_messages();
     AssertThat( number_of_test_event_dispatches_1, Equals( number_of_events ) );
     AssertThat( number_of_test_event_dispatches_2, Equals( number_of_events ) );
+  }
+
+  It( drops_invalid_events )
+  {
+    test_connection->has_one_invalid_event = true;
+    test_wrapper->process_incoming_messages();
   }
 
   const size_t number_of_events{ 10 };
