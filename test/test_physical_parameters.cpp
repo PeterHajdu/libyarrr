@@ -7,7 +7,7 @@ namespace
 {
   bool are_almost_the_same( const yarrr::PhysicalParameters& l, const yarrr::PhysicalParameters& r )
   {
-    const size_t allowed_angle_delta( 1 );
+    const ssize_t allowed_angle_delta( 1 );
     return
       l.coordinate == r.coordinate &&
       l.velocity == r.velocity &&
