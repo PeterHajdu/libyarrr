@@ -7,8 +7,8 @@
 
 namespace
 {
-  const float back_engine_power{ 40.0 };
-  const int cw_engine_power{ 100 };
+  const float back_engine_power{ 12.0 };
+  const int cw_engine_power{ 30 };
 }
 
 namespace yarrr
