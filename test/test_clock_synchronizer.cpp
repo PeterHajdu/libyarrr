@@ -121,10 +121,10 @@ Describe(a_client_clock_synchronizer)
     AssertThat( test_synchronizer->clock_offset(), Equals( expected_offset ) );
   }
 
-  It( sets_clock_offset )
+
+  It( sets_clock_offset_automatically )
   {
     test_synchronizer->on_message_from_network( create_answer_message() );
-    test_synchronizer->synchronize_local_clock();
     AssertThat( test_clock->last_set_offset, Equals( test_synchronizer->clock_offset() ) );
   }
 

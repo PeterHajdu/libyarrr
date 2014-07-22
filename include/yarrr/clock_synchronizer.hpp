@@ -102,6 +102,7 @@ class Client : public the::net::NetworkTask
       const auto response_time( response.pop_front<uint64_t>() );
       m_latency.store( ( response_arrive_time - initiation_time ) / 2 );
       m_offset.store( ( response_time - m_latency - initiation_time ) );
+      synchronize_local_clock();
     }
 
     uint64_t network_latency() const
@@ -114,12 +115,12 @@ class Client : public the::net::NetworkTask
       return m_offset.load();
     }
 
+  private:
     void synchronize_local_clock()
     {
       m_clock.set_offset( clock_offset() );
     }
 
-  private:
     bool is_clock_sync_response( Deserializer& response ) const
     {
       const size_t length_of_clock_sync_response( 20 );
