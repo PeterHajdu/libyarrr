@@ -56,10 +56,11 @@ NetworkSynchronizer::register_to(
 void
 NetworkSynchronizer::handle_object_state_update( const ObjectStateUpdate& object_state_update ) const
 {
-  const PhysicalParameters& network_parameters( object_state_update.physical_parameters() );
+  PhysicalParameters network_parameters( object_state_update.physical_parameters() );
   assert( m_local_physical_behavior );
   //todo: move to physical parameters to a function with a ratio parameter
   PhysicalParameters& local_parameters( m_local_physical_behavior->physical_parameters );
+  travel_in_time_to( local_parameters.timestamp, network_parameters );
   local_parameters.coordinate = ( network_parameters.coordinate + local_parameters.coordinate ) * 0.5;
   local_parameters.velocity = ( network_parameters.velocity + local_parameters.velocity ) * 0.5;
   local_parameters.angle = ( network_parameters.angle + local_parameters.angle ) * 0.5;
