@@ -35,3 +35,31 @@ Describe( a_local_physical_behavior )
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
 };
 
+Describe( a_simple_physics_updater )
+{
+
+  void SetUp()
+  {
+    test_dispatcher.reset( new the::ctci::Dispatcher() );
+    test_registry.reset( new the::ctci::ComponentRegistry() );
+
+    local_physical_behavior.register_to( *test_dispatcher, *test_registry );
+    simple_physics_updater.register_to( *test_dispatcher, *test_registry );
+  }
+
+  It( updates_local_physical_state_on_timer_update_event )
+  {
+    const yarrr::PhysicalParameters old_physical_parameters(
+        local_physical_behavior.physical_parameters );
+
+    test_dispatcher->dispatch( yarrr::TimerUpdate( old_physical_parameters.timestamp + 100000 ) );
+    AssertThat( old_physical_parameters, !Equals( local_physical_behavior.physical_parameters ) );
+  }
+
+  yarrr::LocalPhysicalBehavior local_physical_behavior;
+  yarrr::SimplePhysicsUpdater simple_physics_updater;
+
+  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
+  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+};
+
