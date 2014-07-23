@@ -9,6 +9,7 @@ set(SOURCE_FILES
   event_factory.cpp
   delete_object.cpp
   object.cpp
+  local_physical_behavior.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
