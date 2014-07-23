@@ -2,14 +2,14 @@
 
 #include <yarrr/event_factory.hpp>
 #include <yarrr/types.hpp>
-#include <thectci/dispatcher.hpp>
+#include <thectci/multiplexer.hpp>
 #include <memory>
 
 namespace yarrr
 {
 
 template < typename Connection >
-class ConnectionWrapper
+class ConnectionWrapper : public the::ctci::Multiplexer
 {
   public:
     typedef std::unique_ptr< ConnectionWrapper > Pointer;
@@ -30,25 +30,14 @@ class ConnectionWrapper
           continue;
         }
 
-        for ( auto& dispatcher : m_dispatchers )
-        {
-          dispatcher.get().polymorphic_dispatch( *event );
-        }
+        polymorphic_dispatch( *event );
       }
-    }
-
-    void register_dispatcher( the::ctci::Dispatcher& dispatcher )
-    {
-      m_dispatchers.push_back( dispatcher );
     }
 
     Connection& connection;
 
     ConnectionWrapper( const ConnectionWrapper& ) = delete;
     ConnectionWrapper& operator=( const ConnectionWrapper& ) = delete;
-  private:
-    typedef std::reference_wrapper< the::ctci::Dispatcher > DispatcherReference;
-    std::vector< DispatcherReference > m_dispatchers;
 };
 
 }
