@@ -66,8 +66,6 @@ class ShipControl;
 class Engine : public ObjectBehavior
 {
   public:
-    Engine();
-
     virtual void register_to(
         the::ctci::Dispatcher&,
         the::ctci::ComponentRegistry& registry ) override;

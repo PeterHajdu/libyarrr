@@ -69,11 +69,6 @@ NetworkSynchronizer::handle_object_state_update( const ObjectStateUpdate& object
   local_parameters.vangle = ( network_parameters.vangle + local_parameters.vangle ) * 0.5;
 }
 
-Engine::Engine()
-{
-}
-
-
 void
 Engine::register_to(
     the::ctci::Dispatcher& dispatcher,
