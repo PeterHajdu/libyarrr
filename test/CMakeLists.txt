@@ -20,7 +20,7 @@ set(TEST_SOURCE_FILES
     test_delete_object.cpp
     test_object.cpp
     test_connection_wrapper.cpp
-    test_local_physical_behavior.cpp
+    test_basic_behaviors.cpp
     )
 
 

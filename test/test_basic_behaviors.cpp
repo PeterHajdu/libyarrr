@@ -1,4 +1,4 @@
-#include <yarrr/local_physical_behavior.hpp>
+#include <yarrr/basic_behaviors.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/object_state_update.hpp>
 #include <yarrr/command.hpp>
