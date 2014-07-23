@@ -44,5 +44,21 @@ class SimplePhysicsUpdater : public ObjectBehavior
     LocalPhysicalBehavior* m_local_physical_behavior;
 };
 
+class ObjectStateUpdate;
+
+class NetworkSynchronizer : public ObjectBehavior
+{
+  public:
+    NetworkSynchronizer();
+
+    virtual void register_to(
+        the::ctci::Dispatcher&,
+        the::ctci::ComponentRegistry& registry ) override;
+
+  private:
+    void handle_object_state_update( const ObjectStateUpdate& ) const;
+    LocalPhysicalBehavior* m_local_physical_behavior;
+};
+
 }
 

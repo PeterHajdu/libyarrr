@@ -1,4 +1,5 @@
 #include <yarrr/local_physical_behavior.hpp>
+#include <yarrr/object_state_update.hpp>
 
 namespace yarrr
 {
@@ -33,6 +34,36 @@ SimplePhysicsUpdater::handle_timer_update( const TimerUpdate& timer_update ) con
 {
   assert( m_local_physical_behavior );
   travel_in_time_to( timer_update.timestamp, m_local_physical_behavior->physical_parameters );
+}
+
+
+NetworkSynchronizer::NetworkSynchronizer()
+  : m_local_physical_behavior( nullptr )
+{
+}
+
+
+void
+NetworkSynchronizer::register_to(
+    the::ctci::Dispatcher& dispatcher,
+    the::ctci::ComponentRegistry& registry )
+{
+  m_local_physical_behavior = &registry.component< LocalPhysicalBehavior >();
+  dispatcher.register_listener< yarrr::ObjectStateUpdate  >( std::bind(
+        &NetworkSynchronizer::handle_object_state_update, this, std::placeholders::_1 ) );
+}
+
+void
+NetworkSynchronizer::handle_object_state_update( const ObjectStateUpdate& object_state_update ) const
+{
+  const PhysicalParameters& network_parameters( object_state_update.physical_parameters() );
+  assert( m_local_physical_behavior );
+  //todo: move to physical parameters to a function with a ratio parameter
+  PhysicalParameters& local_parameters( m_local_physical_behavior->physical_parameters );
+  local_parameters.coordinate = ( network_parameters.coordinate + local_parameters.coordinate ) * 0.5;
+  local_parameters.velocity = ( network_parameters.velocity + local_parameters.velocity ) * 0.5;
+  local_parameters.angle = ( network_parameters.angle + local_parameters.angle ) * 0.5;
+  local_parameters.vangle = ( network_parameters.vangle + local_parameters.vangle ) * 0.5;
 }
 
 }
