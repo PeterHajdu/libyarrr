@@ -1,6 +1,8 @@
 #include <yarrr/local_physical_behavior.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/object_state_update.hpp>
+#include <yarrr/command.hpp>
+#include <yarrr/ship_control.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <igloo/igloo_alt.h>
@@ -90,6 +92,35 @@ Describe( a_network_synchronizer )
 
   yarrr::LocalPhysicalBehavior local_physical_behavior;
   yarrr::NetworkSynchronizer network_synchronizer;
+
+  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
+  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+};
+
+Describe( an_engine )
+{
+
+  void SetUp()
+  {
+    test_dispatcher.reset( new the::ctci::Dispatcher() );
+    test_registry.reset( new the::ctci::ComponentRegistry() );
+
+    local_physical_behavior.register_to( *test_dispatcher, *test_registry );
+    engine.register_to( *test_dispatcher, *test_registry );
+  }
+
+  It( updates_local_physical_state_when_a_command_arrives )
+  {
+    const yarrr::PhysicalParameters old_physical_parameters(
+        local_physical_behavior.physical_parameters );
+
+    test_dispatcher->dispatch( yarrr::Command( yarrr::Command::thruster, 0 ) );
+
+    AssertThat( old_physical_parameters, !Equals( local_physical_behavior.physical_parameters ) );
+  }
+
+  yarrr::LocalPhysicalBehavior local_physical_behavior;
+  yarrr::Engine engine;
 
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;

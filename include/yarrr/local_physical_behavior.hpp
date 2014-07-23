@@ -60,5 +60,20 @@ class NetworkSynchronizer : public ObjectBehavior
     LocalPhysicalBehavior* m_local_physical_behavior;
 };
 
+class Command;
+class ShipControl;
+
+class Engine : public ObjectBehavior
+{
+  public:
+    Engine();
+
+    virtual void register_to(
+        the::ctci::Dispatcher&,
+        the::ctci::ComponentRegistry& registry ) override;
+
+  private:
+    std::unique_ptr< ShipControl > m_ship_control;
+};
 }
 

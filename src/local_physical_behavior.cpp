@@ -1,5 +1,7 @@
 #include <yarrr/local_physical_behavior.hpp>
 #include <yarrr/object_state_update.hpp>
+#include <yarrr/command.hpp>
+#include <yarrr/ship_control.hpp>
 
 namespace yarrr
 {
@@ -65,6 +67,22 @@ NetworkSynchronizer::handle_object_state_update( const ObjectStateUpdate& object
   local_parameters.velocity = ( network_parameters.velocity + local_parameters.velocity ) * 0.5;
   local_parameters.angle = ( network_parameters.angle + local_parameters.angle ) * 0.5;
   local_parameters.vangle = ( network_parameters.vangle + local_parameters.vangle ) * 0.5;
+}
+
+Engine::Engine()
+{
+}
+
+
+void
+Engine::register_to(
+    the::ctci::Dispatcher& dispatcher,
+    the::ctci::ComponentRegistry& registry )
+{
+  m_ship_control.reset(
+      new ShipControl( registry.component< LocalPhysicalBehavior >().physical_parameters ) );
+  dispatcher.register_listener< yarrr::Command  >(
+      std::bind( &ShipControl::handle_command, *m_ship_control, std::placeholders::_1 ) );
 }
 
 }
