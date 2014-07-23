@@ -73,5 +73,35 @@ class Engine : public ObjectBehavior
   private:
     std::unique_ptr< ShipControl > m_ship_control;
 };
+
+
+class SerializePhysicalParameter
+{
+  public:
+    add_ctci( "serialize" );
+    typedef std::vector< Data > SerializedDataBuffer;
+
+    SerializePhysicalParameter( SerializedDataBuffer& serialized_data_buffer )
+      : data_buffer( serialized_data_buffer )
+    {
+    }
+
+    SerializedDataBuffer& data_buffer;
+};
+
+class PhysicalParameterSerializer : public ObjectBehavior
+{
+  public:
+    PhysicalParameterSerializer();
+
+    virtual void register_to(
+        the::ctci::Dispatcher&,
+        the::ctci::ComponentRegistry& registry ) override;
+
+  private:
+    void handle_serialize( const SerializePhysicalParameter& ) const;
+    LocalPhysicalBehavior* m_local_physical_behavior;
+};
+
 }
 

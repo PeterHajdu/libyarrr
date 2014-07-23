@@ -80,5 +80,29 @@ Engine::register_to(
       std::bind( &ShipControl::handle_command, *m_ship_control, std::placeholders::_1 ) );
 }
 
+PhysicalParameterSerializer::PhysicalParameterSerializer()
+  : m_local_physical_behavior( nullptr )
+{
+}
+
+
+void
+PhysicalParameterSerializer::register_to(
+    the::ctci::Dispatcher& dispatcher,
+    the::ctci::ComponentRegistry& registry )
+{
+  m_local_physical_behavior = &registry.component< LocalPhysicalBehavior >();
+  dispatcher.register_listener< yarrr::SerializePhysicalParameter  >( std::bind(
+        &PhysicalParameterSerializer::handle_serialize, this, std::placeholders::_1 ) );
+}
+
+void
+PhysicalParameterSerializer::handle_serialize( const SerializePhysicalParameter& serialize ) const
+{
+  assert( m_local_physical_behavior );
+  serialize.data_buffer.push_back(
+      ObjectStateUpdate( m_local_physical_behavior->physical_parameters ).serialize() );
+}
+
 }
 

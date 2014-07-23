@@ -3,6 +3,7 @@
 #include <yarrr/object_state_update.hpp>
 #include <yarrr/command.hpp>
 #include <yarrr/ship_control.hpp>
+#include <yarrr/event_factory.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <igloo/igloo_alt.h>
@@ -124,5 +125,38 @@ Describe( an_engine )
 
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+};
+
+Describe( a_physical_parameter_serializer )
+{
+
+  void SetUp()
+  {
+    test_dispatcher.reset( new the::ctci::Dispatcher() );
+    test_registry.reset( new the::ctci::ComponentRegistry() );
+
+    local_physical_behavior.register_to( *test_dispatcher, *test_registry );
+    serializer.register_to( *test_dispatcher, *test_registry );
+  }
+
+  It( serializes_local_physical_parameters )
+  {
+    std::vector< yarrr::Data > serialized_physical_parameters;
+    test_dispatcher->dispatch( yarrr::SerializePhysicalParameter( serialized_physical_parameters ) );
+    AssertThat( serialized_physical_parameters.empty(), Equals( false ) );
+
+    yarrr::Event::Pointer event( yarrr::EventFactory::create( serialized_physical_parameters.back() ) );
+    AssertThat( event.get()!=nullptr, Equals( true ) );
+
+    yarrr::ObjectStateUpdate& object_update( static_cast< yarrr::ObjectStateUpdate& >( *event ) );
+    AssertThat( object_update.physical_parameters(), Equals( local_physical_behavior.physical_parameters ) );
+  }
+
+  yarrr::LocalPhysicalBehavior local_physical_behavior;
+  yarrr::PhysicalParameterSerializer serializer;
+
+  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
+  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+
 };
 
