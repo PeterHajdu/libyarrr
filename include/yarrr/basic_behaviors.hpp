@@ -1,6 +1,7 @@
 #pragma once
 #include <yarrr/object.hpp>
 #include <yarrr/physical_parameters.hpp>
+#include <yarrr/ship_control.hpp>
 #include <thectci/id.hpp>
 #include <thetime/clock.hpp>
 
