@@ -18,7 +18,7 @@ class ObjectBehavior
     virtual void register_to( the::ctci::Dispatcher&, the::ctci::ComponentRegistry& ) = 0;
 };
 
-class Object
+class Object final
 {
   public:
     typedef std::unique_ptr<Object> Pointer;
