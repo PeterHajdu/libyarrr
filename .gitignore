@@ -1,4 +1,5 @@
 src/libyarrr.a
+src/libyarrrgraphics.a
 test/test_runner
 test/valgrind.log
 
