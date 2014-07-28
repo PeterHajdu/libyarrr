@@ -1,6 +1,7 @@
 #pragma once
 
 #include <yarrr/types.hpp>
+#include <thectci/id.hpp>
 
 namespace yarrr
 {
@@ -21,6 +22,7 @@ class GraphicalObject
 class GraphicalEngine
 {
   public:
+    add_polymorphic_ctci( "yarrr_graphical_engine" );
     virtual void draw_ship( const PhysicalParameters& ) = 0;
     virtual void focus_to( const yarrr::Coordinate& ) = 0;
     virtual ~GraphicalEngine() = default;
