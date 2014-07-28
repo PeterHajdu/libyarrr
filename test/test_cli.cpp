@@ -20,7 +20,7 @@ Describe(a_cli)
     test_dispatcher->register_listener< yarrr::ChatMessage >(
         [ this ]( const yarrr::ChatMessage& chat_message )
         {
-          last_chat_message_dispatched = chat_message.message;
+          last_chat_message_dispatched = chat_message.message();
         } );
 
     test_cli->register_dispatcher( *test_dispatcher );

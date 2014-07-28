@@ -5,6 +5,7 @@ set(SOURCE_FILES
   event.cpp
   object_state_update.cpp
   command.cpp
+  chat_message.cpp
   ship_control.cpp
   event_factory.cpp
   delete_object.cpp

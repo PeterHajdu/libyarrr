@@ -7,7 +7,7 @@ namespace yarrr
 {
 
 class Cli :
-  GraphicalObject,
+  public GraphicalObject,
   public the::ctci::Multiplexer
 {
   public:
