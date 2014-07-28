@@ -10,6 +10,7 @@ namespace
   {
     public:
       virtual void draw_ship( const yarrr::PhysicalParameters& ) override {}
+      virtual void print_text( uint16_t x, uint16_t y, const std::string& ) override {}
       virtual void focus_to( const yarrr::Coordinate& ) override {}
       virtual void update_screen() override {}
   };
@@ -39,17 +40,6 @@ Describe(a_graphical_engine)
   void SetUp()
   {
     test_engine.reset( new TestGraphicalEngine );
-  }
-
-  It( can_draw_ships )
-  {
-    yarrr::PhysicalParameters ship_parameters;
-    test_engine->draw_ship( ship_parameters );
-  }
-
-  It( can_focus_to_a_coordinate )
-  {
-    test_engine->focus_to( { 100, 100 } );
   }
 
   It( draws_registered_objects_when_screen_is_updated )
