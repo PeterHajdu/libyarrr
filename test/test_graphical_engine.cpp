@@ -11,6 +11,7 @@ namespace
     public:
       virtual void draw_ship( const yarrr::PhysicalParameters& ) override {}
       virtual void focus_to( const yarrr::Coordinate& ) override {}
+      virtual void update_screen() override {}
   };
 
   class TestGraphicalObject : public yarrr::GraphicalObject

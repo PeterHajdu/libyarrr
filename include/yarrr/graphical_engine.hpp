@@ -26,6 +26,7 @@ class GraphicalEngine
     virtual void draw_ship( const PhysicalParameters& ) = 0;
     virtual void focus_to( const yarrr::Coordinate& ) = 0;
     virtual ~GraphicalEngine() = default;
+    virtual void update_screen() = 0;
 
     void draw_objects() const;
 
