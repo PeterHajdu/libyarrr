@@ -1,20 +1,11 @@
-#include <yarrr/graphical_engine.hpp>
 #include <yarrr/physical_parameters.hpp>
+#include "test_graphical_engine.hpp"
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
 
 namespace
 {
-  class TestGraphicalEngine : public yarrr::GraphicalEngine
-  {
-    public:
-      virtual void draw_ship( const yarrr::PhysicalParameters& ) override {}
-      virtual void print_text( uint16_t x, uint16_t y, const std::string&, const yarrr::Colour& ) {}
-      virtual void focus_to( const yarrr::Coordinate& ) override {}
-      virtual void update_screen() override {}
-  };
-
   class TestGraphicalObject : public yarrr::GraphicalObject
   {
     public:
@@ -39,7 +30,7 @@ Describe(a_graphical_engine)
 {
   void SetUp()
   {
-    test_engine.reset( new TestGraphicalEngine );
+    test_engine.reset( new test::GraphicalEngine() );
   }
 
   It( draws_registered_objects_when_screen_is_updated )
