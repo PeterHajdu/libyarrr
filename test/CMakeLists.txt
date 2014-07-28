@@ -22,6 +22,7 @@ set(TEST_SOURCE_FILES
     test_connection_wrapper.cpp
     test_basic_behaviors.cpp
     test_graphical_engine.cpp
+    test_cli.cpp
     )
 
 

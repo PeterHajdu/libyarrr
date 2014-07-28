@@ -18,6 +18,7 @@ install(TARGETS yarrr DESTINATION lib)
 
 set(GRAPHIC_SOURCE_FILES
   graphical_engine.cpp
+  cli.cpp
   )
 
 add_library(yarrrgraphics STATIC ${GRAPHIC_SOURCE_FILES})
