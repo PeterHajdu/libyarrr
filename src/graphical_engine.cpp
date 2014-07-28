@@ -1,5 +1,6 @@
 #include <yarrr/graphical_engine.hpp>
-
+#include <algorithm>
+#include <functional>
 
 namespace yarrr
 {
