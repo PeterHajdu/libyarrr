@@ -19,12 +19,21 @@ class GraphicalObject
     GraphicalEngine& m_graphical_engine;
 };
 
+class Colour
+{
+  public:
+    uint8_t red;
+    uint8_t green;
+    uint8_t blue;
+    uint8_t alpha;
+};
+
 class GraphicalEngine
 {
   public:
     add_polymorphic_ctci( "yarrr_graphical_engine" );
     virtual void draw_ship( const PhysicalParameters& ) = 0;
-    virtual void print_text( uint16_t x, uint16_t y, const std::string& ) = 0;
+    virtual void print_text( uint16_t x, uint16_t y, const std::string&, const Colour& ) = 0;
     virtual void focus_to( const yarrr::Coordinate& ) = 0;
     virtual ~GraphicalEngine() = default;
     virtual void update_screen() = 0;
