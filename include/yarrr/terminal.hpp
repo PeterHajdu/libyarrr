@@ -3,26 +3,17 @@
 #include <yarrr/graphical_engine.hpp>
 #include <vector>
 #include <string>
-
-namespace the
-{
-namespace ctci
-{
-
-class Dispatcher;
-
-}
-}
+#include <thectci/dispatcher.hpp>
 
 namespace yarrr
 {
 
 class ChatMessage;
 
-class Terminal : public GraphicalObject
+class Terminal : public GraphicalObject, public the::ctci::Dispatcher
 {
   public:
-    Terminal( GraphicalEngine&, the::ctci::Dispatcher&, size_t number_of_messages );
+    Terminal( GraphicalEngine&, size_t number_of_messages );
     virtual void draw() const override;
 
   private:

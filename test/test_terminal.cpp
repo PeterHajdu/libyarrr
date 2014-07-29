@@ -12,14 +12,13 @@ Describe(a_terminal)
   void SetUp()
   {
     test_engine.reset( new test::GraphicalEngine() );
-    test_dispatcher.reset( new the::ctci::Dispatcher() );
-    test_terminal.reset( new yarrr::Terminal( *test_engine, *test_dispatcher, n ) );
+    test_terminal.reset( new yarrr::Terminal( *test_engine, n ) );
     test_engine->printed_texts.clear();
   }
 
   It( prints_out_chat_messages )
   {
-    test_dispatcher->dispatch( test_chat_message );
+    test_terminal->dispatch( test_chat_message );
     test_engine->draw_objects();
     AssertThat( test_engine->printed_texts, Contains( test_chat_message.message() ) );
   }
@@ -28,10 +27,10 @@ Describe(a_terminal)
   {
     for ( int i( 0 ); i < n + 1; ++i )
     {
-      test_dispatcher->dispatch( test_chat_message );
+      test_terminal->dispatch( test_chat_message );
     }
     const yarrr::ChatMessage last_message( "last message", "" );
-    test_dispatcher->dispatch( last_message );
+    test_terminal->dispatch( last_message );
     test_engine->draw_objects();
 
     AssertThat( test_engine->printed_texts, Has().Exactly( n - 1 ).EqualTo( test_chat_message.message() ) );
@@ -41,7 +40,6 @@ Describe(a_terminal)
   const int n{ 3 };
   const yarrr::ChatMessage test_chat_message{ "a test message", "" };
   std::unique_ptr< test::GraphicalEngine > test_engine;
-  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< yarrr::Terminal > test_terminal;
 };
 

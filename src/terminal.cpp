@@ -1,6 +1,5 @@
 #include <yarrr/terminal.hpp>
 #include <yarrr/chat_message.hpp>
-#include <thectci/dispatcher.hpp>
 #include <algorithm>
 
 namespace yarrr
@@ -8,12 +7,11 @@ namespace yarrr
 
 Terminal::Terminal(
     GraphicalEngine& engine,
-    the::ctci::Dispatcher& dispatcher,
     size_t number_of_messages )
   : GraphicalObject( engine )
   , m_number_of_shown_messages( number_of_messages )
 {
-  dispatcher.register_listener< yarrr::ChatMessage >(
+  register_listener< yarrr::ChatMessage >(
       std::bind( &Terminal::handle_chat_message, this, std::placeholders::_1 ) );
 }
 
