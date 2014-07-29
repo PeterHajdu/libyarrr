@@ -18,7 +18,7 @@ Terminal::Terminal(
 void
 Terminal::handle_chat_message( const ChatMessage& message )
 {
-  m_messages.push_back( message.message() );
+  m_messages.push_back( message.sender() + ": " + message.message() );
 }
 
 void

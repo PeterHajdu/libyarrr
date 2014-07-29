@@ -6,6 +6,13 @@
 
 using namespace igloo;
 
+namespace
+{
+  std::string formatted_chat_message( const yarrr::ChatMessage& chat_message )
+  {
+    return chat_message.sender() + ": " + chat_message.message();
+  }
+}
 
 Describe(a_terminal)
 {
@@ -20,7 +27,14 @@ Describe(a_terminal)
   {
     test_terminal->dispatch( test_chat_message );
     test_engine->draw_objects();
-    AssertThat( test_engine->printed_texts, Contains( test_chat_message.message() ) );
+    AssertThat( test_engine->last_printed_text, Contains( test_chat_message.message() ) );
+  }
+
+  It( prints_out_sender_of_chat_message )
+  {
+    test_terminal->dispatch( test_chat_message );
+    test_engine->draw_objects();
+    AssertThat( test_engine->last_printed_text, Contains( test_chat_message.sender() + ":" ) );
   }
 
   It( prints_out_only_the_last_n_chat_message )
@@ -33,12 +47,12 @@ Describe(a_terminal)
     test_terminal->dispatch( last_message );
     test_engine->draw_objects();
 
-    AssertThat( test_engine->printed_texts, Has().Exactly( n - 1 ).EqualTo( test_chat_message.message() ) );
-    AssertThat( test_engine->printed_texts.back(), Equals( last_message.message() ) );
+    AssertThat( test_engine->printed_texts, Has().Exactly( n - 1 ).EqualTo( formatted_chat_message( test_chat_message ) ) );
+    AssertThat( test_engine->printed_texts.back(), Equals( formatted_chat_message( last_message ) ) );
   }
 
   const int n{ 3 };
-  const yarrr::ChatMessage test_chat_message{ "a test message", "" };
+  const yarrr::ChatMessage test_chat_message{ "a test message", "Kilgore Trout" };
   std::unique_ptr< test::GraphicalEngine > test_engine;
   std::unique_ptr< yarrr::Terminal > test_terminal;
 };
