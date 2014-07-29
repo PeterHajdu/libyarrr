@@ -1,10 +1,7 @@
 #include <yarrr/cli.hpp>
 #include <yarrr/chat_message.hpp>
 
-namespace
-{
-  const std::string default_prompt{ "$ " };
-}
+const std::string yarrr::Cli::m_prompt{ "$ " };
 
 namespace yarrr
 {
@@ -20,34 +17,37 @@ Cli::Cli( int x, int y, GraphicalEngine& graphical_engine )
 void
 Cli::draw() const
 {
-  m_graphical_engine.print_text( m_x, m_y, default_prompt + m_prompt, { 255, 255, 255, 255 } );
+  m_graphical_engine.print_text(
+      m_x, m_y,
+      m_prompt + m_text,
+      { 255, 255, 255, 255 } );
 }
 
 
 void
 Cli::append( const std::string& text )
 {
-  m_prompt += text;
+  m_text += text;
 }
 
 
 void
 Cli::backspace()
 {
-  m_prompt.pop_back();
+  m_text.pop_back();
 }
 
 
 void
 Cli::finalize()
 {
-  if ( m_prompt.empty() )
+  if ( m_text.empty() )
   {
     return;
   }
 
-  dispatch( ChatMessage( m_prompt ) );
-  m_prompt.clear();
+  dispatch( ChatMessage( m_text ) );
+  m_text.clear();
 }
 
 }

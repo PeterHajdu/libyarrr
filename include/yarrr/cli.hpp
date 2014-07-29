@@ -19,9 +19,11 @@ class Cli :
     void finalize();
 
   private:
-    std::string m_prompt;
+    std::string m_text;
     const int m_x;
     const int m_y;
+
+    static const std::string m_prompt;
 };
 
 }
