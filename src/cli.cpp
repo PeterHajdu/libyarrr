@@ -34,6 +34,11 @@ Cli::append( const std::string& text )
 void
 Cli::backspace()
 {
+  if ( m_text.empty() )
+  {
+    return;
+  }
+
   m_text.pop_back();
 }
 
