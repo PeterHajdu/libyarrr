@@ -9,7 +9,7 @@ namespace yarrr
 Terminal::Terminal(
     GraphicalEngine& engine,
     the::ctci::Dispatcher& dispatcher,
-    int number_of_messages )
+    size_t number_of_messages )
   : GraphicalObject( engine )
   , m_number_of_shown_messages( number_of_messages )
 {
@@ -26,12 +26,17 @@ Terminal::handle_chat_message( const ChatMessage& message )
 void
 Terminal::draw() const
 {
+  //todo: this should be retrieved somehow from graphical engine
   const size_t line_height( 15 );
-  const int length( std::min( int( m_messages.size() ), m_number_of_shown_messages ) );
+  const size_t length( std::min( size_t( m_messages.size() ), m_number_of_shown_messages ) );
 
-  for ( size_t i( m_messages.size() - length ); i < m_messages.size(); ++i )
+  const size_t start_index( m_messages.size() - length );
+  for ( size_t i( 0 ); i < length; ++i )
   {
-    m_graphical_engine.print_text( 0, i * line_height, m_messages[ i ].c_str(), { 255, 255, 255, 255 } );
+    m_graphical_engine.print_text(
+        0, i * line_height,
+        m_messages[ start_index + i ].c_str(),
+        { 255, 255, 255, 255 } );
   }
 }
 
