@@ -41,6 +41,11 @@ Cli::backspace()
 void
 Cli::finalize()
 {
+  if ( m_prompt.empty() )
+  {
+    return;
+  }
+
   dispatch( ChatMessage( m_prompt ) );
   m_prompt.clear();
 }

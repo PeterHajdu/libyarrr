@@ -50,6 +50,13 @@ Describe(a_cli)
     AssertThat( last_chat_message_dispatched, Equals( some_more_text ) );
   }
 
+  It( does_not_dispatch_empty_messages )
+  {
+    test_cli->finalize();
+    test_cli->finalize();
+    AssertThat( last_chat_message_dispatched, Equals( some_more_text ) );
+  }
+
   It( prints_to_the_given_position )
   {
     test_cli->finalize();
