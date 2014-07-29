@@ -26,9 +26,10 @@ Terminal::handle_chat_message( const ChatMessage& message )
 void
 Terminal::draw() const
 {
-  const size_t line_height( 12 );
+  const size_t line_height( 15 );
   const int length( std::min( int( m_messages.size() ), m_number_of_shown_messages ) );
-  for ( int i( m_messages.size() - length ); i < m_messages.size(); ++i )
+
+  for ( size_t i( m_messages.size() - length ); i < m_messages.size(); ++i )
   {
     m_graphical_engine.print_text( 0, i * line_height, m_messages[ i ].c_str(), { 255, 255, 255, 255 } );
   }
