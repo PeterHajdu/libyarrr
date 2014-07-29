@@ -30,9 +30,12 @@ Describe(a_terminal)
     {
       test_dispatcher->dispatch( test_chat_message );
     }
+    const yarrr::ChatMessage last_message( "last message" );
+    test_dispatcher->dispatch( last_message );
     test_engine->draw_objects();
 
-    AssertThat( test_engine->printed_texts, Has().Exactly( n ).EqualTo( test_chat_message.message() ) );
+    AssertThat( test_engine->printed_texts, Has().Exactly( n - 1 ).EqualTo( test_chat_message.message() ) );
+    AssertThat( test_engine->printed_texts.back(), Equals( last_message.message() ) );
   }
 
   const int n{ 3 };
