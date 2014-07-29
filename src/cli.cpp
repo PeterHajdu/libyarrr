@@ -51,7 +51,8 @@ Cli::finalize()
     return;
   }
 
-  dispatch( ChatMessage( m_text ) );
+  //todo: somehow retrieve the sender
+  dispatch( ChatMessage( m_text, "" ) );
   m_text.clear();
 }
 

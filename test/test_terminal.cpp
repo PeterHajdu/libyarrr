@@ -30,7 +30,7 @@ Describe(a_terminal)
     {
       test_dispatcher->dispatch( test_chat_message );
     }
-    const yarrr::ChatMessage last_message( "last message" );
+    const yarrr::ChatMessage last_message( "last message", "" );
     test_dispatcher->dispatch( last_message );
     test_engine->draw_objects();
 
@@ -39,7 +39,7 @@ Describe(a_terminal)
   }
 
   const int n{ 3 };
-  const yarrr::ChatMessage test_chat_message{ "a test message" };
+  const yarrr::ChatMessage test_chat_message{ "a test message", "" };
   std::unique_ptr< test::GraphicalEngine > test_engine;
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< yarrr::Terminal > test_terminal;

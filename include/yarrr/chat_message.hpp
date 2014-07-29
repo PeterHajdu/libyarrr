@@ -15,8 +15,9 @@ class ChatMessage : public Event
 
     ChatMessage();
 
-    ChatMessage( const std::string& message )
+    ChatMessage( const std::string& message, const std::string& sender )
       : m_message( message )
+      , m_sender( sender )
     {
     }
 
@@ -25,17 +26,25 @@ class ChatMessage : public Event
       return m_message;
     }
 
+    const std::string& sender() const
+    {
+      return m_sender;
+    }
+
   private:
     std::string m_message;
+    std::string m_sender;
 
     virtual void do_serialize( Serializer& serializer ) const override
     {
       serializer.push_back( m_message );
+      serializer.push_back( m_sender );
     }
 
     virtual void do_deserialize( Deserializer& deserializer ) override
     {
       m_message = deserializer.pop_front< std::string >();
+      m_sender = deserializer.pop_front< std::string >();
     }
 };
 
