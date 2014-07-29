@@ -15,6 +15,7 @@ class Cli :
     virtual void draw() const override;
 
     void append( const std::string& );
+    void backspace();
     void finalize();
 
   private:

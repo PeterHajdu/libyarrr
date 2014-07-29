@@ -57,6 +57,17 @@ Describe(a_cli)
     AssertThat( test_engine->y_of_printed_text, Equals( y ) );
   }
 
+  It( can_drop_the_last_character )
+  {
+    test_cli->backspace();
+    test_cli->finalize();
+
+    const std::string expected_message(
+        std::begin( some_more_text ),
+        std::end( some_more_text ) - 1 );
+    AssertThat( last_chat_message_dispatched, Equals( expected_message ) );
+  }
+
   const int x{ 300 };
   const int y{ 300 };
 

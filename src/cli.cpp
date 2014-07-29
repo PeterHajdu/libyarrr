@@ -30,6 +30,14 @@ Cli::append( const std::string& text )
   m_prompt += text;
 }
 
+
+void
+Cli::backspace()
+{
+  m_prompt.pop_back();
+}
+
+
 void
 Cli::finalize()
 {
