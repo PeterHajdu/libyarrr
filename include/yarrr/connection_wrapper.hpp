@@ -2,14 +2,14 @@
 
 #include <yarrr/event_factory.hpp>
 #include <yarrr/types.hpp>
-#include <thectci/multiplexer.hpp>
+#include <thectci/dispatcher.hpp>
 #include <memory>
 
 namespace yarrr
 {
 
 template < typename Connection >
-class ConnectionWrapper : public the::ctci::Multiplexer
+class ConnectionWrapper : public the::ctci::Dispatcher
 {
   public:
     typedef std::unique_ptr< ConnectionWrapper > Pointer;

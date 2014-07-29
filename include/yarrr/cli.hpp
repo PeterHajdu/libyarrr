@@ -1,14 +1,14 @@
 #pragma once
 
 #include <yarrr/graphical_engine.hpp>
-#include <thectci/multiplexer.hpp>
+#include <thectci/dispatcher.hpp>
 
 namespace yarrr
 {
 
 class Cli :
   public GraphicalObject,
-  public the::ctci::Multiplexer
+  public the::ctci::Dispatcher
 {
   public:
     Cli( int x, int y, GraphicalEngine& );
