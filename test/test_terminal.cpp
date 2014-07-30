@@ -43,10 +43,19 @@ Describe(a_terminal)
 
   void assert_drew_messages_between( size_t begin, size_t end )
   {
-    AssertThat( test_engine->printed_texts, !Contains( formatted_chat_message( chat_messages[ begin - 1 ] ) ) );
+    if ( begin > 0 )
+    {
+      AssertThat( test_engine->printed_texts, !Contains( formatted_chat_message( chat_messages[ begin - 1 ] ) ) );
+    }
+
     for ( size_t i{ begin }; i < end; ++i )
     {
       AssertThat( test_engine->printed_texts, Has().Exactly( 1 ).EqualTo( formatted_chat_message( chat_messages[ i ] ) ) );
+    }
+
+    if ( end < chat_messages.size() - 1 )
+    {
+      AssertThat( test_engine->printed_texts, !Contains( formatted_chat_message( chat_messages[ end + 1 ] ) ) );
     }
   }
 
