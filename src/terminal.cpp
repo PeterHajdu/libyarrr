@@ -1,6 +1,20 @@
 #include <yarrr/terminal.hpp>
 #include <yarrr/chat_message.hpp>
 #include <algorithm>
+#include <thectci/hash.hpp>
+
+namespace
+{
+  yarrr::Colour colorize( const std::string& text )
+  {
+    uint32_t hash( the::ctci::hash( text.c_str() ) );
+    return {
+      static_cast<uint8_t>( hash ),
+      static_cast<uint8_t>( hash >> 8 ),
+      static_cast<uint8_t>( hash >> 16 ),
+      255u };
+  }
+}
 
 namespace yarrr
 {
@@ -19,7 +33,7 @@ void
 Terminal::handle_chat_message( const ChatMessage& message )
 {
   m_messages.push_back( {
-        { message.sender() + ": ", { 0, 255, 0, 255 } },
+        { message.sender() + ": ", colorize( message.sender() ) },
         { message.message(), { 255, 255, 255, 255 } } } );
 }
 
