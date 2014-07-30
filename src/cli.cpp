@@ -1,5 +1,6 @@
 #include <yarrr/cli.hpp>
 #include <yarrr/chat_message.hpp>
+#include <theconf/configuration.hpp>
 
 const std::string yarrr::Cli::m_prompt{ "$ " };
 
@@ -52,7 +53,7 @@ Cli::finalize()
   }
 
   //todo: somehow retrieve the sender
-  dispatch( ChatMessage( m_text, "" ) );
+  dispatch( ChatMessage( m_text, the::conf::get_value( "login_name" ) ) );
   m_text.clear();
 }
 
