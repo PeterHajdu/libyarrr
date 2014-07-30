@@ -11,6 +11,7 @@ set(SOURCE_FILES
   delete_object.cpp
   object.cpp
   basic_behaviors.cpp
+  stream_to_chat.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
