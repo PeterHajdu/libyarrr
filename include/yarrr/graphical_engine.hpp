@@ -28,12 +28,22 @@ class Colour
     uint8_t alpha;
 };
 
+class TextToken
+{
+  public:
+    const std::string text;
+    const Colour colour;
+};
+
+typedef std::vector< TextToken > TextTokens;
+
 class GraphicalEngine
 {
   public:
     add_polymorphic_ctci( "yarrr_graphical_engine" );
     virtual void draw_ship( const PhysicalParameters& ) = 0;
     virtual void print_text( uint16_t x, uint16_t y, const std::string&, const Colour& ) = 0;
+    virtual void print_text_tokens( uint16_t x, uint16_t y, const TextTokens& ) = 0;
     virtual void focus_to( const yarrr::Coordinate& ) = 0;
     virtual ~GraphicalEngine() = default;
     virtual void update_screen() = 0;

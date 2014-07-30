@@ -18,7 +18,9 @@ Terminal::Terminal(
 void
 Terminal::handle_chat_message( const ChatMessage& message )
 {
-  m_messages.push_back( message.sender() + ": " + message.message() );
+  m_messages.push_back( {
+        { message.sender() + ": ", { 0, 255, 0, 255 } },
+        { message.message(), { 255, 255, 255, 255 } } } );
 }
 
 void
@@ -31,10 +33,9 @@ Terminal::draw() const
   const size_t start_index( m_messages.size() - length );
   for ( size_t i( 0 ); i < length; ++i )
   {
-    m_graphical_engine.print_text(
+    m_graphical_engine.print_text_tokens(
         0, i * line_height,
-        m_messages[ start_index + i ].c_str(),
-        { 255, 255, 255, 255 } );
+        m_messages[ start_index + i ] );
   }
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <yarrr/graphical_engine.hpp>
+#include <numeric>
 
 namespace test
 {
@@ -24,6 +25,16 @@ class GraphicalEngine : public yarrr::GraphicalEngine
       x_of_printed_text = x;
       y_of_printed_text = y;
       printed_texts.push_back( text );
+    }
+
+    virtual void print_text_tokens( uint16_t x, uint16_t y, const yarrr::TextTokens& tokens ) override
+    {
+      std::string accumulated_text;
+      for ( const auto& token : tokens )
+      {
+        accumulated_text += token.text;
+      }
+      print_text( x, y, accumulated_text, { 255, 255, 255, 255 } );
     }
 
     virtual void focus_to( const yarrr::Coordinate& ) override {}

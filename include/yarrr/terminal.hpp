@@ -18,7 +18,7 @@ class Terminal : public GraphicalObject, public the::ctci::Dispatcher
 
   private:
     void handle_chat_message( const ChatMessage& );
-    std::vector< std::string > m_messages;
+    std::vector< TextTokens > m_messages;
     const size_t m_number_of_shown_messages;
 };
 
