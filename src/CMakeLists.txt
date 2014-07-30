@@ -25,6 +25,6 @@ set(GRAPHIC_SOURCE_FILES
   )
 
 add_library(yarrrgraphics STATIC ${GRAPHIC_SOURCE_FILES})
-target_link_libraries(yarrrgraphics theconf ${LIBS})
+target_link_libraries(yarrrgraphics ${LIBS})
 install(TARGETS yarrrgraphics DESTINATION lib)
 
