@@ -13,13 +13,20 @@ class ChatMessage;
 class Terminal : public GraphicalObject, public the::ctci::Dispatcher
 {
   public:
-    Terminal( GraphicalEngine&, size_t number_of_messages );
+    Terminal( GraphicalEngine&, int number_of_messages );
     virtual void draw() const override;
+
+    void scroll_up();
+    void scroll_down();
 
   private:
     void handle_chat_message( const ChatMessage& );
+    void normalize_first_index();
+
     std::vector< TextTokens > m_messages;
-    const size_t m_number_of_shown_messages;
+    const int m_number_of_shown_messages;
+    const int m_lines_to_scroll;
+    int m_first_message_index;
 };
 
 }

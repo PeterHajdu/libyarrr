@@ -21,9 +21,11 @@ namespace yarrr
 
 Terminal::Terminal(
     GraphicalEngine& engine,
-    size_t number_of_messages )
+    int number_of_messages )
   : GraphicalObject( engine )
   , m_number_of_shown_messages( number_of_messages )
+  , m_lines_to_scroll( number_of_messages / 2 )
+  , m_first_message_index( 0 )
 {
   register_listener< yarrr::ChatMessage >(
       std::bind( &Terminal::handle_chat_message, this, std::placeholders::_1 ) );
@@ -35,22 +37,46 @@ Terminal::handle_chat_message( const ChatMessage& message )
   m_messages.push_back( {
         { message.sender() + ": ", colorize( message.sender() ) },
         { message.message(), { 255, 255, 255, 255 } } } );
+
+  m_first_message_index = int( m_messages.size() ) - m_number_of_shown_messages;
+  normalize_first_index();
 }
 
 void
 Terminal::draw() const
 {
   //todo: this should be retrieved somehow from graphical engine
-  const size_t line_height( 15 );
-  const size_t length( std::min( size_t( m_messages.size() ), m_number_of_shown_messages ) );
+  const int line_height( 15 );
+  const int length( std::min( int( m_messages.size() ), m_number_of_shown_messages ) );
 
-  const size_t start_index( m_messages.size() - length );
-  for ( size_t i( 0 ); i < length; ++i )
+  for ( int i( 0 ); i < length; ++i )
   {
     m_graphical_engine.print_text_tokens(
         0, i * line_height,
-        m_messages[ start_index + i ] );
+        m_messages[ m_first_message_index + i ] );
   }
+}
+
+
+void
+Terminal::scroll_up()
+{
+  m_first_message_index -= m_lines_to_scroll;
+  normalize_first_index();
+}
+
+void
+Terminal::scroll_down()
+{
+  m_first_message_index += m_lines_to_scroll;
+  normalize_first_index();
+}
+
+void
+Terminal::normalize_first_index()
+{
+  m_first_message_index = std::min( m_first_message_index, int( m_messages.size() ) - m_number_of_shown_messages );
+  m_first_message_index = std::max( 0, m_first_message_index );
 }
 
 }
