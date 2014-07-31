@@ -22,6 +22,7 @@ class ObjectBehavior
 class Object final : public the::ctci::Dispatcher
 {
   public:
+    typedef uint64_t Id;
     typedef std::unique_ptr<Object> Pointer;
     void add_behavior( ObjectBehavior::Pointer&& behavior );
 

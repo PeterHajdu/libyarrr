@@ -10,6 +10,7 @@ set(SOURCE_FILES
   event_factory.cpp
   delete_object.cpp
   object.cpp
+  object_container.cpp
   basic_behaviors.cpp
   stream_to_chat.cpp
     )
