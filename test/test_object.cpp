@@ -96,8 +96,8 @@ Describe(an_object)
 
   It( can_be_constructed_with_a_specific_id )
   {
-    yarrr::Object one_object( 123 );
-    AssertThat( one_object.id, Equals( 123 ) );
+    yarrr::Object one_object( 123u );
+    AssertThat( one_object.id, Equals( 123u ) );
   }
 
   yarrr::Object::Pointer test_object;
