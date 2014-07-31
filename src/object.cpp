@@ -1,4 +1,5 @@
 #include <yarrr/object.hpp>
+#include <yarrr/bitmagic.hpp>
 
 namespace yarrr
 {
@@ -28,6 +29,16 @@ Object::generate_update() const
 
 ObjectUpdate::ObjectUpdate( const Object::Id& id )
   : id( id )
+{
+}
+
+void
+ObjectUpdate::do_serialize( Serializer& serializer ) const
+{
+}
+
+void
+ObjectUpdate::do_deserialize( Deserializer& deserializer )
 {
 }
 

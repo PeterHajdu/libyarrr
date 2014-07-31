@@ -1,4 +1,5 @@
 #include <yarrr/object.hpp>
+#include <yarrr/entity.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <igloo/igloo_alt.h>
@@ -123,6 +124,13 @@ Describe( an_object_update )
   {
     yarrr::ObjectUpdate object_update( test_object->generate_update() );
     AssertThat( object_update.id, Equals( test_object->id ) );
+  }
+
+  It( is_an_entity )
+  {
+    yarrr::ObjectUpdate object_update( test_object->generate_update() );
+    yarrr::Entity& entity( object_update );
+    (void)entity;
   }
 
   yarrr::Object::Pointer test_object;

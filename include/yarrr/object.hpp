@@ -1,5 +1,7 @@
 #pragma once
 
+#include <yarrr/entity.hpp>
+
 #include <thectci/dispatcher.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
@@ -40,11 +42,16 @@ class Object final : public the::ctci::Dispatcher
     std::vector< ObjectBehavior::Pointer > m_behaviors;
 };
 
-class ObjectUpdate
+class ObjectUpdate : public Entity
 {
   public:
+    add_polymorphic_ctci( "yarrr_object_update" );
     ObjectUpdate( const Object::Id& );
     const Object::Id id;
+
+  private:
+    virtual void do_serialize( Serializer& serializer ) const;
+    virtual void do_deserialize( Deserializer& deserializer );
 };
 
 }
