@@ -24,6 +24,11 @@ class Object final : public the::ctci::Dispatcher
   public:
     typedef uint64_t Id;
     typedef std::unique_ptr<Object> Pointer;
+
+    Object();
+    Object( const Id& id );
+    const Id id;
+
     void add_behavior( ObjectBehavior::Pointer&& behavior );
 
   private:

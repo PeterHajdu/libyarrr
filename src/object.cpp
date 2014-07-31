@@ -3,6 +3,16 @@
 namespace yarrr
 {
 
+Object::Object()
+  : id( Id( this ) )
+{
+}
+
+Object::Object( const Id& id )
+  : id( id )
+{
+}
+
 void
 Object::add_behavior( ObjectBehavior::Pointer&& behavior )
 {

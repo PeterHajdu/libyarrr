@@ -88,6 +88,18 @@ Describe(an_object)
     AssertThat( test_behavior->dispatched_child_event, Equals( test_event.get() ) );
   }
 
+  It( is_identified_by_its_pointer_if_default_constructed )
+  {
+    yarrr::Object one_object;
+    AssertThat( one_object.id, Equals( yarrr::Object::Id( &one_object ) ) );
+  }
+
+  It( can_be_constructed_with_a_specific_id )
+  {
+    yarrr::Object one_object( 123 );
+    AssertThat( one_object.id, Equals( 123 ) );
+  }
+
   yarrr::Object::Pointer test_object;
   TestBehavior* test_behavior;
 };
