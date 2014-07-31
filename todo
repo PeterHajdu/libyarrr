@@ -1,2 +1,4 @@
 replace test connection template parameter with the::net::connection and test connection wrapper for testing
+add layer support to graphical engine
+add show/hide support to graphical objects
 
