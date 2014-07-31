@@ -16,7 +16,8 @@ class Command : public Event
     {
       thruster = 1,
       cw = 2,
-      ccw = 3
+      ccw = 3,
+      fire = 4
     };
 
     add_polymorphic_ctci( "command" );
