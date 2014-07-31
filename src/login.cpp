@@ -1,6 +1,6 @@
 #include <yarrr/login.hpp>
 #include <yarrr/bitmagic.hpp>
-#include <yarrr/physical_parameters.hpp>
+#include <yarrr/object.hpp>
 #include <yarrr/entity_factory.hpp>
 
 namespace
@@ -35,12 +35,12 @@ LoginRequest::do_deserialize( Deserializer& deserializer )
   m_login_id = deserializer.pop_front<std::string>();
 }
 
-LoginResponse::LoginResponse( const yarrr::PhysicalParameters::Id& object_id )
+LoginResponse::LoginResponse( const Object::Id& object_id )
   : m_object_id( object_id )
 {
 }
 
-const yarrr::PhysicalParameters::Id&
+const Object::Id&
 LoginResponse::object_id() const
 {
   return m_object_id;
@@ -55,7 +55,7 @@ LoginResponse::do_serialize( Serializer& serializer ) const
 void
 LoginResponse::do_deserialize( Deserializer& deserializer )
 {
-  m_object_id = deserializer.pop_front<PhysicalParameters::Id>();
+  m_object_id = deserializer.pop_front<Object::Id>();
 }
 
 }

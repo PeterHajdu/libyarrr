@@ -10,7 +10,7 @@ namespace
 namespace yarrr
 {
 
-DeleteObject::DeleteObject( const PhysicalParameters::Id& id )
+DeleteObject::DeleteObject( const Object::Id& id )
   : m_object_id( id )
 {
 }
@@ -24,10 +24,10 @@ DeleteObject::do_serialize( Serializer& serializer ) const
 void
 DeleteObject::do_deserialize( Deserializer& deserializer )
 {
-  m_object_id = deserializer.pop_front<PhysicalParameters::Id>();
+  m_object_id = deserializer.pop_front<Object::Id>();
 }
 
-const PhysicalParameters::Id&
+const Object::Id&
 DeleteObject::object_id() const
 {
   return m_object_id;

@@ -1,7 +1,7 @@
 #include <yarrr/delete_object.hpp>
 #include <thectci/id.hpp>
 #include <yarrr/entity_factory.hpp>
-#include <yarrr/physical_parameters.hpp>
+#include <yarrr/object.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
@@ -23,6 +23,6 @@ Describe(delete_object)
     AssertThat( deserialized_delete_object.object_id(), Equals( delete_object.object_id() ) );
   }
 
-  const yarrr::PhysicalParameters::Id object_id{ 246 };
+  const yarrr::Object::Id object_id{ 246 };
 };
 

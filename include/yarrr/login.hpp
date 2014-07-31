@@ -2,7 +2,7 @@
 
 #include <thectci/id.hpp>
 #include <yarrr/types.hpp>
-#include <yarrr/physical_parameters.hpp>
+#include <yarrr/object.hpp>
 #include <yarrr/entity.hpp>
 
 #include <string>
@@ -31,13 +31,13 @@ class LoginResponse : public Entity
     add_polymorphic_ctci( "login_response" );
 
     LoginResponse() = default;
-    LoginResponse( const yarrr::PhysicalParameters::Id& object_id );
-    const yarrr::PhysicalParameters::Id& object_id() const;
+    LoginResponse( const Object::Id& object_id );
+    const Object::Id& object_id() const;
   private:
     virtual void do_serialize( Serializer& serializer ) const override;
     virtual void do_deserialize( Deserializer& deserializer ) override;
 
-    yarrr::PhysicalParameters::Id m_object_id;
+    Object::Id m_object_id;
 };
 
 }

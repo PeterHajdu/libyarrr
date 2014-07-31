@@ -7,7 +7,6 @@ namespace yarrr
 std::ostream& operator<<( std::ostream& output, const PhysicalParameters& physical_parameters )
 {
   output << "physical_parameters "
-    << physical_parameters.id << " "
     << physical_parameters.coordinate.x << " "
     << physical_parameters.coordinate.y << " "
     << physical_parameters.velocity.x << " "

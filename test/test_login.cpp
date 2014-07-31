@@ -1,5 +1,5 @@
 #include <yarrr/login.hpp>
-#include <yarrr/physical_parameters.hpp>
+#include <yarrr/object.hpp>
 #include <yarrr/entity_factory.hpp>
 #include <thectci/id.hpp>
 #include <igloo/igloo_alt.h>
@@ -69,5 +69,5 @@ Describe(a_login_response)
     AssertThat( deserialized_request.object_id(), Equals( login_response.object_id() ) );
   }
 
-  const yarrr::PhysicalParameters::Id object_id{ 123 };
+  const yarrr::Object::Id object_id{ 123 };
 };
