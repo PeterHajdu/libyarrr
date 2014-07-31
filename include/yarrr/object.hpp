@@ -19,6 +19,8 @@ class ObjectBehavior
     virtual void register_to( the::ctci::Dispatcher&, the::ctci::ComponentRegistry& ) = 0;
 };
 
+class ObjectUpdate;
+
 class Object final : public the::ctci::Dispatcher
 {
   public:
@@ -31,9 +33,18 @@ class Object final : public the::ctci::Dispatcher
 
     void add_behavior( ObjectBehavior::Pointer&& behavior );
 
+    ObjectUpdate generate_update() const;
+
   private:
     the::ctci::ComponentRegistry m_components;
     std::vector< ObjectBehavior::Pointer > m_behaviors;
+};
+
+class ObjectUpdate
+{
+  public:
+    ObjectUpdate( const Object::Id& );
+    const Object::Id id;
 };
 
 }

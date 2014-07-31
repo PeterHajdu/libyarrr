@@ -104,3 +104,28 @@ Describe(an_object)
   TestBehavior* test_behavior;
 };
 
+Describe( an_object_update )
+{
+  void SetUp()
+  {
+    test_object.reset( new yarrr::Object() );
+    test_behavior = new TestBehavior();
+    test_object->add_behavior( yarrr::ObjectBehavior::Pointer( test_behavior ) );
+  }
+
+  It( is_generated_by_an_object )
+  {
+    yarrr::ObjectUpdate object_update( test_object->generate_update() );
+    (void)object_update;
+  }
+
+  It( has_the_same_id_as_the_object )
+  {
+    yarrr::ObjectUpdate object_update( test_object->generate_update() );
+    AssertThat( object_update.id, Equals( test_object->id ) );
+  }
+
+  yarrr::Object::Pointer test_object;
+  TestBehavior* test_behavior;
+};
+

@@ -20,5 +20,16 @@ Object::add_behavior( ObjectBehavior::Pointer&& behavior )
   m_behaviors.emplace_back( std::move( behavior ) );
 }
 
+ObjectUpdate
+Object::generate_update() const
+{
+  return ObjectUpdate( id );
+}
+
+ObjectUpdate::ObjectUpdate( const Object::Id& id )
+  : id( id )
+{
+}
+
 }
 
