@@ -52,7 +52,6 @@ Cli::finalize()
     return;
   }
 
-  //todo: somehow retrieve the sender
   dispatch( ChatMessage( m_text, the::conf::get_value( "login_name" ) ) );
   m_text.clear();
 }
