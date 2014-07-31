@@ -119,6 +119,11 @@ Describe(an_object_container)
     AssertThat( dispatched_events, Has().Exactly( 1 ).EqualTo( &test_event ) );
   }
 
+  It( can_tell_the_number_of_owned_objects )
+  {
+    AssertThat( test_container->size(), Equals( 2u ) );
+  }
+
   Event test_event;
   std::vector< yarrr::Object::Id > deleted_objects;
   std::vector< const Event* > dispatched_events;

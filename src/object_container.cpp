@@ -33,7 +33,7 @@ ObjectContainer::has_object_with_id( Object::Id id ) const
 }
 
 
-const yarrr::Object&
+const Object&
 ObjectContainer::object_with_id( Object::Id id ) const
 {
   Objects::const_iterator object( m_objects.find( id ) );
@@ -41,6 +41,11 @@ ObjectContainer::object_with_id( Object::Id id ) const
   return *object->second;
 }
 
+size_t
+ObjectContainer::size() const
+{
+  return m_objects.size();
+}
 
 }
 

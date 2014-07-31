@@ -2,6 +2,7 @@
 #include <yarrr/object_state_update.hpp>
 #include <yarrr/command.hpp>
 #include <yarrr/ship_control.hpp>
+#include <yarrr/object_container.hpp>
 
 namespace yarrr
 {
@@ -102,6 +103,35 @@ PhysicalParameterSerializer::handle_serialize( const SerializePhysicalParameter&
   assert( m_local_physical_behavior );
   serialize.data_buffer.push_back(
       ObjectStateUpdate( m_local_physical_behavior->physical_parameters ).serialize() );
+}
+
+
+Canon::Canon( ObjectContainer& object_container )
+  : m_object_container( object_container )
+{
+}
+
+
+void
+Canon::register_to(
+    the::ctci::Dispatcher& dispatcher,
+    the::ctci::ComponentRegistry& )
+{
+  dispatcher.register_listener< yarrr::Command  >(
+      std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
+}
+
+
+void
+Canon::handle_command( const Command& command ) const
+{
+  if ( command.type() != Command::fire )
+  {
+    return;
+  }
+
+  Object::Pointer object( new Object() );
+  m_object_container.add_object( Object::Id( object.get() ), std::move( object ) );
 }
 
 }

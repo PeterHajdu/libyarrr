@@ -4,6 +4,7 @@
 #include <yarrr/command.hpp>
 #include <yarrr/ship_control.hpp>
 #include <yarrr/event_factory.hpp>
+#include <yarrr/object_container.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <igloo/igloo_alt.h>
@@ -158,5 +159,37 @@ Describe( a_physical_parameter_serializer )
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
 
+};
+
+Describe( a_canon )
+{
+
+  void SetUp()
+  {
+    test_dispatcher.reset( new the::ctci::Dispatcher() );
+    test_registry.reset( new the::ctci::ComponentRegistry() );
+
+    object_container.reset( new yarrr::ObjectContainer() );
+    canon.reset( new yarrr::Canon( *object_container ) );
+    canon->register_to( *test_dispatcher, *test_registry );
+  }
+
+  It( creates_objects_only_for_fire_command )
+  {
+    test_dispatcher->dispatch( yarrr::Command( yarrr::Command::cw, 0 ) );
+    AssertThat( *object_container, IsEmpty() );
+  }
+
+  It( creates_new_objects )
+  {
+    test_dispatcher->dispatch( yarrr::Command( yarrr::Command::fire, 0 ) );
+    AssertThat( *object_container, HasLength( 1 ) );
+  }
+
+  std::unique_ptr< yarrr::ObjectContainer > object_container;
+  std::unique_ptr< yarrr::Canon > canon;
+
+  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
+  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
 };
 

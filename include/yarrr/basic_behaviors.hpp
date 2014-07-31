@@ -104,5 +104,20 @@ class PhysicalParameterSerializer : public ObjectBehavior
     LocalPhysicalBehavior* m_local_physical_behavior;
 };
 
+class ObjectContainer;
+class Canon : public ObjectBehavior
+{
+  public:
+    Canon( ObjectContainer& object_container );
+
+    virtual void register_to(
+        the::ctci::Dispatcher&,
+        the::ctci::ComponentRegistry& registry ) override;
+  private:
+    void handle_command( const Command& ) const;
+
+    ObjectContainer& m_object_container;
+};
+
 }
 
