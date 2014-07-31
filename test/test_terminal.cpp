@@ -74,13 +74,27 @@ Describe(a_terminal)
     assert_drew_messages_between( first_on_screen, number_of_messages - number_of_lines_scrolled );
   }
 
+  It( jumps_to_the_beginning_when_home_is_called )
+  {
+    test_terminal->home();
+    test_engine->printed_texts.clear();
+    test_engine->draw_objects();
+    assert_drew_messages_between( 0, number_of_terminal_lines );
+  }
+
+  It( jumps_to_the_end_when_end_is_called )
+  {
+    test_terminal->home();
+    test_terminal->end();
+    test_engine->printed_texts.clear();
+    test_engine->draw_objects();
+    const size_t first_on_screen{ number_of_messages - number_of_terminal_lines };
+    assert_drew_messages_between( first_on_screen, number_of_messages );
+  }
 
   It( can_be_scrolled_up_only_till_the_first_message )
   {
-    test_terminal->scroll_up();
-    test_terminal->scroll_up();
-    test_terminal->scroll_up();
-    test_terminal->scroll_up();
+    test_terminal->home();
     test_terminal->scroll_up();
     test_engine->printed_texts.clear();
     test_engine->draw_objects();

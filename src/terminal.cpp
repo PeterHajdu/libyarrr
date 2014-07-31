@@ -32,14 +32,19 @@ Terminal::Terminal(
 }
 
 void
+Terminal::jump_to_last_page()
+{
+  m_first_message_index = int( m_messages.size() ) - m_number_of_shown_messages;
+  normalize_first_index();
+}
+
+void
 Terminal::handle_chat_message( const ChatMessage& message )
 {
   m_messages.push_back( {
         { message.sender() + ": ", colorize( message.sender() ) },
         { message.message(), { 255, 255, 255, 255 } } } );
-
-  m_first_message_index = int( m_messages.size() ) - m_number_of_shown_messages;
-  normalize_first_index();
+  jump_to_last_page();
 }
 
 void
@@ -57,6 +62,17 @@ Terminal::draw() const
   }
 }
 
+void
+Terminal::home()
+{
+  m_first_message_index = 0;
+}
+
+void
+Terminal::end()
+{
+  jump_to_last_page();
+}
 
 void
 Terminal::scroll_up()
