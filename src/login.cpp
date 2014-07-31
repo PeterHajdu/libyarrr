@@ -1,12 +1,12 @@
 #include <yarrr/login.hpp>
 #include <yarrr/bitmagic.hpp>
 #include <yarrr/physical_parameters.hpp>
-#include <yarrr/event_factory.hpp>
+#include <yarrr/entity_factory.hpp>
 
 namespace
 {
-  yarrr::AutoEventRegister<yarrr::LoginRequest> register_login_request;
-  yarrr::AutoEventRegister<yarrr::LoginResponse> register_login_response;
+  yarrr::AutoEntityRegister<yarrr::LoginRequest> register_login_request;
+  yarrr::AutoEntityRegister<yarrr::LoginResponse> register_login_response;
 }
 
 namespace yarrr

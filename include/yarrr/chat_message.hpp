@@ -1,6 +1,6 @@
 #pragma once
 
-#include <yarrr/event.hpp>
+#include <yarrr/entity.hpp>
 #include <yarrr/bitmagic.hpp>
 #include <thectci/id.hpp>
 #include <string>
@@ -8,7 +8,7 @@
 namespace yarrr
 {
 
-class ChatMessage : public Event
+class ChatMessage : public Entity
 {
   public:
     add_polymorphic_ctci( "yarrr_chat_message" );

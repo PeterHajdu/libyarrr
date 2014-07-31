@@ -1,6 +1,6 @@
 #pragma once
 
-#include <yarrr/event.hpp>
+#include <yarrr/entity.hpp>
 #include <yarrr/types.hpp>
 #include <thetime/clock.hpp>
 #include <cstdint>
@@ -8,7 +8,7 @@
 namespace yarrr
 {
 
-class Command : public Event
+class Command : public Entity
 {
   public:
     typedef uint32_t Type;

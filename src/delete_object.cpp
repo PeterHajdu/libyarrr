@@ -1,10 +1,10 @@
 #include <yarrr/delete_object.hpp>
-#include <yarrr/event_factory.hpp>
+#include <yarrr/entity_factory.hpp>
 #include <yarrr/bitmagic.hpp>
 
 namespace
 {
-  yarrr::AutoEventRegister< yarrr::DeleteObject > register_command;
+  yarrr::AutoEntityRegister< yarrr::DeleteObject > register_command;
 }
 
 namespace yarrr

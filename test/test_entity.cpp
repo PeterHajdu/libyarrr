@@ -1,14 +1,14 @@
-#include <yarrr/event.hpp>
+#include <yarrr/entity.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
 
 namespace
 {
-  class TestEvent : public yarrr::Event
+  class TestEntity : public yarrr::Entity
   {
     public:
-      add_polymorphic_ctci( "test_event" );
+      add_polymorphic_ctci( "test_entity" );
 
     private:
       virtual void do_serialize( yarrr::Serializer& serializer ) const
@@ -22,14 +22,14 @@ namespace
   };
 }
 
-Describe(an_event)
+Describe(an_entity)
 {
   It( has_polymorphic_ctci )
   {
-    AssertThat( test_event.ctci, Equals( base_referenced_test_event.polymorphic_ctci() ) );
+    AssertThat( test_entity.ctci, Equals( base_referenced_test_entity.polymorphic_ctci() ) );
   }
 
-  TestEvent test_event;
-  yarrr::Event& base_referenced_test_event{ test_event };
+  TestEntity test_entity;
+  yarrr::Entity& base_referenced_test_entity{ test_entity };
 };
 

@@ -2,12 +2,12 @@
 set(SOURCE_FILES
   physical_parameters.cpp
   login.cpp
-  event.cpp
+  entity.cpp
   object_state_update.cpp
   command.cpp
   chat_message.cpp
   ship_control.cpp
-  event_factory.cpp
+  entity_factory.cpp
   delete_object.cpp
   object.cpp
   object_container.cpp

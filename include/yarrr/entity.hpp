@@ -9,13 +9,13 @@ namespace yarrr
 class Deserializer;
 class Serializer;
 
-class Event
+class Entity
 {
   public:
-    typedef std::unique_ptr<Event> Pointer;
+    typedef std::unique_ptr<Entity> Pointer;
 
     add_pure_polymorphic_ctci();
-    virtual ~Event() = default;
+    virtual ~Entity() = default;
 
     Data serialize() const;
     void deserialize( const Data& data );

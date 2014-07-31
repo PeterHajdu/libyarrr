@@ -1,10 +1,10 @@
 #include <yarrr/command.hpp>
 #include <yarrr/bitmagic.hpp>
-#include <yarrr/event_factory.hpp>
+#include <yarrr/entity_factory.hpp>
 
 namespace
 {
-  yarrr::AutoEventRegister<yarrr::Command> register_command;
+  yarrr::AutoEntityRegister<yarrr::Command> register_command;
 }
 
 namespace yarrr

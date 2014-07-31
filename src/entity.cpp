@@ -1,4 +1,4 @@
-#include <yarrr/event.hpp>
+#include <yarrr/entity.hpp>
 #include <yarrr/bitmagic.hpp>
 #include <cassert>
 
@@ -6,7 +6,7 @@ namespace yarrr
 {
 
 Data
-Event::serialize() const
+Entity::serialize() const
 {
   Data buffer;
   do_serialize( Serializer( buffer ).push_back( polymorphic_ctci() ) );
@@ -14,7 +14,7 @@ Event::serialize() const
 }
 
 void
-Event::deserialize( const Data& data )
+Entity::deserialize( const Data& data )
 {
   Deserializer deserializer( data );
   assert( deserializer.pop_front<the::ctci::Id>() == polymorphic_ctci() );

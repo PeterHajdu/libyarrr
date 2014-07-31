@@ -1,6 +1,6 @@
 #pragma once
 
-#include <yarrr/event_factory.hpp>
+#include <yarrr/entity_factory.hpp>
 #include <yarrr/types.hpp>
 #include <thectci/dispatcher.hpp>
 #include <memory>
@@ -23,14 +23,14 @@ class ConnectionWrapper : public the::ctci::Dispatcher
       yarrr::Data message;
       while( connection.receive( message ) )
       {
-        Event::Pointer event( EventFactory::create( message ) );
+        Entity::Pointer entity( EntityFactory::create( message ) );
 
-        if ( !event )
+        if ( !entity )
         {
           continue;
         }
 
-        polymorphic_dispatch( *event );
+        polymorphic_dispatch( *entity );
       }
     }
 

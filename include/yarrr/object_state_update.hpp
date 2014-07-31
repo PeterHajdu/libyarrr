@@ -1,13 +1,13 @@
 #pragma once
 
-#include <yarrr/event.hpp>
+#include <yarrr/entity.hpp>
 #include <yarrr/physical_parameters.hpp>
 
 namespace yarrr
 {
 class PhysicalParameters;
 
-class ObjectStateUpdate : public Event
+class ObjectStateUpdate : public Entity
 {
   public:
     add_polymorphic_ctci( "object_state_update" );

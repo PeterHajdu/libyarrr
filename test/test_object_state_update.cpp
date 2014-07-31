@@ -1,6 +1,6 @@
 #include <yarrr/object_state_update.hpp>
 #include <yarrr/physical_parameters.hpp>
-#include <yarrr/event_factory.hpp>
+#include <yarrr/entity_factory.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
@@ -16,9 +16,9 @@ Describe(an_object_state_update)
     physical_parameters.timestamp = now;
   }
 
-  It( is_registered_to_event_factory )
+  It( is_registered_to_entity_factory )
   {
-    AssertThat( yarrr::EventFactory::is_registered( yarrr::ObjectStateUpdate::ctci ), Equals( true ) );
+    AssertThat( yarrr::EntityFactory::is_registered( yarrr::ObjectStateUpdate::ctci ), Equals( true ) );
   }
 
   It( can_recreate_the_object_from_the_deserialized_form )

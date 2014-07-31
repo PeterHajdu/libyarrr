@@ -10,12 +10,12 @@ set(TEST_SOURCE_FILES
     test_clock_synchronizer.cpp
     test_bitmagic.cpp
     test_login.cpp
-    test_event.cpp
+    test_entity.cpp
     test_object_state_update.cpp
     test_command.cpp
     test_chat_message.cpp
     test_ship_control.cpp
-    test_event_factory.cpp
+    test_entity_factory.cpp
     test_callback.cpp
     test_types.cpp
     test_delete_object.cpp

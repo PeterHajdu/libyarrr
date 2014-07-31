@@ -1,11 +1,11 @@
 #include <yarrr/object_state_update.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/bitmagic.hpp>
-#include <yarrr/event_factory.hpp>
+#include <yarrr/entity_factory.hpp>
 
 namespace
 {
-  yarrr::AutoEventRegister<yarrr::ObjectStateUpdate> register_object_state_update;
+  yarrr::AutoEntityRegister<yarrr::ObjectStateUpdate> register_object_state_update;
 }
 
 namespace yarrr

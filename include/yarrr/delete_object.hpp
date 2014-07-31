@@ -1,13 +1,13 @@
 #pragma once
 
-#include <yarrr/event.hpp>
+#include <yarrr/entity.hpp>
 #include <thectci/id.hpp>
 #include <yarrr/physical_parameters.hpp>
 
 namespace yarrr
 {
 
-class DeleteObject : public yarrr::Event
+class DeleteObject : public yarrr::Entity
 {
   public:
     add_polymorphic_ctci( "delete_object" );

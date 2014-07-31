@@ -3,14 +3,14 @@
 #include <thectci/id.hpp>
 #include <yarrr/types.hpp>
 #include <yarrr/physical_parameters.hpp>
-#include <yarrr/event.hpp>
+#include <yarrr/entity.hpp>
 
 #include <string>
 
 namespace yarrr
 {
 
-class LoginRequest : public Event
+class LoginRequest : public Entity
 {
   public:
     add_polymorphic_ctci( "login_request" );
@@ -25,7 +25,7 @@ class LoginRequest : public Event
     std::string m_login_id;
 };
 
-class LoginResponse : public Event
+class LoginResponse : public Entity
 {
   public:
     add_polymorphic_ctci( "login_response" );

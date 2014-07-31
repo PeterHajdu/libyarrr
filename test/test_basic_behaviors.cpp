@@ -3,7 +3,7 @@
 #include <yarrr/object_state_update.hpp>
 #include <yarrr/command.hpp>
 #include <yarrr/ship_control.hpp>
-#include <yarrr/event_factory.hpp>
+#include <yarrr/entity_factory.hpp>
 #include <yarrr/object_container.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
@@ -52,7 +52,7 @@ Describe( a_simple_physics_updater )
     simple_physics_updater.register_to( *test_dispatcher, *test_registry );
   }
 
-  It( updates_local_physical_state_on_timer_update_event )
+  It( updates_local_physical_state_on_timer_update_entity )
   {
     const yarrr::PhysicalParameters old_physical_parameters(
         local_physical_behavior.physical_parameters );
@@ -146,10 +146,10 @@ Describe( a_physical_parameter_serializer )
     test_dispatcher->dispatch( yarrr::SerializePhysicalParameter( serialized_physical_parameters ) );
     AssertThat( serialized_physical_parameters.empty(), Equals( false ) );
 
-    yarrr::Event::Pointer event( yarrr::EventFactory::create( serialized_physical_parameters.back() ) );
-    AssertThat( event.get()!=nullptr, Equals( true ) );
+    yarrr::Entity::Pointer entity( yarrr::EntityFactory::create( serialized_physical_parameters.back() ) );
+    AssertThat( entity.get()!=nullptr, Equals( true ) );
 
-    yarrr::ObjectStateUpdate& object_update( static_cast< yarrr::ObjectStateUpdate& >( *event ) );
+    yarrr::ObjectStateUpdate& object_update( static_cast< yarrr::ObjectStateUpdate& >( *entity ) );
     AssertThat( object_update.physical_parameters(), Equals( local_physical_behavior.physical_parameters ) );
   }
 
