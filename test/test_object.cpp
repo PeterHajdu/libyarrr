@@ -1,5 +1,6 @@
 #include <yarrr/object.hpp>
 #include <yarrr/entity.hpp>
+#include <yarrr/entity_factory.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <igloo/igloo_alt.h>
@@ -112,27 +113,22 @@ Describe( an_object_update )
     test_object.reset( new yarrr::Object() );
     test_behavior = new TestBehavior();
     test_object->add_behavior( yarrr::ObjectBehavior::Pointer( test_behavior ) );
-  }
-
-  It( is_generated_by_an_object )
-  {
-    yarrr::ObjectUpdate object_update( test_object->generate_update() );
-    (void)object_update;
+    test_entity = test_object->generate_update();
+    test_update = static_cast< yarrr::ObjectUpdate* >( test_entity.get() );
   }
 
   It( has_the_same_id_as_the_object )
   {
-    yarrr::ObjectUpdate object_update( test_object->generate_update() );
-    AssertThat( object_update.id, Equals( test_object->id ) );
+    AssertThat( test_update->id(), Equals( test_object->id ) );
   }
 
-  It( is_an_entity )
+  It( is_registered_to_entity_factory )
   {
-    yarrr::ObjectUpdate object_update( test_object->generate_update() );
-    yarrr::Entity& entity( object_update );
-    (void)entity;
+    AssertThat( yarrr::EntityFactory::is_registered( yarrr::ObjectUpdate::ctci ), Equals( true ) );
   }
 
+  yarrr::Entity::Pointer test_entity;
+  yarrr::ObjectUpdate* test_update;
   yarrr::Object::Pointer test_object;
   TestBehavior* test_behavior;
 };

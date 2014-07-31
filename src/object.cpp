@@ -1,5 +1,11 @@
 #include <yarrr/object.hpp>
 #include <yarrr/bitmagic.hpp>
+#include <yarrr/entity_factory.hpp>
+
+namespace
+{
+  yarrr::AutoEntityRegister<yarrr::ObjectUpdate> register_object_update;
+}
 
 namespace yarrr
 {
@@ -21,15 +27,26 @@ Object::add_behavior( ObjectBehavior::Pointer&& behavior )
   m_behaviors.emplace_back( std::move( behavior ) );
 }
 
-ObjectUpdate
+Entity::Pointer
 Object::generate_update() const
 {
-  return ObjectUpdate( id );
+  return Entity::Pointer( new ObjectUpdate( id ) );
+}
+
+ObjectUpdate::ObjectUpdate()
+  : m_id( 0 )
+{
 }
 
 ObjectUpdate::ObjectUpdate( const Object::Id& id )
-  : id( id )
+  : m_id( id )
 {
+}
+
+const Object::Id&
+ObjectUpdate::id() const
+{
+  return m_id;
 }
 
 void
@@ -41,6 +58,7 @@ void
 ObjectUpdate::do_deserialize( Deserializer& deserializer )
 {
 }
+
 
 }
 

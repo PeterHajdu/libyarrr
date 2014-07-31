@@ -35,7 +35,7 @@ class Object final : public the::ctci::Dispatcher
 
     void add_behavior( ObjectBehavior::Pointer&& behavior );
 
-    ObjectUpdate generate_update() const;
+    Entity::Pointer generate_update() const;
 
   private:
     the::ctci::ComponentRegistry m_components;
@@ -46,10 +46,14 @@ class ObjectUpdate : public Entity
 {
   public:
     add_polymorphic_ctci( "yarrr_object_update" );
+    ObjectUpdate();
     ObjectUpdate( const Object::Id& );
-    const Object::Id id;
+    const Object::Id& id() const;
 
   private:
+
+    const Object::Id m_id;
+
     virtual void do_serialize( Serializer& serializer ) const;
     virtual void do_deserialize( Deserializer& deserializer );
 };
