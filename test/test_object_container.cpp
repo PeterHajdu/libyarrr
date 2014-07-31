@@ -107,6 +107,18 @@ Describe(an_object_container)
     AssertThat( dispatched_events, Has().Exactly( 1 ).EqualTo( &test_event ) );
   }
 
+  It( can_tell_if_it_contains_an_object_or_not )
+  {
+    AssertThat( test_container->has_object_with_id( second_id ), Equals( true ) );
+    AssertThat( test_container->has_object_with_id( invalid_id ), Equals( false ) );
+  }
+
+  It( can_retrieve_an_object_with_a_given_id )
+  {
+    test_container->object_with_id( second_id ).dispatch( test_event );
+    AssertThat( dispatched_events, Has().Exactly( 1 ).EqualTo( &test_event ) );
+  }
+
   Event test_event;
   std::vector< yarrr::Object::Id > deleted_objects;
   std::vector< const Event* > dispatched_events;

@@ -26,5 +26,21 @@ ObjectContainer::delete_object( Object::Id id )
 }
 
 
+bool
+ObjectContainer::has_object_with_id( Object::Id id ) const
+{
+  return m_objects.find( id ) != m_objects.end();
+}
+
+
+const yarrr::Object&
+ObjectContainer::object_with_id( Object::Id id ) const
+{
+  Objects::const_iterator object( m_objects.find( id ) );
+  assert( object != m_objects.end() );
+  return *object->second;
+}
+
+
 }
 
