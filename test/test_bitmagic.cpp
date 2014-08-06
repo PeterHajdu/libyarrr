@@ -118,6 +118,23 @@ Describe(a_deserializer)
     AssertThat( test_deserializer->bytes_left(), Equals( 8u ) );
   }
 
+  It( allows_to_peek_in_the_stream_without_changing_the_buffer )
+  {
+    test_serializer->push_back( unsigned_64 );
+    set_up_deserializer();
+    AssertThat( test_deserializer->peek< uint64_t >(), Equals( unsigned_64 ) );
+    AssertThat( test_deserializer->bytes_left(), Equals( 8u ) );
+  }
+
+  It( allows_to_peek_in_the_stream_for_strings )
+  {
+    test_serializer->push_back( first_string );
+    set_up_deserializer();
+    const size_t original_length( test_deserializer->bytes_left() );
+    AssertThat( test_deserializer->peek< std::string >(), Equals( first_string ) );
+    AssertThat( test_deserializer->bytes_left(), Equals( original_length ) );
+  }
+
   const std::string first_string{ "alma" };
   const std::string second_string{ "fa" };
   const uint64_t unsigned_64{ 1123098348 };

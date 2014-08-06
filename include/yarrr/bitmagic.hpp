@@ -59,6 +59,9 @@ class Deserializer
     template <typename T>
     T pop_front();
 
+    template <typename T>
+    T peek() const;
+
     size_t bytes_left() const
     {
       return m_end_of_buffer - m_position;
@@ -85,6 +88,24 @@ std::string Deserializer::pop_front<std::string>()
   assert( bytes_left() >= length );
   const char * const position( m_position );
   m_position += length;
+  return std::string( position, length );
+}
+
+template <typename T>
+T Deserializer::peek() const
+{
+  assert( bytes_left() >= sizeof( T ) );
+  const char * const position( m_position );
+  return *reinterpret_cast< const T* >( position );
+}
+
+template <> inline
+std::string Deserializer::peek<std::string>() const
+{
+  typedef uint32_t LengthType;
+  const LengthType length( peek< LengthType >() );
+  assert( bytes_left() - sizeof( LengthType ) >= length );
+  const char * const position( m_position + sizeof( LengthType ) );
   return std::string( position, length );
 }
 
