@@ -40,8 +40,8 @@ class PhysicalBehavior : public ObjectBehavior
     void handle_timer_update( const TimerUpdate& );
     void handle_network_update( const PhysicalBehavior& );
 
-    virtual void do_serialize( yarrr::Serializer& serializer ) const override {}
-    virtual void do_deserialize( yarrr::Deserializer& deserializer ) override {}
+    virtual void do_serialize( yarrr::Serializer& serializer ) const override;
+    virtual void do_deserialize( yarrr::Deserializer& deserializer ) override;
 };
 
 class Command;

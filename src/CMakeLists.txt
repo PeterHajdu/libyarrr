@@ -3,7 +3,6 @@ set(SOURCE_FILES
   physical_parameters.cpp
   login.cpp
   entity.cpp
-  object_state_update.cpp
   command.cpp
   chat_message.cpp
   ship_control.cpp

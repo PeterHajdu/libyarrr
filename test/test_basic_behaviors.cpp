@@ -1,6 +1,5 @@
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/physical_parameters.hpp>
-#include <yarrr/object_state_update.hpp>
 #include <yarrr/command.hpp>
 #include <yarrr/ship_control.hpp>
 #include <yarrr/entity_factory.hpp>
@@ -21,6 +20,7 @@ Describe( a_physical_behavior )
 
     physical_behavior.reset( new yarrr::PhysicalBehavior() );
     physical_behavior->physical_parameters.velocity = { 100, 100 };
+    physical_behavior->physical_parameters.coordinate = { 10, 3 };
     physical_behavior->register_to( *test_dispatcher, *test_registry );
   }
 
@@ -57,6 +57,20 @@ Describe( a_physical_behavior )
     AssertThat( other_physical_behavior.physical_parameters, !Equals( physical_behavior->physical_parameters ) );
   }
 
+  It( is_registered_to_entity_factory )
+  {
+    AssertThat( yarrr::EntityFactory::is_registered( yarrr::PhysicalBehavior::ctci ), Equals( true ) );
+  }
+
+  It( can_be_serialized_and_deserialized )
+  {
+    yarrr::Data serialized_physical_behavior( physical_behavior->serialize() );
+    yarrr::Entity::Pointer entity( yarrr::EntityFactory::create( serialized_physical_behavior ) );
+    const yarrr::PhysicalBehavior& deserialized_physical_behavior(
+        static_cast< const yarrr::PhysicalBehavior& >( *entity ) );
+    AssertThat( deserialized_physical_behavior.physical_parameters, Equals( physical_behavior->physical_parameters ) );
+  }
+
   std::unique_ptr< yarrr::PhysicalBehavior > physical_behavior;
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
@@ -73,6 +87,7 @@ Describe( an_engine )
     physical_behavior.register_to( *test_dispatcher, *test_registry );
     engine.register_to( *test_dispatcher, *test_registry );
   }
+
 
   It( updates_local_physical_state_when_a_command_arrives )
   {

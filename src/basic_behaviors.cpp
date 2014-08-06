@@ -2,9 +2,12 @@
 #include <yarrr/command.hpp>
 #include <yarrr/ship_control.hpp>
 #include <yarrr/object_container.hpp>
+#include <yarrr/bitmagic.hpp>
+#include <yarrr/entity_factory.hpp>
 
 namespace yarrr
 {
+yarrr::AutoEntityRegister< PhysicalBehavior > auto_physical_behavior_register;
 
 void
 PhysicalBehavior::register_to(
@@ -37,6 +40,35 @@ PhysicalBehavior::handle_network_update( const PhysicalBehavior& update )
   physical_parameters.angle = ( network_parameters.angle + physical_parameters.angle ) * 0.5;
   physical_parameters.vangle = ( network_parameters.vangle + physical_parameters.vangle ) * 0.5;
 }
+
+void
+PhysicalBehavior::do_serialize( yarrr::Serializer& serializer ) const
+{
+  serializer
+    .push_back( physical_parameters.id )
+    .push_back( physical_parameters.coordinate.x )
+    .push_back( physical_parameters.coordinate.y )
+    .push_back( physical_parameters.velocity.x )
+    .push_back( physical_parameters.velocity.y )
+    .push_back( physical_parameters.angle )
+    .push_back( physical_parameters.vangle )
+    .push_back( physical_parameters.timestamp );
+}
+
+
+void
+PhysicalBehavior::do_deserialize( yarrr::Deserializer& deserializer )
+{
+  physical_parameters.id = deserializer.pop_front<uint64_t>();
+  physical_parameters.coordinate.x = deserializer.pop_front<int64_t>();
+  physical_parameters.coordinate.y = deserializer.pop_front<int64_t>();
+  physical_parameters.velocity.x = deserializer.pop_front<int64_t>();
+  physical_parameters.velocity.y = deserializer.pop_front<int64_t>();
+  physical_parameters.angle = deserializer.pop_front<int16_t>();
+  physical_parameters.vangle = deserializer.pop_front<int16_t>();
+  physical_parameters.timestamp = deserializer.pop_front<the::time::Time>();
+}
+
 
 void
 Engine::register_to(
