@@ -63,6 +63,7 @@ ObjectContainer::handle_object_update( const ObjectUpdate& update )
 {
   if ( has_object_with_id( update.id() ) )
   {
+    update.update_object( object_with_id( update.id() ) );
     return;
   }
 

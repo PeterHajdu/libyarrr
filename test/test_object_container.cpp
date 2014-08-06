@@ -31,6 +31,8 @@ namespace
       {
         dispatcher.register_listener< Event >( std::bind(
               &TestBehavior::handle_event, this, std::placeholders::_1 ) );
+        dispatcher.register_listener< TestBehavior >( std::bind(
+              &TestBehavior::handle_test_behavior, this, std::placeholders::_1 ) );
       }
 
       void handle_event( const Event& event )
@@ -41,6 +43,12 @@ namespace
       virtual ~TestBehavior()
       {
         m_call_when_deleted();
+      }
+
+      bool was_object_updated{ false };
+      void handle_test_behavior( const TestBehavior& )
+      {
+        was_object_updated = true;
       }
 
       virtual yarrr::ObjectBehavior::Pointer clone() const override
@@ -64,7 +72,8 @@ Describe(an_object_container)
   void add_object_with_id( yarrr::Object::Id id )
   {
     yarrr::Object::Pointer new_object( new yarrr::Object( id ) );
-    new_object->add_behavior( yarrr::ObjectBehavior::Pointer(
+
+    TestBehavior* new_behavior(
           new TestBehavior(
             [ this, id ]()
             {
@@ -73,13 +82,16 @@ Describe(an_object_container)
             [ this ]( const Event& event )
             {
               dispatched_events.push_back( &event );
-            } ) ) );
+            } ) );
+    behaviors.emplace( id, new_behavior );
 
+    new_object->add_behavior( yarrr::ObjectBehavior::Pointer( new_behavior ) );
     test_container->add_object( std::move( new_object ) );
   }
 
   void SetUp()
   {
+    behaviors.clear();
     test_container.reset( new yarrr::ObjectContainer() );
     deleted_objects.clear();
     dispatched_events.clear();
@@ -159,6 +171,23 @@ Describe(an_object_container)
     test_container->handle_object_update( dummy_object_update );
     AssertThat( test_container->has_object_with_id( invalid_id ), Equals( true ) );
   }
+
+  yarrr::ObjectUpdate::Pointer create_object_update_for( yarrr::Object::Id id )
+  {
+    yarrr::ObjectUpdate::Pointer object_update(
+        test_container->object_with_id( id ).generate_update() );
+    return object_update;
+  }
+
+  It( updates_the_correct_object_if_object_update_id_is_found )
+  {
+    yarrr::ObjectUpdate::Pointer dummy_object_update( create_object_update_for( second_id ) );
+    test_container->handle_object_update( *dummy_object_update );
+    AssertThat( behaviors[ second_id ]->was_object_updated, Equals( true ) );
+    AssertThat( behaviors[ first_id ]->was_object_updated, Equals( false ) );
+  }
+
+  std::unordered_map< yarrr::Object::Id, const TestBehavior* > behaviors;
 
   Event test_event;
   std::vector< yarrr::Object::Id > deleted_objects;
