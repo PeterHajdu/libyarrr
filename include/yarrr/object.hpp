@@ -3,7 +3,7 @@
 #include <yarrr/entity.hpp>
 
 #include <thectci/dispatcher.hpp>
-#include <thectci/dispatcher.hpp>
+#include <thectci/id.hpp>
 #include <thectci/component_registry.hpp>
 
 #include <memory>
@@ -12,14 +12,22 @@
 namespace yarrr
 {
 
-class ObjectBehavior
+class ObjectBehavior : public Entity
 {
   public:
+    add_pure_polymorphic_ctci();
     typedef std::unique_ptr<ObjectBehavior> Pointer;
     virtual ~ObjectBehavior() = default;
 
     virtual void register_to( the::ctci::Dispatcher&, the::ctci::ComponentRegistry& ) = 0;
+    virtual Pointer clone() const = 0;
+
+  private:
+    virtual void do_serialize( Serializer& serializer ) const = 0;
+    virtual void do_deserialize( Deserializer& deserializer ) = 0;
 };
+
+typedef std::vector< ObjectBehavior::Pointer > BehaviorContainer;
 
 class ObjectUpdate;
 
@@ -39,7 +47,7 @@ class Object final : public the::ctci::Dispatcher
 
   private:
     the::ctci::ComponentRegistry m_components;
-    std::vector< ObjectBehavior::Pointer > m_behaviors;
+    BehaviorContainer m_behaviors;
 };
 
 class ObjectUpdate : public Entity
@@ -47,15 +55,17 @@ class ObjectUpdate : public Entity
   public:
     add_polymorphic_ctci( "yarrr_object_update" );
     ObjectUpdate();
-    ObjectUpdate( const Object::Id& );
+    ObjectUpdate( const Object::Id&, BehaviorContainer&& );
     const Object::Id& id() const;
+    Object::Pointer create_object() const;
 
   private:
-
-    const Object::Id m_id;
+    Object::Id m_id;
 
     virtual void do_serialize( Serializer& serializer ) const;
     virtual void do_deserialize( Deserializer& deserializer );
+
+    BehaviorContainer m_behaviors;
 };
 
 }

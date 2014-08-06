@@ -21,6 +21,7 @@ class EntityFactory
       instance.m_factory.register_creator( T::ctci, *instance.m_creators.back() );
     }
 
+    static Entity::Pointer create( Deserializer& );
     static Entity::Pointer create( const Data& );
 
     static bool is_registered( the::ctci::Id id );

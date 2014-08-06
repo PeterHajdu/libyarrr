@@ -18,8 +18,10 @@ class Entity
     virtual ~Entity() = default;
 
     Data serialize() const;
-    void deserialize( const Data& data );
+    void serialize( Serializer& ) const;
 
+    void deserialize( const Data& data );
+    void deserialize( Deserializer& deserializer );
   private:
     virtual void do_serialize( Serializer& serializer ) const = 0;
     virtual void do_deserialize( Deserializer& deserializer ) = 0;

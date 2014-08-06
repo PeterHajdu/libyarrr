@@ -24,21 +24,28 @@ EntityFactory::get()
 
 
 Entity::Pointer
-EntityFactory::create( const Data& data )
+EntityFactory::create( Deserializer& deserializer )
 {
-  if ( data.size() < sizeof( the::ctci::Id ) )
+  if ( deserializer.bytes_left() < sizeof( the::ctci::Id ) )
   {
     return nullptr;
   }
 
   EntityFactory& factory( get() );
-  Entity::Pointer entity( factory.m_factory.create( extract< the::ctci::Id >( &data[0] ) ) );
+  Entity::Pointer entity( factory.m_factory.create( deserializer.peek< the::ctci::Id >() ) );
   if ( !entity )
   {
     return entity;
   }
-  entity->deserialize( data );
+  entity->deserialize( deserializer );
   return entity;
+}
+
+Entity::Pointer
+EntityFactory::create( const Data& data )
+{
+  Deserializer deserializer( data );
+  return create( deserializer );
 }
 
 

@@ -6,6 +6,7 @@ using namespace igloo;
 
 namespace
 {
+  //todo: move to a separate file and use it in test object aswell.
   class Event
   {
     public:
@@ -15,6 +16,7 @@ namespace
   class TestBehavior : public yarrr::ObjectBehavior
   {
     public:
+      add_polymorphic_ctci( "yarrr_another_test_behavior" );
       TestBehavior(
           std::function< void() > call_when_deleted,
           std::function< void( const Event& ) > call_when_event_dispatched )
@@ -41,7 +43,16 @@ namespace
         m_call_when_deleted();
       }
 
+      virtual yarrr::ObjectBehavior::Pointer clone() const override
+      {
+        return yarrr::ObjectBehavior::Pointer( new TestBehavior(
+              m_call_when_deleted,
+              m_call_when_event_is_dispatched ) );
+      }
     private:
+      virtual void do_serialize( yarrr::Serializer& serializer ) const override {}
+      virtual void do_deserialize( yarrr::Deserializer& deserializer ) override {}
+
       std::function< void() > m_call_when_deleted;
       std::function< void( const Event& ) > m_call_when_event_is_dispatched;
   };

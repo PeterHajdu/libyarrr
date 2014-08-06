@@ -5,20 +5,35 @@
 namespace yarrr
 {
 
+void
+Entity::serialize( Serializer& serializer ) const
+{
+  serializer.push_back( polymorphic_ctci() );
+  do_serialize( serializer );
+}
+
 Data
 Entity::serialize() const
 {
   Data buffer;
-  do_serialize( Serializer( buffer ).push_back( polymorphic_ctci() ) );
+  Serializer serializer( buffer );
+  serialize( serializer );
   return buffer;
+}
+
+
+void
+Entity::deserialize( Deserializer& deserializer )
+{
+  assert( deserializer.pop_front<the::ctci::Id>() == polymorphic_ctci() );
+  do_deserialize( deserializer );
 }
 
 void
 Entity::deserialize( const Data& data )
 {
   Deserializer deserializer( data );
-  assert( deserializer.pop_front<the::ctci::Id>() == polymorphic_ctci() );
-  do_deserialize( deserializer );
+  deserialize( deserializer );
 }
 
 }
