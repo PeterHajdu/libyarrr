@@ -58,6 +58,7 @@ class ObjectUpdate : public Entity
     ObjectUpdate( const Object::Id&, BehaviorContainer&& );
     const Object::Id& id() const;
     Object::Pointer create_object() const;
+    void update_object( const Object& ) const;
 
   private:
     Object::Id m_id;

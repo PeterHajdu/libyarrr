@@ -40,6 +40,9 @@ class TestBehavior : public yarrr::ObjectBehavior
       dispatcher.register_listener<TestEventChild>( std::bind(
             &TestBehavior::handle_test_event_child, this, std::placeholders::_1 ) );
 
+      dispatcher.register_listener<TestBehavior>( std::bind(
+            &TestBehavior::handle_behavior_dispatches, this, std::placeholders::_1 ) );
+
       test_behavior_was_already_registered = components.has_component< TestBehavior >();
       if ( test_behavior_was_already_registered )
       {
@@ -47,6 +50,12 @@ class TestBehavior : public yarrr::ObjectBehavior
           ++components.component< TestBehavior >().number_of_test_behavior_registrations;
       }
       components.register_component( *this );
+    }
+
+    std::vector< const TestBehavior* > dispatched_behaviors;
+    void handle_behavior_dispatches( const TestBehavior& behavior )
+    {
+      dispatched_behaviors.push_back( &behavior );
     }
 
     const TestEvent* dispatched_event{ nullptr };
@@ -144,13 +153,23 @@ Describe( an_object_update )
     recreated_object = deserialized_update->create_object();
   }
 
+  void add_test_behavior()
+  {
+    TestBehavior* new_behavior( new TestBehavior() );
+    test_behaviors.push_back( new_behavior );
+    test_object->add_behavior( yarrr::ObjectBehavior::Pointer( new_behavior ) );
+  }
+
   void SetUp()
   {
     assert( yarrr::EntityFactory::is_registered( TestBehavior::ctci ) );
     test_object.reset( new yarrr::Object() );
-    test_behavior = new TestBehavior();
-    test_object->add_behavior( yarrr::ObjectBehavior::Pointer( new TestBehavior() ) );
-    test_object->add_behavior( yarrr::ObjectBehavior::Pointer( test_behavior ) );
+
+    for ( size_t i( 0 ); i < number_of_behaviors_to_add; ++i )
+    {
+      add_test_behavior();
+    }
+
     test_entity = test_object->generate_update();
     test_update = static_cast< yarrr::ObjectUpdate* >( test_entity.get() );
     serialize_and_deserialize();
@@ -180,7 +199,14 @@ Describe( an_object_update )
   {
     TestBehavior* behavior_spy( new TestBehavior() );
     recreated_object->add_behavior( yarrr::ObjectBehavior::Pointer( behavior_spy ) );
-    AssertThat( behavior_spy->number_of_test_behavior_registrations, Equals( 3u ) );
+    AssertThat( behavior_spy->number_of_test_behavior_registrations, Equals( number_of_behaviors_to_add + 1u ) );
+  }
+
+  It( can_dispatch_behaviors_as_events_on_an_object )
+  {
+    const TestBehavior& one_of_the_behaviors( *test_behaviors.back() );
+    test_update->update_object( *test_object );
+    AssertThat( one_of_the_behaviors.dispatched_behaviors, HasLength( number_of_behaviors_to_add ) );
   }
 
   yarrr::Object::Pointer recreated_object;
@@ -189,6 +215,8 @@ Describe( an_object_update )
   const yarrr::ObjectUpdate* deserialized_update;
   const yarrr::ObjectUpdate* test_update;
   yarrr::Object::Pointer test_object;
-  TestBehavior* test_behavior;
+
+  const size_t number_of_behaviors_to_add{ 5 };
+  std::vector< const TestBehavior* > test_behaviors;
 };
 

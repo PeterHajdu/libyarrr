@@ -105,5 +105,14 @@ ObjectUpdate::create_object() const
   return recreated_object;
 }
 
+void
+ObjectUpdate::update_object( const Object& object ) const
+{
+  for ( const auto& behavior : m_behaviors )
+  {
+    object.polymorphic_dispatch( *behavior );
+  }
+}
+
 }
 
