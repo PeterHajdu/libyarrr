@@ -8,27 +8,6 @@
 namespace yarrr
 {
 
-//todo: clean up after new object system is implemented
-class LocalPhysicalBehavior : public ObjectBehavior
-{
-  public:
-    add_polymorphic_ctci( "yarrr_local_physical_behavior" );
-    virtual void register_to(
-        the::ctci::Dispatcher&,
-        the::ctci::ComponentRegistry& registry ) override;
-
-    PhysicalParameters physical_parameters;
-
-    virtual Pointer clone() const override
-    {
-      return Pointer( new LocalPhysicalBehavior() );
-    }
-
-  private:
-    virtual void do_serialize( yarrr::Serializer& serializer ) const override {}
-    virtual void do_deserialize( yarrr::Deserializer& deserializer ) override {}
-};
-
 class TimerUpdate
 {
   public:
@@ -41,47 +20,25 @@ class TimerUpdate
     const the::time::Time& timestamp;
 };
 
-class SimplePhysicsUpdater : public ObjectBehavior
+class PhysicalBehavior : public ObjectBehavior
 {
   public:
-    add_polymorphic_ctci( "yarrr_simple_physics_updater" );
-    SimplePhysicsUpdater();
-
+    add_polymorphic_ctci( "yarrr_physical_behavior" );
     virtual void register_to(
         the::ctci::Dispatcher&,
         the::ctci::ComponentRegistry& registry ) override;
 
+    PhysicalParameters physical_parameters;
+
+    //todo: test clone
     virtual Pointer clone() const override
     {
-      return Pointer( new SimplePhysicsUpdater() );
+      return Pointer( new PhysicalBehavior() );
     }
+
   private:
-    void handle_timer_update( const TimerUpdate& ) const;
-    LocalPhysicalBehavior* m_local_physical_behavior;
-
-    virtual void do_serialize( yarrr::Serializer& serializer ) const override {}
-    virtual void do_deserialize( yarrr::Deserializer& deserializer ) override {}
-};
-
-class ObjectStateUpdate;
-
-class NetworkSynchronizer : public ObjectBehavior
-{
-  public:
-    add_polymorphic_ctci( "yarrr_network_synchronizer" );
-    NetworkSynchronizer();
-
-    virtual void register_to(
-        the::ctci::Dispatcher&,
-        the::ctci::ComponentRegistry& registry ) override;
-
-    virtual Pointer clone() const override
-    {
-      return Pointer( new NetworkSynchronizer() );
-    }
-  private:
-    void handle_object_state_update( const ObjectStateUpdate& ) const;
-    LocalPhysicalBehavior* m_local_physical_behavior;
+    void handle_timer_update( const TimerUpdate& );
+    void handle_network_update( const PhysicalBehavior& );
 
     virtual void do_serialize( yarrr::Serializer& serializer ) const override {}
     virtual void do_deserialize( yarrr::Deserializer& deserializer ) override {}
@@ -98,6 +55,7 @@ class Engine : public ObjectBehavior
         the::ctci::Dispatcher&,
         the::ctci::ComponentRegistry& registry ) override;
 
+    //todo: test clone
     virtual Pointer clone() const override
     {
       return Pointer( new Engine() );
@@ -108,41 +66,6 @@ class Engine : public ObjectBehavior
     std::unique_ptr< ShipControl > m_ship_control;
 };
 
-
-class SerializePhysicalParameter
-{
-  public:
-    add_ctci( "serialize" );
-    typedef std::vector< Data > SerializedDataBuffer;
-
-    SerializePhysicalParameter( SerializedDataBuffer& serialized_data_buffer )
-      : data_buffer( serialized_data_buffer )
-    {
-    }
-
-    SerializedDataBuffer& data_buffer;
-};
-
-class PhysicalParameterSerializer : public ObjectBehavior
-{
-  public:
-    add_polymorphic_ctci( "yarrr_physical_parameter_serializer" );
-    PhysicalParameterSerializer();
-
-    virtual void register_to(
-        the::ctci::Dispatcher&,
-        the::ctci::ComponentRegistry& registry ) override;
-
-    virtual Pointer clone() const override
-    {
-      return Pointer( new PhysicalParameterSerializer() );
-    }
-  private:
-    virtual void do_serialize( yarrr::Serializer& serializer ) const override {}
-    virtual void do_deserialize( yarrr::Deserializer& deserializer ) override {}
-    void handle_serialize( const SerializePhysicalParameter& ) const;
-    LocalPhysicalBehavior* m_local_physical_behavior;
-};
 
 class ObjectContainer;
 class Canon : public ObjectBehavior
@@ -155,6 +78,7 @@ class Canon : public ObjectBehavior
         the::ctci::Dispatcher&,
         the::ctci::ComponentRegistry& registry ) override;
 
+    //todo: test clone
     virtual Pointer clone() const override
     {
       return Pointer( new Canon( m_object_container ) );

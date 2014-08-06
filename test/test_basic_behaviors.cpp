@@ -11,7 +11,7 @@
 
 using namespace igloo;
 
-Describe( a_local_physical_behavior )
+Describe( a_physical_behavior )
 {
 
   void SetUp()
@@ -19,82 +19,45 @@ Describe( a_local_physical_behavior )
     test_dispatcher.reset( new the::ctci::Dispatcher() );
     test_registry.reset( new the::ctci::ComponentRegistry() );
 
-    local_physical_behavior.reset( new yarrr::LocalPhysicalBehavior() );
-    local_physical_behavior->register_to( *test_dispatcher, *test_registry );
+    physical_behavior.reset( new yarrr::PhysicalBehavior() );
+    physical_behavior->physical_parameters.velocity = { 100, 100 };
+    physical_behavior->register_to( *test_dispatcher, *test_registry );
   }
 
   It( registers_itself_as_a_component )
   {
-    AssertThat( &test_registry->component<yarrr::LocalPhysicalBehavior>(), Equals( local_physical_behavior.get() ) );
+    AssertThat( &test_registry->component<yarrr::PhysicalBehavior>(), Equals( physical_behavior.get() ) );
   }
 
   It( exposes_writable_physical_parameters )
   {
-    yarrr::LocalPhysicalBehavior physical_behavior;
-    yarrr::PhysicalParameters& physical_parameters( physical_behavior.physical_parameters );
+    yarrr::PhysicalParameters& physical_parameters( physical_behavior->physical_parameters );
     (void) physical_parameters;
-  }
-
-  yarrr::ObjectBehavior::Pointer local_physical_behavior;
-  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
-  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
-};
-
-Describe( a_simple_physics_updater )
-{
-
-  void SetUp()
-  {
-    test_dispatcher.reset( new the::ctci::Dispatcher() );
-    test_registry.reset( new the::ctci::ComponentRegistry() );
-
-    local_physical_behavior.register_to( *test_dispatcher, *test_registry );
-    simple_physics_updater.register_to( *test_dispatcher, *test_registry );
   }
 
   It( updates_local_physical_state_on_timer_update_entity )
   {
     const yarrr::PhysicalParameters old_physical_parameters(
-        local_physical_behavior.physical_parameters );
+        physical_behavior->physical_parameters );
 
     test_dispatcher->dispatch( yarrr::TimerUpdate( old_physical_parameters.timestamp + 100000 ) );
-    AssertThat( old_physical_parameters, !Equals( local_physical_behavior.physical_parameters ) );
+    AssertThat( old_physical_parameters, !Equals( physical_behavior->physical_parameters ) );
   }
 
-  yarrr::LocalPhysicalBehavior local_physical_behavior;
-  yarrr::SimplePhysicsUpdater simple_physics_updater;
 
-  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
-  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
-};
-
-Describe( a_network_synchronizer )
-{
-
-  void SetUp()
-  {
-    test_dispatcher.reset( new the::ctci::Dispatcher() );
-    test_registry.reset( new the::ctci::ComponentRegistry() );
-
-    local_physical_behavior.register_to( *test_dispatcher, *test_registry );
-    network_synchronizer.register_to( *test_dispatcher, *test_registry );
-  }
-
-  It( updates_local_physical_state_when_object_state_update_arrives )
+  It( updates_local_physical_state_when_object_update_arrives )
   {
     const yarrr::PhysicalParameters old_physical_parameters(
-        local_physical_behavior.physical_parameters );
+        physical_behavior->physical_parameters );
 
-    yarrr::PhysicalParameters other_physical_parameters;
-    test_dispatcher->dispatch( yarrr::ObjectStateUpdate( other_physical_parameters ) );
+    yarrr::PhysicalBehavior other_physical_behavior;
+    test_dispatcher->dispatch( other_physical_behavior );
 
-    AssertThat( old_physical_parameters, !Equals( local_physical_behavior.physical_parameters ) );
-    AssertThat( other_physical_parameters, !Equals( local_physical_behavior.physical_parameters ) );
+    AssertThat( old_physical_parameters, !Equals( physical_behavior->physical_parameters ) );
+    AssertThat( other_physical_behavior.physical_parameters, !Equals( physical_behavior->physical_parameters ) );
   }
 
-  yarrr::LocalPhysicalBehavior local_physical_behavior;
-  yarrr::NetworkSynchronizer network_synchronizer;
-
+  std::unique_ptr< yarrr::PhysicalBehavior > physical_behavior;
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
 };
@@ -107,58 +70,25 @@ Describe( an_engine )
     test_dispatcher.reset( new the::ctci::Dispatcher() );
     test_registry.reset( new the::ctci::ComponentRegistry() );
 
-    local_physical_behavior.register_to( *test_dispatcher, *test_registry );
+    physical_behavior.register_to( *test_dispatcher, *test_registry );
     engine.register_to( *test_dispatcher, *test_registry );
   }
 
   It( updates_local_physical_state_when_a_command_arrives )
   {
     const yarrr::PhysicalParameters old_physical_parameters(
-        local_physical_behavior.physical_parameters );
+        physical_behavior.physical_parameters );
 
     test_dispatcher->dispatch( yarrr::Command( yarrr::Command::thruster, 0 ) );
 
-    AssertThat( old_physical_parameters, !Equals( local_physical_behavior.physical_parameters ) );
+    AssertThat( old_physical_parameters, !Equals( physical_behavior.physical_parameters ) );
   }
 
-  yarrr::LocalPhysicalBehavior local_physical_behavior;
+  yarrr::PhysicalBehavior physical_behavior;
   yarrr::Engine engine;
 
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
-};
-
-Describe( a_physical_parameter_serializer )
-{
-
-  void SetUp()
-  {
-    test_dispatcher.reset( new the::ctci::Dispatcher() );
-    test_registry.reset( new the::ctci::ComponentRegistry() );
-
-    local_physical_behavior.register_to( *test_dispatcher, *test_registry );
-    serializer.register_to( *test_dispatcher, *test_registry );
-  }
-
-  It( serializes_local_physical_parameters )
-  {
-    std::vector< yarrr::Data > serialized_physical_parameters;
-    test_dispatcher->dispatch( yarrr::SerializePhysicalParameter( serialized_physical_parameters ) );
-    AssertThat( serialized_physical_parameters.empty(), Equals( false ) );
-
-    yarrr::Entity::Pointer entity( yarrr::EntityFactory::create( serialized_physical_parameters.back() ) );
-    AssertThat( entity.get()!=nullptr, Equals( true ) );
-
-    yarrr::ObjectStateUpdate& object_update( static_cast< yarrr::ObjectStateUpdate& >( *entity ) );
-    AssertThat( object_update.physical_parameters(), Equals( local_physical_behavior.physical_parameters ) );
-  }
-
-  yarrr::LocalPhysicalBehavior local_physical_behavior;
-  yarrr::PhysicalParameterSerializer serializer;
-
-  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
-  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
-
 };
 
 Describe( a_canon )
