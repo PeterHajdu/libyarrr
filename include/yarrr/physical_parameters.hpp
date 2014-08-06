@@ -9,8 +9,6 @@ namespace yarrr
   class PhysicalParameters
   {
     public:
-      //todo: object id should be moved
-      uint64_t id;
       Coordinate coordinate;
       Velocity velocity;
       Angle angle;

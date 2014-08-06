@@ -50,7 +50,6 @@ void
 PhysicalBehavior::do_serialize( yarrr::Serializer& serializer ) const
 {
   serializer
-    .push_back( physical_parameters.id )
     .push_back( physical_parameters.coordinate.x )
     .push_back( physical_parameters.coordinate.y )
     .push_back( physical_parameters.velocity.x )
@@ -64,7 +63,6 @@ PhysicalBehavior::do_serialize( yarrr::Serializer& serializer ) const
 void
 PhysicalBehavior::do_deserialize( yarrr::Deserializer& deserializer )
 {
-  physical_parameters.id = deserializer.pop_front<uint64_t>();
   physical_parameters.coordinate.x = deserializer.pop_front<int64_t>();
   physical_parameters.coordinate.y = deserializer.pop_front<int64_t>();
   physical_parameters.velocity.x = deserializer.pop_front<int64_t>();
