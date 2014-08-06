@@ -63,7 +63,7 @@ Describe(an_object_container)
 
   void add_object_with_id( yarrr::Object::Id id )
   {
-    yarrr::Object::Pointer new_object( new yarrr::Object() );
+    yarrr::Object::Pointer new_object( new yarrr::Object( id ) );
     new_object->add_behavior( yarrr::ObjectBehavior::Pointer(
           new TestBehavior(
             [ this, id ]()
@@ -133,6 +133,24 @@ Describe(an_object_container)
   It( can_tell_the_number_of_owned_objects )
   {
     AssertThat( test_container->size(), Equals( 2u ) );
+  }
+
+  bool contains_update_for( yarrr::Object::Id id, const std::vector< yarrr::ObjectUpdate::Pointer >& updates )
+  {
+    return std::any_of(
+        std::begin( updates ), std::end( updates ),
+        [ id ]( const yarrr::ObjectUpdate::Pointer& update )
+        {
+          return update->id() == id;
+        } );
+  }
+
+  It( can_generates_object_updates )
+  {
+    std::vector< yarrr::ObjectUpdate::Pointer > object_updates( test_container->generate_object_updates() );
+    AssertThat( object_updates, HasLength( test_container->size() ) );
+    AssertThat( contains_update_for( first_id, object_updates ), Equals( true ) );
+    AssertThat( contains_update_for( second_id, object_updates ), Equals( true ) );
   }
 
   Event test_event;

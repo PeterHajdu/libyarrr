@@ -18,6 +18,8 @@ class ObjectContainer : public the::ctci::Dispatcher
 
     size_type size() const;
 
+    std::vector< ObjectUpdate::Pointer > generate_object_updates() const;
+
   private:
     typedef std::unordered_map< Object::Id, Object::Pointer > Objects;
     Objects m_objects;

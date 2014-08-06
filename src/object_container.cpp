@@ -47,5 +47,16 @@ ObjectContainer::size() const
   return m_objects.size();
 }
 
+std::vector< ObjectUpdate::Pointer >
+ObjectContainer::generate_object_updates() const
+{
+  std::vector< ObjectUpdate::Pointer > updates;
+  for ( const auto& object : m_objects )
+  {
+    updates.emplace_back( object.second->generate_update() );
+  }
+  return updates;
+}
+
 }
 

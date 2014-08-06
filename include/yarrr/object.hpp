@@ -43,7 +43,7 @@ class Object final : public the::ctci::Dispatcher
 
     void add_behavior( ObjectBehavior::Pointer&& behavior );
 
-    Entity::Pointer generate_update() const;
+    std::unique_ptr< ObjectUpdate > generate_update() const;
 
   private:
     the::ctci::ComponentRegistry m_components;
@@ -53,6 +53,8 @@ class Object final : public the::ctci::Dispatcher
 class ObjectUpdate : public Entity
 {
   public:
+    typedef std::unique_ptr< ObjectUpdate > Pointer;
+
     add_polymorphic_ctci( "yarrr_object_update" );
     ObjectUpdate();
     ObjectUpdate( const Object::Id&, BehaviorContainer&& );

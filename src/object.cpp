@@ -44,10 +44,11 @@ Object::add_behavior( ObjectBehavior::Pointer&& behavior )
   m_behaviors.emplace_back( std::move( behavior ) );
 }
 
-Entity::Pointer
+
+ObjectUpdate::Pointer
 Object::generate_update() const
 {
-  return Entity::Pointer( new ObjectUpdate( id, clone_behaviors( m_behaviors ) ) );
+  return ObjectUpdate::Pointer( new ObjectUpdate( id, clone_behaviors( m_behaviors ) ) );
 }
 
 ObjectUpdate::ObjectUpdate()
