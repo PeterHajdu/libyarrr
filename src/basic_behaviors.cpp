@@ -131,7 +131,7 @@ Canon::handle_command( const Command& command ) const
   }
 
   Object::Pointer object( new Object() );
-  m_object_container.add_object( Object::Id( object.get() ), std::move( object ) );
+  m_object_container.add_object( std::move( object ) );
 }
 
 }

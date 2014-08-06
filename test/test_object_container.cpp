@@ -75,7 +75,7 @@ Describe(an_object_container)
               dispatched_events.push_back( &event );
             } ) ) );
 
-    test_container->add_object( id, std::move( new_object ) );
+    test_container->add_object( std::move( new_object ) );
   }
 
   void SetUp()
@@ -151,6 +151,13 @@ Describe(an_object_container)
     AssertThat( object_updates, HasLength( test_container->size() ) );
     AssertThat( contains_update_for( first_id, object_updates ), Equals( true ) );
     AssertThat( contains_update_for( second_id, object_updates ), Equals( true ) );
+  }
+
+  It( creates_an_object_for_an_object_update_with_new_id )
+  {
+    const yarrr::ObjectUpdate dummy_object_update( invalid_id, yarrr::BehaviorContainer() );
+    test_container->handle_object_update( dummy_object_update );
+    AssertThat( test_container->has_object_with_id( invalid_id ), Equals( true ) );
   }
 
   Event test_event;

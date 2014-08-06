@@ -10,7 +10,7 @@ class ObjectContainer : public the::ctci::Dispatcher
 {
   public:
     typedef size_t size_type;
-    void add_object( Object::Id, Object::Pointer&& );
+    void add_object( Object::Pointer&& );
     void delete_object( Object::Id );
 
     bool has_object_with_id( Object::Id ) const;
@@ -19,6 +19,7 @@ class ObjectContainer : public the::ctci::Dispatcher
     size_type size() const;
 
     std::vector< ObjectUpdate::Pointer > generate_object_updates() const;
+    void handle_object_update( const ObjectUpdate& );
 
   private:
     typedef std::unordered_map< Object::Id, Object::Pointer > Objects;

@@ -5,10 +5,10 @@ namespace yarrr
 
 
 void
-ObjectContainer::add_object( Object::Id id, Object::Pointer&& object )
+ObjectContainer::add_object( Object::Pointer&& object )
 {
   register_dispatcher( *object );
-  m_objects.emplace( id, std::move( object ) );
+  m_objects.emplace( object->id, std::move( object ) );
 }
 
 
@@ -56,6 +56,17 @@ ObjectContainer::generate_object_updates() const
     updates.emplace_back( object.second->generate_update() );
   }
   return updates;
+}
+
+void
+ObjectContainer::handle_object_update( const ObjectUpdate& update )
+{
+  if ( has_object_with_id( update.id() ) )
+  {
+    return;
+  }
+
+  add_object( update.create_object() );
 }
 
 }
