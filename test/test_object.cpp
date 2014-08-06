@@ -180,7 +180,7 @@ Describe( an_object_update )
   {
     TestBehavior* behavior_spy( new TestBehavior() );
     recreated_object->add_behavior( yarrr::ObjectBehavior::Pointer( behavior_spy ) );
-    AssertThat( behavior_spy->number_of_test_behavior_registrations, Equals( 3 ) );
+    AssertThat( behavior_spy->number_of_test_behavior_registrations, Equals( 3u ) );
   }
 
   yarrr::Object::Pointer recreated_object;
