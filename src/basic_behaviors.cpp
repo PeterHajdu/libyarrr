@@ -9,6 +9,11 @@ namespace yarrr
 {
 yarrr::AutoEntityRegister< PhysicalBehavior > auto_physical_behavior_register;
 
+PhysicalBehavior::PhysicalBehavior( const PhysicalParameters& physical_parameters )
+  : physical_parameters( physical_parameters )
+{
+}
+
 void
 PhysicalBehavior::register_to(
     the::ctci::Dispatcher& dispatcher,
@@ -67,6 +72,13 @@ PhysicalBehavior::do_deserialize( yarrr::Deserializer& deserializer )
   physical_parameters.angle = deserializer.pop_front<int16_t>();
   physical_parameters.vangle = deserializer.pop_front<int16_t>();
   physical_parameters.timestamp = deserializer.pop_front<the::time::Time>();
+}
+
+
+ObjectBehavior::Pointer
+PhysicalBehavior::clone() const
+{
+  return ObjectBehavior::Pointer( new PhysicalBehavior( physical_parameters ) );
 }
 
 

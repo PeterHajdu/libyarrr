@@ -71,6 +71,14 @@ Describe( a_physical_behavior )
     AssertThat( deserialized_physical_behavior.physical_parameters, Equals( physical_behavior->physical_parameters ) );
   }
 
+  It( can_be_cloned )
+  {
+    yarrr::ObjectBehavior::Pointer clone( physical_behavior->clone() );
+    const yarrr::PhysicalBehavior& clone_physical_behavior(
+        static_cast< const yarrr::PhysicalBehavior& >( *clone ) );
+    AssertThat( clone_physical_behavior.physical_parameters, Equals( physical_behavior->physical_parameters ) );
+  }
+
   std::unique_ptr< yarrr::PhysicalBehavior > physical_behavior;
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;

@@ -24,17 +24,15 @@ class PhysicalBehavior : public ObjectBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_physical_behavior" );
+    PhysicalBehavior() = default;
+    PhysicalBehavior( const PhysicalParameters& );
+
     virtual void register_to(
         the::ctci::Dispatcher&,
         the::ctci::ComponentRegistry& registry ) override;
 
     PhysicalParameters physical_parameters;
-
-    //todo: test clone
-    virtual Pointer clone() const override
-    {
-      return Pointer( new PhysicalBehavior() );
-    }
+    virtual Pointer clone() const override;
 
   private:
     void handle_timer_update( const TimerUpdate& );
