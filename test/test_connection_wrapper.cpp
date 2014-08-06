@@ -12,15 +12,6 @@ namespace
   {
     public:
       add_polymorphic_ctci( "connection_wrapper_test_entity" );
-
-    private:
-      virtual void do_serialize( yarrr::Serializer& serializer ) const
-      {
-      }
-
-      virtual void do_deserialize( yarrr::Deserializer& deserializer )
-      {
-      }
   };
 
   yarrr::AutoEntityRegister<TestEntity> connection_wrapper_test_entity_register;

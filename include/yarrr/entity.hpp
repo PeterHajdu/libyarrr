@@ -23,8 +23,8 @@ class Entity
     void deserialize( const Data& data );
     void deserialize( Deserializer& deserializer );
   private:
-    virtual void do_serialize( Serializer& serializer ) const = 0;
-    virtual void do_deserialize( Deserializer& deserializer ) = 0;
+    virtual void do_serialize( Serializer& serializer ) const {}
+    virtual void do_deserialize( Deserializer& deserializer ) {}
 };
 
 }

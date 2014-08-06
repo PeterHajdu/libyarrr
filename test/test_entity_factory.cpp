@@ -12,14 +12,6 @@ class AutoTestEntity : public yarrr::Entity
 {
   public:
     add_polymorphic_ctci( "auto_test_entity" );
-  private:
-    virtual void do_serialize( yarrr::Serializer& serializer ) const override
-    {
-    }
-
-    virtual void do_deserialize( yarrr::Deserializer& deserializer ) override
-    {
-    }
 };
 
 class TestEntity : public yarrr::Entity

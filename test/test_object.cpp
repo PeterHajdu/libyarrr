@@ -81,14 +81,6 @@ class TestBehavior : public yarrr::ObjectBehavior
       return ObjectBehavior::Pointer( new TestBehavior() );
     }
 
-  private:
-    virtual void do_serialize( yarrr::Serializer& serializer ) const override
-    {
-    }
-
-    virtual void do_deserialize( yarrr::Deserializer& deserializer ) override
-    {
-    }
 };
 
 yarrr::AutoEntityRegister< TestBehavior > register_test_behavior;

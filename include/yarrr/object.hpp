@@ -21,10 +21,6 @@ class ObjectBehavior : public Entity
 
     virtual void register_to( the::ctci::Dispatcher&, the::ctci::ComponentRegistry& ) = 0;
     virtual Pointer clone() const = 0;
-
-  private:
-    virtual void do_serialize( Serializer& serializer ) const = 0;
-    virtual void do_deserialize( Deserializer& deserializer ) = 0;
 };
 
 typedef std::vector< ObjectBehavior::Pointer > BehaviorContainer;

@@ -16,8 +16,8 @@ PhysicalBehavior::PhysicalBehavior( const PhysicalParameters& physical_parameter
 
 void
 PhysicalBehavior::register_to(
-    the::ctci::Dispatcher& dispatcher,
-    the::ctci::ComponentRegistry& registry )
+      the::ctci::Dispatcher& dispatcher,
+      the::ctci::ComponentRegistry& registry )
 {
   registry.register_component< PhysicalBehavior >( *this );
   dispatcher.register_listener< TimerUpdate >( std::bind(
@@ -94,8 +94,15 @@ Engine::register_to(
 }
 
 
+ObjectBehavior::Pointer
+Engine::clone() const
+{
+  return Pointer( new Engine() );
+}
+
+
 Canon::Canon( ObjectContainer& object_container )
-  : m_object_container( object_container )
+: m_object_container( object_container )
 {
 }
 
@@ -120,6 +127,13 @@ Canon::handle_command( const Command& command ) const
 
   Object::Pointer object( new Object() );
   m_object_container.add_object( std::move( object ) );
+}
+
+
+ObjectBehavior::Pointer
+Canon::clone() const
+{
+  return Pointer( new Canon( m_object_container ) );
 }
 
 }

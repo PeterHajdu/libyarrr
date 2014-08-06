@@ -58,8 +58,6 @@ namespace
               m_call_when_event_is_dispatched ) );
       }
     private:
-      virtual void do_serialize( yarrr::Serializer& serializer ) const override {}
-      virtual void do_deserialize( yarrr::Deserializer& deserializer ) override {}
 
       std::function< void() > m_call_when_deleted;
       std::function< void( const Event& ) > m_call_when_event_is_dispatched;

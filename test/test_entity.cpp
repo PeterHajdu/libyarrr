@@ -9,16 +9,6 @@ namespace
   {
     public:
       add_polymorphic_ctci( "test_entity" );
-
-    private:
-      virtual void do_serialize( yarrr::Serializer& serializer ) const
-      {
-      }
-
-      virtual void do_deserialize( yarrr::Deserializer& deserializer )
-      {
-      }
-
   };
 }
 
