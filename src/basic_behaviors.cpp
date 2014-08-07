@@ -15,7 +15,7 @@ namespace
   yarrr::AutoEntityRegister< yarrr::ShipGraphics > auto_ship_graphics_register;
   yarrr::AutoEntityRegister< yarrr::LaserGraphics > auto_laser_graphics_register;
 
-  const int laser_speed{ 10 };
+  const int laser_speed{ 1000 };
 }
 
 namespace yarrr
