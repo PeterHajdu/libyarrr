@@ -1,5 +1,6 @@
 #include <yarrr/physical_parameters.hpp>
 #include <sstream>
+#include <cmath>
 
 namespace yarrr
 {
@@ -39,6 +40,16 @@ void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParamet
   physical_parameters.angle+=physical_parameters.vangle * ratio;
   physical_parameters.timestamp = timestamp;
 }
+
+
+Coordinate
+heading( const PhysicalParameters& parameters, int multiplier )
+{
+  return Coordinate(
+      cos( (parameters.angle >> 2) * 3.14 / 180.0 ) * multiplier,
+      sin( (parameters.angle >> 2) * 3.14 / 180.0 ) * multiplier );
+}
+
 
 }
 

@@ -7,7 +7,7 @@
 
 namespace
 {
-  const float back_engine_power{ 12.0 };
+  const int back_engine_power{ 12 };
   const int cw_engine_power{ 30 };
 }
 
@@ -39,10 +39,7 @@ ShipControl::handle_command( const Command& command )
 void
 ShipControl::thruster()
 {
-  const yarrr::Coordinate heading{
-    static_cast< int64_t >( back_engine_power * cos( m_physical_parameters.angle * 3.14 / 180.0 / 4.0 ) ),
-    static_cast< int64_t >( back_engine_power * sin( m_physical_parameters.angle * 3.14 / 180.0 / 4.0 ) ) };
-  m_physical_parameters.velocity += heading;
+  m_physical_parameters.velocity += heading( m_physical_parameters, back_engine_power );
 }
 
 void
