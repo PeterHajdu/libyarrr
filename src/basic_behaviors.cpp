@@ -4,15 +4,20 @@
 #include <yarrr/object_container.hpp>
 #include <yarrr/bitmagic.hpp>
 #include <yarrr/entity_factory.hpp>
+#include <yarrr/graphical_engine.hpp>
+
+#include <thectci/service_registry.hpp>
 
 namespace
 {
   yarrr::AutoEntityRegister< yarrr::PhysicalBehavior > auto_physical_behavior_register;
   yarrr::AutoEntityRegister< yarrr::Engine > auto_engine_register;
+  yarrr::AutoEntityRegister< yarrr::GraphicalBehavior > auto_graphical_behavior_register;
 }
 
 namespace yarrr
 {
+
 
 PhysicalBehavior::PhysicalBehavior( const PhysicalParameters& physical_parameters )
   : physical_parameters( physical_parameters )
@@ -137,6 +142,42 @@ ObjectBehavior::Pointer
 Canon::clone() const
 {
   return Pointer( new Canon( m_object_container ) );
+}
+
+GraphicalBehavior::GraphicalBehavior()
+  : yarrr::GraphicalObject( the::ctci::service< yarrr::GraphicalEngine >() )
+  , m_physical_behavior( nullptr )
+{
+}
+
+ObjectBehavior::Pointer
+GraphicalBehavior::clone() const
+{
+  return Pointer( new GraphicalBehavior() );
+}
+
+void
+GraphicalBehavior::register_to(
+    the::ctci::Dispatcher& dispatcher,
+    the::ctci::ComponentRegistry& registry )
+{
+  m_physical_behavior = &registry.component< yarrr::PhysicalBehavior >();
+  dispatcher.register_listener< FocusOnObject >( std::bind(
+        &GraphicalBehavior::handle_focus_on_object, this, std::placeholders::_1 ) );
+}
+
+void
+GraphicalBehavior::handle_focus_on_object( const FocusOnObject& )
+{
+  assert( m_physical_behavior );
+  m_graphical_engine.focus_to( m_physical_behavior->physical_parameters.coordinate );
+}
+
+void
+GraphicalBehavior::draw() const
+{
+  assert( m_physical_behavior );
+  m_graphical_engine.draw_ship( m_physical_behavior->physical_parameters );
 }
 
 }

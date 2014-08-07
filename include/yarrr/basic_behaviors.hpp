@@ -4,6 +4,7 @@
 #include <yarrr/ship_control.hpp>
 #include <thectci/id.hpp>
 #include <thetime/clock.hpp>
+#include <yarrr/graphical_engine.hpp>
 
 namespace yarrr
 {
@@ -38,8 +39,8 @@ class PhysicalBehavior : public ObjectBehavior
     void handle_timer_update( const TimerUpdate& );
     void handle_network_update( const PhysicalBehavior& );
 
-    virtual void do_serialize( yarrr::Serializer& serializer ) const override;
-    virtual void do_deserialize( yarrr::Deserializer& deserializer ) override;
+    virtual void do_serialize( Serializer& serializer ) const override;
+    virtual void do_deserialize( Deserializer& deserializer ) override;
 };
 
 class Command;
@@ -77,6 +78,29 @@ class Canon : public ObjectBehavior
     void handle_command( const Command& ) const;
 
     ObjectContainer& m_object_container;
+};
+
+class FocusOnObject
+{
+  public:
+    add_ctci( "yarrr_focus_on_object" )
+};
+
+class GraphicalBehavior :
+  public ObjectBehavior,
+  public GraphicalObject
+{
+  public:
+    add_polymorphic_ctci( "yarrr_graphical_behavior" );
+    GraphicalBehavior();
+
+    Pointer clone() const override;
+    void register_to( the::ctci::Dispatcher& , the::ctci::ComponentRegistry& ) override;
+    virtual void draw() const override;
+
+  private:
+    void handle_focus_on_object( const FocusOnObject& );
+    PhysicalBehavior* m_physical_behavior;
 };
 
 }

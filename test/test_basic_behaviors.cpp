@@ -1,14 +1,22 @@
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/command.hpp>
-#include <yarrr/ship_control.hpp>
-#include <yarrr/entity_factory.hpp>
 #include <yarrr/object_container.hpp>
+#include <yarrr/dummy_graphical_engine.hpp>
+#include <yarrr/entity_factory.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
+#include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
+#include "test_graphical_engine.hpp"
+
 using namespace igloo;
+
+namespace
+{
+  the::ctci::AutoServiceRegister< yarrr::GraphicalEngine, test::GraphicalEngine > test_graphical_engine_register;
+}
 
 Describe( a_physical_behavior )
 {
@@ -148,6 +156,51 @@ Describe( a_canon )
 
   std::unique_ptr< yarrr::ObjectContainer > object_container;
   std::unique_ptr< yarrr::Canon > canon;
+
+  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
+  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+};
+
+
+Describe( a_graphical_behavior )
+{
+
+  void SetUp()
+  {
+    test_dispatcher.reset( new the::ctci::Dispatcher() );
+    test_registry.reset( new the::ctci::ComponentRegistry() );
+
+    physical_behavior.register_to( *test_dispatcher, *test_registry );
+    graphical_behavior.register_to( *test_dispatcher, *test_registry );
+
+    graphical_engine = static_cast< test::GraphicalEngine* >( &the::ctci::service<yarrr::GraphicalEngine>() );
+    graphical_engine->last_focused_to = physical_behavior.physical_parameters.coordinate + yarrr::Coordinate( 10, 10 );
+  }
+
+
+  It( is_registered_to_entity_factory )
+  {
+    AssertThat( yarrr::EntityFactory::is_registered( yarrr::GraphicalBehavior::ctci ), Equals( true ) );
+  }
+
+  It( focuses_the_engine_to_the_object_if_it_receives_focus_on_object_event )
+  {
+    AssertThat( graphical_engine->last_focused_to, !Equals( physical_behavior.physical_parameters.coordinate ) );
+    test_dispatcher->dispatch( yarrr::FocusOnObject() );
+    AssertThat( graphical_engine->last_focused_to, Equals( physical_behavior.physical_parameters.coordinate ) );
+  }
+
+
+  It( draws_a_ship_with_the_physical_parameters_of_the_object )
+  {
+    AssertThat( graphical_engine->last_drawn_ship, !Equals( physical_behavior.physical_parameters ) );
+    graphical_behavior.draw();
+    AssertThat( graphical_engine->last_drawn_ship, Equals( physical_behavior.physical_parameters ) );
+  }
+
+  test::GraphicalEngine* graphical_engine;
+  yarrr::PhysicalBehavior physical_behavior;
+  yarrr::GraphicalBehavior graphical_behavior;
 
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;

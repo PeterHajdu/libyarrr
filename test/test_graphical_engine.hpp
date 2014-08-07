@@ -1,6 +1,7 @@
 #pragma once
 
 #include <yarrr/graphical_engine.hpp>
+#include <yarrr/physical_parameters.hpp>
 #include <numeric>
 
 namespace test
@@ -9,7 +10,12 @@ namespace test
 class GraphicalEngine : public yarrr::GraphicalEngine
 {
   public:
-    virtual void draw_ship( const yarrr::PhysicalParameters& ) override {}
+
+    yarrr::PhysicalParameters last_drawn_ship;
+    virtual void draw_ship( const yarrr::PhysicalParameters& ship_parameters ) override
+    {
+      last_drawn_ship = ship_parameters;
+    }
 
     std::vector< std::string > printed_texts;
     std::string last_printed_text;
@@ -37,7 +43,12 @@ class GraphicalEngine : public yarrr::GraphicalEngine
       print_text( x, y, accumulated_text, { 255, 255, 255, 255 } );
     }
 
-    virtual void focus_to( const yarrr::Coordinate& ) override {}
+    yarrr::Coordinate last_focused_to;
+    virtual void focus_to( const yarrr::Coordinate& coordinate ) override
+    {
+      last_focused_to = coordinate;
+    }
+
     virtual void update_screen() override {}
 };
 
