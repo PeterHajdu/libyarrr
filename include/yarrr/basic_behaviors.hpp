@@ -91,16 +91,26 @@ class GraphicalBehavior :
   public GraphicalObject
 {
   public:
-    add_polymorphic_ctci( "yarrr_graphical_behavior" );
     GraphicalBehavior();
 
-    Pointer clone() const override;
     void register_to( the::ctci::Dispatcher& , the::ctci::ComponentRegistry& ) override;
-    virtual void draw() const override;
+
+    Pointer clone() const = 0;
+    virtual void draw() const = 0;
+
+  protected:
+    PhysicalBehavior* m_physical_behavior;
 
   private:
     void handle_focus_on_object( const FocusOnObject& );
-    PhysicalBehavior* m_physical_behavior;
+};
+
+class ShipGraphics : public GraphicalBehavior
+{
+  public:
+    add_polymorphic_ctci( "yarrr_ship_graphics" );
+    virtual void draw() const;
+    Pointer clone() const;
 };
 
 }

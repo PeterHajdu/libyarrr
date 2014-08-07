@@ -12,7 +12,7 @@ namespace
 {
   yarrr::AutoEntityRegister< yarrr::PhysicalBehavior > auto_physical_behavior_register;
   yarrr::AutoEntityRegister< yarrr::Engine > auto_engine_register;
-  yarrr::AutoEntityRegister< yarrr::GraphicalBehavior > auto_graphical_behavior_register;
+  yarrr::AutoEntityRegister< yarrr::ShipGraphics > auto_ship_graphics_register;
 }
 
 namespace yarrr
@@ -150,12 +150,6 @@ GraphicalBehavior::GraphicalBehavior()
 {
 }
 
-ObjectBehavior::Pointer
-GraphicalBehavior::clone() const
-{
-  return Pointer( new GraphicalBehavior() );
-}
-
 void
 GraphicalBehavior::register_to(
     the::ctci::Dispatcher& dispatcher,
@@ -173,11 +167,18 @@ GraphicalBehavior::handle_focus_on_object( const FocusOnObject& )
   m_graphical_engine.focus_to( m_physical_behavior->physical_parameters.coordinate );
 }
 
+
 void
-GraphicalBehavior::draw() const
+ShipGraphics::draw() const
 {
   assert( m_physical_behavior );
   m_graphical_engine.draw_ship( m_physical_behavior->physical_parameters );
+}
+
+ObjectBehavior::Pointer
+ShipGraphics::clone() const
+{
+  return Pointer( new ShipGraphics() );
 }
 
 }

@@ -162,7 +162,7 @@ Describe( a_canon )
 };
 
 
-Describe( a_graphical_behavior )
+Describe( graphical_behaviors )
 {
 
   void SetUp()
@@ -171,7 +171,7 @@ Describe( a_graphical_behavior )
     test_registry.reset( new the::ctci::ComponentRegistry() );
 
     physical_behavior.register_to( *test_dispatcher, *test_registry );
-    graphical_behavior.register_to( *test_dispatcher, *test_registry );
+    ship_graphics.register_to( *test_dispatcher, *test_registry );
 
     graphical_engine = static_cast< test::GraphicalEngine* >( &the::ctci::service<yarrr::GraphicalEngine>() );
     graphical_engine->last_focused_to = physical_behavior.physical_parameters.coordinate + yarrr::Coordinate( 10, 10 );
@@ -180,7 +180,7 @@ Describe( a_graphical_behavior )
 
   It( is_registered_to_entity_factory )
   {
-    AssertThat( yarrr::EntityFactory::is_registered( yarrr::GraphicalBehavior::ctci ), Equals( true ) );
+    AssertThat( yarrr::EntityFactory::is_registered( yarrr::ShipGraphics::ctci ), Equals( true ) );
   }
 
   It( focuses_the_engine_to_the_object_if_it_receives_focus_on_object_event )
@@ -194,13 +194,13 @@ Describe( a_graphical_behavior )
   It( draws_a_ship_with_the_physical_parameters_of_the_object )
   {
     AssertThat( graphical_engine->last_drawn_ship, !Equals( physical_behavior.physical_parameters ) );
-    graphical_behavior.draw();
+    ship_graphics.draw();
     AssertThat( graphical_engine->last_drawn_ship, Equals( physical_behavior.physical_parameters ) );
   }
 
   test::GraphicalEngine* graphical_engine;
   yarrr::PhysicalBehavior physical_behavior;
-  yarrr::GraphicalBehavior graphical_behavior;
+  yarrr::ShipGraphics ship_graphics;
 
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
