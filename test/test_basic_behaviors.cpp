@@ -1,3 +1,5 @@
+#include "object_spy.hpp"
+
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/command.hpp>
@@ -214,5 +216,40 @@ Describe( graphical_behaviors )
 
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+};
+
+
+Describe( ship_creator )
+{
+
+  void SetUp()
+  {
+    object = yarrr::create_ship( test_container );
+    object_spy = test::spy_on( *object );
+  }
+
+  It ( creates_objects_with_physical_parameters )
+  {
+    AssertThat( object_spy->components->has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
+  }
+
+  It ( creates_objects_with_an_engine )
+  {
+    AssertThat( object_spy->components->has_component< yarrr::Engine >(), Equals( true ) );
+  }
+
+  It ( creates_objects_with_ship_graphics )
+  {
+    AssertThat( object_spy->components->has_component< yarrr::ShipGraphics >(), Equals( true ) );
+  }
+
+  It ( creates_objects_with_a_canon )
+  {
+    AssertThat( object_spy->components->has_component< yarrr::Canon >(), Equals( true ) );
+  }
+
+  yarrr::Object::Pointer object;
+  test::ObjectSpy* object_spy;
+  yarrr::ObjectContainer test_container;
 };
 

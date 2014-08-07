@@ -100,6 +100,7 @@ Engine::register_to(
       new ShipControl( registry.component< PhysicalBehavior >().physical_parameters ) );
   dispatcher.register_listener< yarrr::Command  >(
       std::bind( &ShipControl::handle_command, *m_ship_control, std::placeholders::_1 ) );
+  registry.register_component( *this );
 }
 
 
@@ -119,10 +120,11 @@ Canon::Canon( ObjectContainer& object_container )
 void
 Canon::register_to(
     the::ctci::Dispatcher& dispatcher,
-    the::ctci::ComponentRegistry& )
+    the::ctci::ComponentRegistry& components )
 {
   dispatcher.register_listener< yarrr::Command  >(
       std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
+  components.register_component( *this );
 }
 
 
@@ -183,6 +185,16 @@ ShipGraphics::clone() const
 }
 
 void
+ShipGraphics::register_to(
+    the::ctci::Dispatcher& dispatcher,
+    the::ctci::ComponentRegistry& components )
+{
+  components.register_component( *this );
+  GraphicalBehavior::register_to( dispatcher, components );
+}
+
+
+void
 LaserGraphics::draw() const
 {
   assert( m_physical_behavior );
@@ -193,6 +205,17 @@ ObjectBehavior::Pointer
 LaserGraphics::clone() const
 {
   return Pointer( new LaserGraphics() );
+}
+
+Object::Pointer
+create_ship( ObjectContainer& objects )
+{
+  yarrr::Object::Pointer ship( new yarrr::Object() );
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Engine() ) );
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShipGraphics() ) );
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon( objects ) ) );
+  return ship;
 }
 
 }

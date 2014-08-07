@@ -111,6 +111,7 @@ class ShipGraphics : public GraphicalBehavior
     add_polymorphic_ctci( "yarrr_ship_graphics" );
     virtual void draw() const;
     Pointer clone() const;
+    void register_to( the::ctci::Dispatcher& , the::ctci::ComponentRegistry& ) override;
 };
 
 class LaserGraphics : public GraphicalBehavior
@@ -120,5 +121,8 @@ class LaserGraphics : public GraphicalBehavior
     virtual void draw() const;
     Pointer clone() const;
 };
+
+Object::Pointer create_ship( ObjectContainer& objects );
+
 }
 
