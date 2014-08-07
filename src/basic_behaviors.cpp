@@ -13,6 +13,7 @@ namespace
   yarrr::AutoEntityRegister< yarrr::PhysicalBehavior > auto_physical_behavior_register;
   yarrr::AutoEntityRegister< yarrr::Engine > auto_engine_register;
   yarrr::AutoEntityRegister< yarrr::ShipGraphics > auto_ship_graphics_register;
+  yarrr::AutoEntityRegister< yarrr::LaserGraphics > auto_laser_graphics_register;
 }
 
 namespace yarrr
@@ -179,6 +180,19 @@ ObjectBehavior::Pointer
 ShipGraphics::clone() const
 {
   return Pointer( new ShipGraphics() );
+}
+
+void
+LaserGraphics::draw() const
+{
+  assert( m_physical_behavior );
+  m_graphical_engine.draw_laser( m_physical_behavior->physical_parameters );
+}
+
+ObjectBehavior::Pointer
+LaserGraphics::clone() const
+{
+  return Pointer( new LaserGraphics() );
 }
 
 }

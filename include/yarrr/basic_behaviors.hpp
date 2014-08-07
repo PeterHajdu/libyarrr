@@ -113,5 +113,12 @@ class ShipGraphics : public GraphicalBehavior
     Pointer clone() const;
 };
 
+class LaserGraphics : public GraphicalBehavior
+{
+  public:
+    add_polymorphic_ctci( "yarrr_laser_graphics" );
+    virtual void draw() const;
+    Pointer clone() const;
+};
 }
 

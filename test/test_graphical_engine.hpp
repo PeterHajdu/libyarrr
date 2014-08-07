@@ -12,9 +12,15 @@ class GraphicalEngine : public yarrr::GraphicalEngine
   public:
 
     yarrr::PhysicalParameters last_drawn_ship;
-    virtual void draw_ship( const yarrr::PhysicalParameters& ship_parameters ) override
+    virtual void draw_ship( const yarrr::PhysicalParameters& parameters ) override
     {
-      last_drawn_ship = ship_parameters;
+      last_drawn_ship = parameters;
+    }
+
+    yarrr::PhysicalParameters last_drawn_laser;
+    virtual void draw_laser( const yarrr::PhysicalParameters& parameters ) override
+    {
+      last_drawn_laser = parameters;
     }
 
     std::vector< std::string > printed_texts;
