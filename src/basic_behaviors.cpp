@@ -5,9 +5,14 @@
 #include <yarrr/bitmagic.hpp>
 #include <yarrr/entity_factory.hpp>
 
+namespace
+{
+  yarrr::AutoEntityRegister< yarrr::PhysicalBehavior > auto_physical_behavior_register;
+  yarrr::AutoEntityRegister< yarrr::Engine > auto_engine_register;
+}
+
 namespace yarrr
 {
-yarrr::AutoEntityRegister< PhysicalBehavior > auto_physical_behavior_register;
 
 PhysicalBehavior::PhysicalBehavior( const PhysicalParameters& physical_parameters )
   : physical_parameters( physical_parameters )

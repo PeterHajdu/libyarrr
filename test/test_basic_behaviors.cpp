@@ -107,6 +107,13 @@ Describe( an_engine )
     AssertThat( old_physical_parameters, !Equals( physical_behavior.physical_parameters ) );
   }
 
+
+  It( is_registered_to_entity_factory )
+  {
+    AssertThat( yarrr::EntityFactory::is_registered( yarrr::Engine::ctci ), Equals( true ) );
+  }
+
+
   yarrr::PhysicalBehavior physical_behavior;
   yarrr::Engine engine;
 
