@@ -120,9 +120,11 @@ class LaserGraphics : public GraphicalBehavior
     add_polymorphic_ctci( "yarrr_laser_graphics" );
     virtual void draw() const;
     Pointer clone() const;
+    void register_to( the::ctci::Dispatcher& , the::ctci::ComponentRegistry& ) override;
 };
 
 Object::Pointer create_ship( ObjectContainer& objects );
+Object::Pointer create_laser();
 
 }
 

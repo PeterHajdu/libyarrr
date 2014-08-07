@@ -253,3 +253,27 @@ Describe( ship_creator )
   yarrr::ObjectContainer test_container;
 };
 
+Describe( laser_creator )
+{
+
+  void SetUp()
+  {
+    object = yarrr::create_laser();
+    object_spy = test::spy_on( *object );
+  }
+
+  It ( creates_objects_with_physical_parameters )
+  {
+    AssertThat( object_spy->components->has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
+  }
+
+  It ( creates_objects_with_laser_graphics )
+  {
+    AssertThat( object_spy->components->has_component< yarrr::LaserGraphics >(), Equals( true ) );
+  }
+
+  yarrr::Object::Pointer object;
+  test::ObjectSpy* object_spy;
+  yarrr::ObjectContainer test_container;
+};
+

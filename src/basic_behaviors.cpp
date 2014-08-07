@@ -207,6 +207,16 @@ LaserGraphics::clone() const
   return Pointer( new LaserGraphics() );
 }
 
+
+void
+LaserGraphics::register_to(
+    the::ctci::Dispatcher& dispatcher,
+    the::ctci::ComponentRegistry& components )
+{
+  components.register_component( *this );
+  GraphicalBehavior::register_to( dispatcher, components );
+}
+
 Object::Pointer
 create_ship( ObjectContainer& objects )
 {
@@ -215,6 +225,15 @@ create_ship( ObjectContainer& objects )
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Engine() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShipGraphics() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon( objects ) ) );
+  return ship;
+}
+
+Object::Pointer
+create_laser()
+{
+  yarrr::Object::Pointer ship( new yarrr::Object() );
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LaserGraphics() ) );
   return ship;
 }
 
