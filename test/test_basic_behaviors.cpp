@@ -140,6 +140,8 @@ Describe( a_canon )
     test_registry.reset( new the::ctci::ComponentRegistry() );
 
     object_container.reset( new yarrr::ObjectContainer() );
+
+    physical_behavior.register_to( *test_dispatcher, *test_registry );
     canon.reset( new yarrr::Canon( *object_container ) );
     canon->register_to( *test_dispatcher, *test_registry );
   }
@@ -157,6 +159,7 @@ Describe( a_canon )
   }
 
   std::unique_ptr< yarrr::ObjectContainer > object_container;
+  yarrr::PhysicalBehavior physical_behavior;
   std::unique_ptr< yarrr::Canon > canon;
 
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
@@ -258,13 +261,12 @@ Describe( laser_creator )
 
   void SetUp()
   {
-    object = yarrr::create_laser();
+    ships_physical_parameters.vangle = 100;
+    object = yarrr::create_laser( ships_physical_parameters );
     object_spy = test::spy_on( *object );
-  }
 
-  It ( creates_objects_with_physical_parameters )
-  {
     AssertThat( object_spy->components->has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
+    laser_parameters = object_spy->components->component<yarrr::PhysicalBehavior>().physical_parameters;
   }
 
   It ( creates_objects_with_laser_graphics )
@@ -272,6 +274,13 @@ Describe( laser_creator )
     AssertThat( object_spy->components->has_component< yarrr::LaserGraphics >(), Equals( true ) );
   }
 
+  It ( creates_objects_that_do_not_spin )
+  {
+    AssertThat( laser_parameters.vangle, Equals( 0 ) );
+  }
+
+  yarrr::PhysicalParameters ships_physical_parameters;
+  yarrr::PhysicalParameters laser_parameters;
   yarrr::Object::Pointer object;
   test::ObjectSpy* object_spy;
   yarrr::ObjectContainer test_container;

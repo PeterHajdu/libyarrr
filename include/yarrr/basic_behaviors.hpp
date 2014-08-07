@@ -78,6 +78,7 @@ class Canon : public ObjectBehavior
     void handle_command( const Command& ) const;
 
     ObjectContainer& m_object_container;
+    PhysicalBehavior* m_physical_behavior;
 };
 
 class FocusOnObject
@@ -124,7 +125,7 @@ class LaserGraphics : public GraphicalBehavior
 };
 
 Object::Pointer create_ship( ObjectContainer& objects );
-Object::Pointer create_laser();
+Object::Pointer create_laser( const PhysicalParameters& ships_parameters );
 
 }
 

@@ -113,6 +113,7 @@ Engine::clone() const
 
 Canon::Canon( ObjectContainer& object_container )
 : m_object_container( object_container )
+, m_physical_behavior( nullptr )
 {
 }
 
@@ -124,6 +125,7 @@ Canon::register_to(
 {
   dispatcher.register_listener< yarrr::Command  >(
       std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
+  m_physical_behavior = &components.component< yarrr::PhysicalBehavior >();
   components.register_component( *this );
 }
 
@@ -136,8 +138,8 @@ Canon::handle_command( const Command& command ) const
     return;
   }
 
-  Object::Pointer object( new Object() );
-  m_object_container.add_object( std::move( object ) );
+  assert( m_physical_behavior );
+  m_object_container.add_object( create_laser( m_physical_behavior->physical_parameters ) );
 }
 
 
@@ -229,10 +231,12 @@ create_ship( ObjectContainer& objects )
 }
 
 Object::Pointer
-create_laser()
+create_laser( const PhysicalParameters& ships_parameters )
 {
   yarrr::Object::Pointer ship( new yarrr::Object() );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
+  std::unique_ptr< PhysicalBehavior > physical_behavior( new yarrr::PhysicalBehavior( ships_parameters ) );
+  physical_behavior->physical_parameters.vangle = 0;
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior.release() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LaserGraphics() ) );
   return ship;
 }
