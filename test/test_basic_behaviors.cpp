@@ -279,6 +279,11 @@ Describe( laser_creator )
     AssertThat( laser_parameters.vangle, Equals( 0 ) );
   }
 
+  It ( creates_objects_that_move_with_a_different_velocity )
+  {
+    AssertThat( laser_parameters.velocity, !Equals( ships_physical_parameters.velocity ) );
+  }
+
   yarrr::PhysicalParameters ships_physical_parameters;
   yarrr::PhysicalParameters laser_parameters;
   yarrr::Object::Pointer object;

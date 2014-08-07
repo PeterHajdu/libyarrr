@@ -14,6 +14,8 @@ namespace
   yarrr::AutoEntityRegister< yarrr::Engine > auto_engine_register;
   yarrr::AutoEntityRegister< yarrr::ShipGraphics > auto_ship_graphics_register;
   yarrr::AutoEntityRegister< yarrr::LaserGraphics > auto_laser_graphics_register;
+
+  const int laser_speed{ 10 };
 }
 
 namespace yarrr
@@ -236,6 +238,7 @@ create_laser( const PhysicalParameters& ships_parameters )
   yarrr::Object::Pointer ship( new yarrr::Object() );
   std::unique_ptr< PhysicalBehavior > physical_behavior( new yarrr::PhysicalBehavior( ships_parameters ) );
   physical_behavior->physical_parameters.vangle = 0;
+  physical_behavior->physical_parameters.velocity += heading( ships_parameters, laser_speed );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior.release() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LaserGraphics() ) );
   return ship;
