@@ -6,8 +6,3 @@ namespace
   the::ctci::AutoServiceRegister< yarrr::EngineDispatcher, yarrr::EngineDispatcher > auto_engine_dispatcher_register;
 }
 
-namespace yarrr
-{
-
-}
-

@@ -27,6 +27,7 @@ set(TEST_SOURCE_FILES
     test_stream_to_chat.cpp
     test_object_container.cpp
     test_engine_dispatcher.cpp
+    test_services.cpp
     )
 
 
