@@ -81,6 +81,31 @@ class Canon : public ObjectBehavior
     PhysicalBehavior* m_physical_behavior;
 };
 
+class SelfDestructor : public ObjectBehavior
+{
+  public:
+    add_polymorphic_ctci( "yarrr_self_destructor" );
+    SelfDestructor(
+        Object::Id object_id,
+        const the::time::Time& lifespan,
+        ObjectContainer& object_container );
+
+    virtual void register_to(
+        the::ctci::Dispatcher&,
+        the::ctci::ComponentRegistry& registry ) override;
+
+    virtual Pointer clone() const override;
+
+  private:
+    void handle_timer_update( const TimerUpdate& );
+
+    ObjectContainer& m_object_container;
+    the::time::Time m_lifespan;
+    Object::Id m_object_id;
+
+    the::time::Time m_time_to_die;
+};
+
 class FocusOnObject
 {
   public:

@@ -112,6 +112,52 @@ Engine::clone() const
   return Pointer( new Engine() );
 }
 
+SelfDestructor::SelfDestructor(
+    Object::Id object_id,
+    const the::time::Time& lifespan,
+    ObjectContainer& object_container )
+: m_object_container( object_container )
+, m_lifespan( lifespan )
+, m_object_id( object_id )
+, m_time_to_die( 0u )
+{
+}
+
+
+void
+SelfDestructor::register_to(
+    the::ctci::Dispatcher& dispatcher,
+    the::ctci::ComponentRegistry& components )
+{
+  dispatcher.register_listener< yarrr::TimerUpdate  >(
+      std::bind( &SelfDestructor::handle_timer_update, this, std::placeholders::_1 ) );
+  components.register_component( *this );
+}
+
+
+void
+SelfDestructor::handle_timer_update( const TimerUpdate& timer_update )
+{
+  if ( !m_time_to_die )
+  {
+    m_time_to_die = timer_update.timestamp + m_lifespan;
+    return;
+  }
+
+  if ( m_time_to_die > timer_update.timestamp )
+  {
+    return;
+  }
+
+  m_object_container.delete_object( m_object_id );
+}
+
+
+ObjectBehavior::Pointer
+SelfDestructor::clone() const
+{
+  return Pointer( new SelfDestructor( m_object_id, m_lifespan, m_object_container ) );
+}
 
 Canon::Canon( ObjectContainer& object_container )
 : m_object_container( object_container )

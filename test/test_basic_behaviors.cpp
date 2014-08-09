@@ -221,6 +221,49 @@ Describe( graphical_behaviors )
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
 };
 
+Describe( self_destructor )
+{
+
+  void SetUp()
+  {
+    test_dispatcher.reset( new the::ctci::Dispatcher() );
+    test_registry.reset( new the::ctci::ComponentRegistry() );
+    object_container.reset( new yarrr::ObjectContainer() );
+    object_container->add_object( yarrr::Object::Pointer( new yarrr::Object( object_id ) ) );
+    self_destructor.reset( new yarrr::SelfDestructor( object_id, lifespan, *object_container ) );
+
+    self_destructor->register_to( *test_dispatcher, *test_registry );
+    test_dispatcher->dispatch( yarrr::TimerUpdate( now ) );
+  }
+
+
+  It( is_not_registered_to_entity_factory )
+  {
+    AssertThat( yarrr::EntityFactory::is_registered( yarrr::SelfDestructor::ctci ), Equals( false ) );
+  }
+
+  It( should_not_delete_object_from_the_container_if_lifespan_is_not_exceeded )
+  {
+    test_dispatcher->dispatch( yarrr::TimerUpdate( now + less_than_the_lifespan ) );
+    AssertThat( object_container->has_object_with_id( object_id ), Equals( true ) );
+  }
+
+  It( deletes_the_object_from_the_container_if_lifespan_is_exceeded )
+  {
+    test_dispatcher->dispatch( yarrr::TimerUpdate( now + lifespan ) );
+    AssertThat( object_container->has_object_with_id( object_id ), Equals( false ) );
+  }
+
+  std::unique_ptr< yarrr::SelfDestructor > self_destructor;
+  std::unique_ptr< yarrr::ObjectContainer > object_container;
+  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
+  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+
+  yarrr::Object::Id object_id{ 100u };
+  const the::time::Time now{ 100u };
+  const the::time::Time lifespan{ 1000u };
+  const the::time::Time less_than_the_lifespan{ 500u };
+};
 
 Describe( ship_creator )
 {
