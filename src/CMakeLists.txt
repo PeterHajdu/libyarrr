@@ -15,6 +15,7 @@ set(SOURCE_FILES
   graphical_engine.cpp
   cli.cpp
   terminal.cpp
+  engine_dispatcher.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
