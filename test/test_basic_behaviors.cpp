@@ -179,8 +179,12 @@ Describe( graphical_behaviors )
     test_registry.reset( new the::ctci::ComponentRegistry() );
 
     physical_behavior.register_to( *test_dispatcher, *test_registry );
-    ship_graphics.register_to( *test_dispatcher, *test_registry );
-    laser_graphics.register_to( *test_dispatcher, *test_registry );
+
+    ship_graphics.reset( new yarrr::ShipGraphics() );
+    ship_graphics->register_to( *test_dispatcher, *test_registry );
+
+    laser_graphics.reset( new yarrr::LaserGraphics() );
+    laser_graphics->register_to( *test_dispatcher, *test_registry );
 
     graphical_engine = static_cast< test::GraphicalEngine* >( &the::ctci::service<yarrr::GraphicalEngine>() );
     graphical_engine->last_focused_to = physical_behavior.physical_parameters.coordinate + yarrr::Coordinate( 10, 10 );
@@ -204,22 +208,22 @@ Describe( graphical_behaviors )
   It( draws_a_ship_with_the_physical_parameters_of_the_object )
   {
     AssertThat( graphical_engine->last_drawn_ship, !Equals( physical_behavior.physical_parameters ) );
-    ship_graphics.draw();
+    ship_graphics->draw();
     AssertThat( graphical_engine->last_drawn_ship, Equals( physical_behavior.physical_parameters ) );
   }
 
   It( draws_a_laser_with_the_physical_parameters_of_the_object )
   {
     AssertThat( graphical_engine->last_drawn_laser, !Equals( physical_behavior.physical_parameters ) );
-    laser_graphics.draw();
+    laser_graphics->draw();
     AssertThat( graphical_engine->last_drawn_laser, Equals( physical_behavior.physical_parameters ) );
   }
 
   test::GraphicalEngine* graphical_engine;
   yarrr::PhysicalBehavior physical_behavior;
-  yarrr::ShipGraphics ship_graphics;
-  yarrr::LaserGraphics laser_graphics;
 
+  std::unique_ptr< yarrr::ShipGraphics > ship_graphics;
+  std::unique_ptr< yarrr::LaserGraphics > laser_graphics;
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
 };
