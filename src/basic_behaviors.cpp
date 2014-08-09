@@ -5,9 +5,10 @@
 #include <yarrr/bitmagic.hpp>
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/graphical_engine.hpp>
+#include <yarrr/engine_dispatcher.hpp>
 
 #include <thectci/service_registry.hpp>
-#include <thelog/logger.hpp>
+#include <thelog/trace.hpp>
 
 namespace
 {
@@ -115,10 +116,8 @@ Engine::clone() const
 
 SelfDestructor::SelfDestructor(
     Object::Id object_id,
-    const the::time::Time& lifespan,
-    ObjectContainer& object_container )
-: m_object_container( object_container )
-, m_lifespan( lifespan )
+    const the::time::Time& lifespan )
+: m_lifespan( lifespan )
 , m_object_id( object_id )
 , m_time_to_die( 0u )
 {
@@ -150,20 +149,18 @@ SelfDestructor::handle_timer_update( const TimerUpdate& timer_update )
     return;
   }
 
-  thelog( 1 )( "deleting object with self destructor" );
-  m_object_container.delete_object( m_object_id );
+  the::ctci::service< yarrr::EngineDispatcher >().dispatch( DeleteObject( m_object_id ) );
 }
 
 
 ObjectBehavior::Pointer
 SelfDestructor::clone() const
 {
-  return Pointer( new SelfDestructor( m_object_id, m_lifespan, m_object_container ) );
+  return Pointer( new SelfDestructor( m_object_id, m_lifespan ) );
 }
 
-Canon::Canon( ObjectContainer& object_container )
-: m_object_container( object_container )
-, m_physical_behavior( nullptr )
+Canon::Canon()
+: m_physical_behavior( nullptr )
 {
 }
 
@@ -189,14 +186,16 @@ Canon::handle_command( const Command& command ) const
   }
 
   assert( m_physical_behavior );
-  m_object_container.add_object( create_laser( m_physical_behavior->physical_parameters, m_object_container ) );
+
+  the::ctci::service< yarrr::EngineDispatcher >().dispatch( Canon::AddObject(
+        create_laser( m_physical_behavior->physical_parameters ) ) );
 }
 
 
 ObjectBehavior::Pointer
 Canon::clone() const
 {
-  return Pointer( new Canon( m_object_container ) );
+  return Pointer( new Canon() );
 }
 
 GraphicalBehavior::GraphicalBehavior()
@@ -270,18 +269,18 @@ LaserGraphics::register_to(
 }
 
 Object::Pointer
-create_ship( ObjectContainer& objects )
+create_ship()
 {
   yarrr::Object::Pointer ship( new yarrr::Object() );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Engine() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShipGraphics() ) );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon( objects ) ) );
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon() ) );
   return ship;
 }
 
 Object::Pointer
-create_laser( const PhysicalParameters& ships_parameters, ObjectContainer& objects )
+create_laser( const PhysicalParameters& ships_parameters )
 {
   yarrr::Object::Pointer ship( new yarrr::Object() );
   std::unique_ptr< PhysicalBehavior > physical_behavior( new yarrr::PhysicalBehavior( ships_parameters ) );
@@ -291,7 +290,7 @@ create_laser( const PhysicalParameters& ships_parameters, ObjectContainer& objec
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LaserGraphics() ) );
 
   ship->add_behavior( yarrr::ObjectBehavior::Pointer(
-        new yarrr::SelfDestructor( ship->id, 3000000u, objects ) ) );
+        new yarrr::SelfDestructor( ship->id, 3000000u ) ) );
 
   return ship;
 }

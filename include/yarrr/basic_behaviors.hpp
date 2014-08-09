@@ -60,13 +60,25 @@ class Engine : public ObjectBehavior
     std::unique_ptr< ShipControl > m_ship_control;
 };
 
-class ObjectContainer;
 //todo: should not be sent to the client side
 class Canon : public ObjectBehavior
 {
   public:
+    class AddObject
+    {
+      public:
+        add_ctci( "yarrr_canon_add_object" );
+
+        AddObject( Object::Pointer&& object )
+          : object( std::move( object ) )
+        {
+        }
+
+        Object::Pointer object;
+    };
+
     add_polymorphic_ctci( "yarrr_canon" );
-    Canon( ObjectContainer& object_container );
+    Canon();
 
     virtual void register_to(
         the::ctci::Dispatcher&,
@@ -77,18 +89,30 @@ class Canon : public ObjectBehavior
   private:
     void handle_command( const Command& ) const;
 
-    ObjectContainer& m_object_container;
     PhysicalBehavior* m_physical_behavior;
 };
 
+//todo: remove object container parameter
 class SelfDestructor : public ObjectBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_self_destructor" );
+    class DeleteObject
+    {
+      public:
+        add_ctci( "yarrr_self_destructor_delete_object" );
+
+        DeleteObject( Object::Id object_id )
+          : id( object_id )
+        {
+        }
+
+        const Object::Id id;
+    };
+
     SelfDestructor(
         Object::Id object_id,
-        const the::time::Time& lifespan,
-        ObjectContainer& object_container );
+        const the::time::Time& lifespan );
 
     virtual void register_to(
         the::ctci::Dispatcher&,
@@ -99,7 +123,6 @@ class SelfDestructor : public ObjectBehavior
   private:
     void handle_timer_update( const TimerUpdate& );
 
-    ObjectContainer& m_object_container;
     the::time::Time m_lifespan;
     Object::Id m_object_id;
 
@@ -149,8 +172,8 @@ class LaserGraphics : public GraphicalBehavior
     void register_to( the::ctci::Dispatcher& , the::ctci::ComponentRegistry& ) override;
 };
 
-Object::Pointer create_ship( ObjectContainer& objects );
-Object::Pointer create_laser( const PhysicalParameters& ships_parameters, ObjectContainer& );
+Object::Pointer create_ship();
+Object::Pointer create_laser( const PhysicalParameters& ships_parameters );
 
 }
 

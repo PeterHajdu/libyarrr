@@ -35,8 +35,7 @@ set(TEST_SOURCE_FILES
 add_executable(test_runner EXCLUDE_FROM_ALL ${TEST_SOURCE_FILES})
 
 
-set(LIB_YARRR "-Wl,--whole-archive -lyarrr -Wl,--no-whole-archive")
-target_link_libraries(test_runner ${LIB_YARRR} thelog theconf thectci ${LIBS})
+target_link_libraries(test_runner yarrr thelog theconf thectci ${LIBS})
 
 get_target_property(TEST_RUNNER_BIN test_runner LOCATION) # for running
 

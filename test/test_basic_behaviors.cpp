@@ -1,5 +1,7 @@
 #include "object_spy.hpp"
 
+#include "test_graphical_engine.hpp"
+#include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/command.hpp>
@@ -11,14 +13,7 @@
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
-#include "test_graphical_engine.hpp"
-
 using namespace igloo;
-
-namespace
-{
-  the::ctci::AutoServiceRegister< yarrr::GraphicalEngine, test::GraphicalEngine > test_graphical_engine_register;
-}
 
 Describe( a_physical_behavior )
 {
@@ -131,6 +126,7 @@ Describe( an_engine )
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
 };
 
+
 Describe( a_canon )
 {
 
@@ -139,26 +135,33 @@ Describe( a_canon )
     test_dispatcher.reset( new the::ctci::Dispatcher() );
     test_registry.reset( new the::ctci::ComponentRegistry() );
 
-    object_container.reset( new yarrr::ObjectContainer() );
-
     physical_behavior.register_to( *test_dispatcher, *test_registry );
-    canon.reset( new yarrr::Canon( *object_container ) );
+    canon.reset( new yarrr::Canon() );
     canon->register_to( *test_dispatcher, *test_registry );
+
+    was_canon_fired = false;
+
+    the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::Canon::AddObject >(
+          [ this ]( const yarrr::Canon::AddObject& )
+          {
+            was_canon_fired = true;
+          } );
   }
 
   It( creates_objects_only_for_fire_command )
   {
     test_dispatcher->dispatch( yarrr::Command( yarrr::Command::cw, 0 ) );
-    AssertThat( *object_container, IsEmpty() );
+    AssertThat( was_canon_fired, Equals( false ) );
   }
 
-  It( creates_new_objects )
+  It( creates_new_objects_when_canon_is_fired )
   {
     test_dispatcher->dispatch( yarrr::Command( yarrr::Command::fire, 0 ) );
-    AssertThat( *object_container, HasLength( 1 ) );
+    AssertThat( was_canon_fired, Equals( true ) );
   }
 
-  std::unique_ptr< yarrr::ObjectContainer > object_container;
+  bool was_canon_fired;
+
   yarrr::PhysicalBehavior physical_behavior;
   std::unique_ptr< yarrr::Canon > canon;
 
@@ -228,12 +231,20 @@ Describe( self_destructor )
   {
     test_dispatcher.reset( new the::ctci::Dispatcher() );
     test_registry.reset( new the::ctci::ComponentRegistry() );
-    object_container.reset( new yarrr::ObjectContainer() );
-    object_container->add_object( yarrr::Object::Pointer( new yarrr::Object( object_id ) ) );
-    self_destructor.reset( new yarrr::SelfDestructor( object_id, lifespan, *object_container ) );
+    self_destructor.reset( new yarrr::SelfDestructor( object_id, lifespan ) );
 
     self_destructor->register_to( *test_dispatcher, *test_registry );
     test_dispatcher->dispatch( yarrr::TimerUpdate( now ) );
+
+    deleted_object_id = 0u;
+    was_object_deleted = false;
+
+    the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::SelfDestructor::DeleteObject >(
+        [ this ]( const yarrr::SelfDestructor::DeleteObject& delete_object )
+        {
+          was_object_deleted = true;
+          deleted_object_id = delete_object.id;
+        } );
   }
 
 
@@ -245,17 +256,20 @@ Describe( self_destructor )
   It( should_not_delete_object_from_the_container_if_lifespan_is_not_exceeded )
   {
     test_dispatcher->dispatch( yarrr::TimerUpdate( now + less_than_the_lifespan ) );
-    AssertThat( object_container->has_object_with_id( object_id ), Equals( true ) );
+    AssertThat( was_object_deleted, Equals( false ) );
   }
 
   It( deletes_the_object_from_the_container_if_lifespan_is_exceeded )
   {
     test_dispatcher->dispatch( yarrr::TimerUpdate( now + lifespan ) );
-    AssertThat( object_container->has_object_with_id( object_id ), Equals( false ) );
+    AssertThat( was_object_deleted, Equals( true ) );
+    AssertThat( deleted_object_id, Equals( object_id ) );
   }
 
+  yarrr::Object::Id deleted_object_id;
+  bool was_object_deleted;
+
   std::unique_ptr< yarrr::SelfDestructor > self_destructor;
-  std::unique_ptr< yarrr::ObjectContainer > object_container;
   std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
   std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
 
@@ -270,7 +284,7 @@ Describe( ship_creator )
 
   void SetUp()
   {
-    object = yarrr::create_ship( test_container );
+    object = yarrr::create_ship();
     object_spy = test::spy_on( *object );
   }
 
@@ -296,7 +310,6 @@ Describe( ship_creator )
 
   yarrr::Object::Pointer object;
   test::ObjectSpy* object_spy;
-  yarrr::ObjectContainer test_container;
 };
 
 Describe( laser_creator )
@@ -305,7 +318,7 @@ Describe( laser_creator )
   void SetUp()
   {
     ships_physical_parameters.vangle = 100;
-    object = yarrr::create_laser( ships_physical_parameters, test_container );
+    object = yarrr::create_laser( ships_physical_parameters );
     object_spy = test::spy_on( *object );
 
     AssertThat( object_spy->components->has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
@@ -336,6 +349,5 @@ Describe( laser_creator )
   yarrr::PhysicalParameters laser_parameters;
   yarrr::Object::Pointer object;
   test::ObjectSpy* object_spy;
-  yarrr::ObjectContainer test_container;
 };
 
