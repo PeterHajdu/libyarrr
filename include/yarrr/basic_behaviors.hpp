@@ -74,7 +74,7 @@ class Canon : public ObjectBehavior
         {
         }
 
-        Object::Pointer object;
+        mutable Object::Pointer object;
     };
 
     add_polymorphic_ctci( "yarrr_canon" );
