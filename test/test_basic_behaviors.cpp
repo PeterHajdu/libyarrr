@@ -305,7 +305,7 @@ Describe( laser_creator )
   void SetUp()
   {
     ships_physical_parameters.vangle = 100;
-    object = yarrr::create_laser( ships_physical_parameters );
+    object = yarrr::create_laser( ships_physical_parameters, test_container );
     object_spy = test::spy_on( *object );
 
     AssertThat( object_spy->components->has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
@@ -315,6 +315,11 @@ Describe( laser_creator )
   It ( creates_objects_with_laser_graphics )
   {
     AssertThat( object_spy->components->has_component< yarrr::LaserGraphics >(), Equals( true ) );
+  }
+
+  It ( creates_objects_with_selfdestructor )
+  {
+    AssertThat( object_spy->components->has_component< yarrr::SelfDestructor >(), Equals( true ) );
   }
 
   It ( creates_objects_that_do_not_spin )

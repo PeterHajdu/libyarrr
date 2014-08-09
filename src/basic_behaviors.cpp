@@ -7,6 +7,7 @@
 #include <yarrr/graphical_engine.hpp>
 
 #include <thectci/service_registry.hpp>
+#include <thelog/logger.hpp>
 
 namespace
 {
@@ -149,6 +150,7 @@ SelfDestructor::handle_timer_update( const TimerUpdate& timer_update )
     return;
   }
 
+  thelog( 1 )( "deleting object with self destructor" );
   m_object_container.delete_object( m_object_id );
 }
 
@@ -187,7 +189,7 @@ Canon::handle_command( const Command& command ) const
   }
 
   assert( m_physical_behavior );
-  m_object_container.add_object( create_laser( m_physical_behavior->physical_parameters ) );
+  m_object_container.add_object( create_laser( m_physical_behavior->physical_parameters, m_object_container ) );
 }
 
 
@@ -279,7 +281,7 @@ create_ship( ObjectContainer& objects )
 }
 
 Object::Pointer
-create_laser( const PhysicalParameters& ships_parameters )
+create_laser( const PhysicalParameters& ships_parameters, ObjectContainer& objects )
 {
   yarrr::Object::Pointer ship( new yarrr::Object() );
   std::unique_ptr< PhysicalBehavior > physical_behavior( new yarrr::PhysicalBehavior( ships_parameters ) );
@@ -287,6 +289,10 @@ create_laser( const PhysicalParameters& ships_parameters )
   physical_behavior->physical_parameters.velocity += heading( ships_parameters, laser_speed );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior.release() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LaserGraphics() ) );
+
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer(
+        new yarrr::SelfDestructor( ship->id, 3000000u, objects ) ) );
+
   return ship;
 }
 

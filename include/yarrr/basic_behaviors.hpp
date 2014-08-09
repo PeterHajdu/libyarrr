@@ -150,7 +150,7 @@ class LaserGraphics : public GraphicalBehavior
 };
 
 Object::Pointer create_ship( ObjectContainer& objects );
-Object::Pointer create_laser( const PhysicalParameters& ships_parameters );
+Object::Pointer create_laser( const PhysicalParameters& ships_parameters, ObjectContainer& );
 
 }
 
