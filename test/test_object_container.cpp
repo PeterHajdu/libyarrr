@@ -1,3 +1,4 @@
+#include "test_events.hpp"
 #include <yarrr/object_container.hpp>
 #include <yarrr/object.hpp>
 #include <igloo/igloo_alt.h>
@@ -6,20 +7,13 @@ using namespace igloo;
 
 namespace
 {
-  //todo: move to a separate file and use it in test object aswell.
-  class Event
-  {
-    public:
-      add_ctci( "a_test_event_for_object_container" );
-  };
-
   class TestBehavior : public yarrr::ObjectBehavior
   {
     public:
       add_polymorphic_ctci( "yarrr_another_test_behavior" );
       TestBehavior(
           std::function< void() > call_when_deleted,
-          std::function< void( const Event& ) > call_when_event_dispatched )
+          std::function< void( const test::Event& ) > call_when_event_dispatched )
         : m_call_when_deleted( call_when_deleted )
         , m_call_when_event_is_dispatched( call_when_event_dispatched )
       {
@@ -27,13 +21,13 @@ namespace
 
       virtual void register_to( yarrr::Object& owner )
       {
-        owner.dispatcher.register_listener< Event >( std::bind(
+        owner.dispatcher.register_listener< test::Event >( std::bind(
               &TestBehavior::handle_event, this, std::placeholders::_1 ) );
         owner.dispatcher.register_listener< TestBehavior >( std::bind(
               &TestBehavior::handle_test_behavior, this, std::placeholders::_1 ) );
       }
 
-      void handle_event( const Event& event )
+      void handle_event( const test::Event& event )
       {
         m_call_when_event_is_dispatched( event );
       }
@@ -58,7 +52,7 @@ namespace
     private:
 
       std::function< void() > m_call_when_deleted;
-      std::function< void( const Event& ) > m_call_when_event_is_dispatched;
+      std::function< void( const test::Event& ) > m_call_when_event_is_dispatched;
   };
 }
 
@@ -75,7 +69,7 @@ Describe(an_object_container)
             {
               deleted_objects.push_back( id );
             },
-            [ this ]( const Event& event )
+            [ this ]( const test::Event& event )
             {
               dispatched_events.push_back( &event );
             } ) );
@@ -185,9 +179,9 @@ Describe(an_object_container)
 
   std::unordered_map< yarrr::Object::Id, const TestBehavior* > behaviors;
 
-  Event test_event;
+  test::Event test_event;
   std::vector< yarrr::Object::Id > deleted_objects;
-  std::vector< const Event* > dispatched_events;
+  std::vector< const test::Event* > dispatched_events;
   const yarrr::Object::Id first_id{ 1 };
   const yarrr::Object::Id second_id{ 2 };
   const yarrr::Object::Id invalid_id{ 20 };
