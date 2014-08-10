@@ -143,6 +143,8 @@ class GraphicalBehavior :
 
   private:
     void handle_focus_on_object( const FocusOnObject& );
+
+    virtual void do_register_to( Object& ) = 0;
 };
 
 class ShipGraphics : public GraphicalBehavior
@@ -151,7 +153,9 @@ class ShipGraphics : public GraphicalBehavior
     add_polymorphic_ctci( "yarrr_ship_graphics" );
     virtual void draw() const;
     Pointer clone() const;
-    void register_to( Object& ) override;
+
+  private:
+    void do_register_to( Object& ) override;
 };
 
 class LaserGraphics : public GraphicalBehavior
@@ -160,7 +164,9 @@ class LaserGraphics : public GraphicalBehavior
     add_polymorphic_ctci( "yarrr_laser_graphics" );
     virtual void draw() const;
     Pointer clone() const;
-    void register_to( Object& ) override;
+
+  private:
+    void do_register_to( Object& ) override;
 };
 
 Object::Pointer create_ship();

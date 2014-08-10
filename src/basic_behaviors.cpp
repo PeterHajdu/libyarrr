@@ -202,6 +202,7 @@ GraphicalBehavior::register_to( Object& owner )
   m_physical_behavior = &owner.components.component< yarrr::PhysicalBehavior >();
   owner.dispatcher.register_listener< FocusOnObject >( std::bind(
         &GraphicalBehavior::handle_focus_on_object, this, std::placeholders::_1 ) );
+  do_register_to( owner );
 }
 
 void
@@ -226,10 +227,9 @@ ShipGraphics::clone() const
 }
 
 void
-ShipGraphics::register_to( Object& owner )
+ShipGraphics::do_register_to( Object& owner )
 {
   owner.components.register_component( *this );
-  GraphicalBehavior::register_to( owner );
 }
 
 
@@ -247,12 +247,10 @@ LaserGraphics::clone() const
 }
 
 
-//todo: this should be solved with template method
 void
-LaserGraphics::register_to( Object& owner )
+LaserGraphics::do_register_to( Object& owner )
 {
   owner.components.register_component( *this );
-  GraphicalBehavior::register_to( owner );
 }
 
 Object::Pointer
