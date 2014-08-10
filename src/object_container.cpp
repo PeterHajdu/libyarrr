@@ -7,7 +7,7 @@ namespace yarrr
 void
 ObjectContainer::add_object( Object::Pointer&& object )
 {
-  register_dispatcher( *object );
+  register_dispatcher( object->dispatcher );
   m_objects.emplace( object->id, std::move( object ) );
 }
 
@@ -21,7 +21,7 @@ ObjectContainer::delete_object( Object::Id id )
     return;
   }
 
-  remove_dispatcher( *object->second );
+  remove_dispatcher( object->second->dispatcher );
   m_objects.erase( object );
 }
 

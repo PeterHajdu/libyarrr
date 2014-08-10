@@ -106,14 +106,14 @@ Describe(an_object)
   It( dispatches_events_to_registered_listeners )
   {
     TestEvent test_event;
-    test_object->dispatch( test_event );
+    test_object->dispatcher.dispatch( test_event );
     AssertThat( test_behavior->dispatched_event, Equals( &test_event ) );
   }
 
   It( dispatches_by_polymorphic_id_if_requested )
   {
     std::unique_ptr< TestEvent > test_event( new TestEventChild() );
-    test_object->polymorphic_dispatch( *test_event );
+    test_object->dispatcher.polymorphic_dispatch( *test_event );
     AssertThat( nullptr == test_behavior->dispatched_event, Equals( true ) );
     AssertThat( test_behavior->dispatched_child_event, Equals( test_event.get() ) );
   }

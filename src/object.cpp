@@ -40,7 +40,7 @@ Object::Object( const Id& id )
 void
 Object::add_behavior( ObjectBehavior::Pointer&& behavior )
 {
-  behavior->register_to( *this, m_components );
+  behavior->register_to( dispatcher, m_components );
   m_behaviors.emplace_back( std::move( behavior ) );
 }
 
@@ -111,7 +111,7 @@ ObjectUpdate::update_object( const Object& object ) const
 {
   for ( const auto& behavior : m_behaviors )
   {
-    object.polymorphic_dispatch( *behavior );
+    object.dispatcher.polymorphic_dispatch( *behavior );
   }
 }
 

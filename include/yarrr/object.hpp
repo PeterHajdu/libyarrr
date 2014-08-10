@@ -27,7 +27,7 @@ typedef std::vector< ObjectBehavior::Pointer > BehaviorContainer;
 
 class ObjectUpdate;
 
-class Object final : public the::ctci::Dispatcher
+class Object final
 {
   public:
     typedef uint64_t Id;
@@ -36,9 +36,9 @@ class Object final : public the::ctci::Dispatcher
     Object();
     Object( const Id& id );
     const Id id;
+    the::ctci::Dispatcher dispatcher;
 
     void add_behavior( ObjectBehavior::Pointer&& behavior );
-
     std::unique_ptr< ObjectUpdate > generate_update() const;
 
   private:

@@ -136,7 +136,7 @@ Describe(an_object_container)
 
   It( can_retrieve_an_object_with_a_given_id )
   {
-    test_container->object_with_id( second_id ).dispatch( test_event );
+    test_container->object_with_id( second_id ).dispatcher.dispatch( test_event );
     AssertThat( dispatched_events, Has().Exactly( 1 ).EqualTo( &test_event ) );
   }
 
