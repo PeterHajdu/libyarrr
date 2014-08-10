@@ -34,7 +34,7 @@ class PhysicalBehavior : public ObjectBehavior
 
     PhysicalParameters physical_parameters;
     virtual Pointer clone() const override;
-
+    virtual ~PhysicalBehavior() = default;
   private:
     void handle_timer_update( const TimerUpdate& );
     void handle_network_update( const PhysicalBehavior& );
