@@ -1,4 +1,5 @@
 #include "test_events.hpp"
+#include "test_behavior.hpp"
 #include <yarrr/object.hpp>
 #include <yarrr/entity.hpp>
 #include <yarrr/entity_factory.hpp>
@@ -11,51 +12,7 @@ using namespace igloo;
 namespace
 {
 
-class TestBehavior : public yarrr::ObjectBehavior
-{
-  public:
-    add_polymorphic_ctci( "yarrr__test_behavior" );
-    bool was_registered{ false };
-    bool test_behavior_was_already_registered{ false };
-    size_t number_of_test_behavior_registrations{ 1 };
-    virtual void register_to( yarrr::Object& owner ) override
-    {
-      was_registered = true;
-      owner.dispatcher.register_listener<test::Event>( std::bind(
-            &TestBehavior::handle_test_event, this, std::placeholders::_1 ) );
-
-      owner.dispatcher.register_listener<TestBehavior>( std::bind(
-            &TestBehavior::handle_behavior_dispatches, this, std::placeholders::_1 ) );
-
-      test_behavior_was_already_registered = owner.components.has_component< TestBehavior >();
-      if ( test_behavior_was_already_registered )
-      {
-        number_of_test_behavior_registrations =
-          ++owner.components.component< TestBehavior >().number_of_test_behavior_registrations;
-      }
-      owner.components.register_component( *this );
-    }
-
-    std::vector< const TestBehavior* > dispatched_behaviors;
-    void handle_behavior_dispatches( const TestBehavior& behavior )
-    {
-      dispatched_behaviors.push_back( &behavior );
-    }
-
-    const test::Event* dispatched_event{ nullptr };
-    void handle_test_event( const test::Event& event )
-    {
-      dispatched_event = &event;
-    }
-
-    virtual ObjectBehavior::Pointer clone() const override
-    {
-      return ObjectBehavior::Pointer( new TestBehavior() );
-    }
-
-};
-
-yarrr::AutoEntityRegister< TestBehavior > register_test_behavior;
+yarrr::AutoEntityRegister< test::Behavior > register_test_behavior;
 
 }
 
@@ -65,7 +22,7 @@ Describe(an_object)
   void SetUp()
   {
     test_object.reset( new yarrr::Object() );
-    test_behavior = new TestBehavior();
+    test_behavior = new test::Behavior();
     test_object->add_behavior( yarrr::ObjectBehavior::Pointer( test_behavior ) );
   }
 
@@ -94,7 +51,7 @@ Describe(an_object)
   }
 
   yarrr::Object::Pointer test_object;
-  TestBehavior* test_behavior;
+  test::Behavior* test_behavior;
 };
 
 Describe( an_object_update )
@@ -110,14 +67,14 @@ Describe( an_object_update )
 
   void add_test_behavior()
   {
-    TestBehavior* new_behavior( new TestBehavior() );
+    test::Behavior* new_behavior( new test::Behavior() );
     test_behaviors.push_back( new_behavior );
     test_object->add_behavior( yarrr::ObjectBehavior::Pointer( new_behavior ) );
   }
 
   void SetUp()
   {
-    assert( yarrr::EntityFactory::is_registered( TestBehavior::ctci ) );
+    assert( yarrr::EntityFactory::is_registered( test::Behavior::ctci ) );
     test_object.reset( new yarrr::Object() );
 
     for ( size_t i( 0 ); i < number_of_behaviors_to_add; ++i )
@@ -152,16 +109,16 @@ Describe( an_object_update )
 
   It( can_create_new_objects_with_the_same_behaviors )
   {
-    TestBehavior* behavior_spy( new TestBehavior() );
+    test::Behavior* behavior_spy( new test::Behavior() );
     recreated_object->add_behavior( yarrr::ObjectBehavior::Pointer( behavior_spy ) );
     AssertThat( behavior_spy->number_of_test_behavior_registrations, Equals( number_of_behaviors_to_add + 1u ) );
   }
 
   It( can_dispatch_behaviors_as_events_on_an_object )
   {
-    const TestBehavior& one_of_the_behaviors( *test_behaviors.back() );
+    const test::Behavior& one_of_the_behaviors( *test_behaviors.back() );
     test_update->update_object( *test_object );
-    AssertThat( one_of_the_behaviors.dispatched_behaviors, HasLength( number_of_behaviors_to_add ) );
+    AssertThat( one_of_the_behaviors.number_of_behaviors_dispatched, Equals( number_of_behaviors_to_add ) );
   }
 
   yarrr::Object::Pointer recreated_object;
@@ -172,6 +129,6 @@ Describe( an_object_update )
   yarrr::Object::Pointer test_object;
 
   const size_t number_of_behaviors_to_add{ 5 };
-  std::vector< const TestBehavior* > test_behaviors;
+  std::vector< const test::Behavior* > test_behaviors;
 };
 
