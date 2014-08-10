@@ -48,12 +48,6 @@ class TestBehavior : public yarrr::ObjectBehavior
       dispatched_event = &event;
     }
 
-    bool was_deleted{ false };
-    virtual ~TestBehavior()
-    {
-      was_deleted = true;
-    }
-
     virtual ObjectBehavior::Pointer clone() const override
     {
       return ObjectBehavior::Pointer( new TestBehavior() );
@@ -73,7 +67,6 @@ Describe(an_object)
     test_object.reset( new yarrr::Object() );
     test_behavior = new TestBehavior();
     test_object->add_behavior( yarrr::ObjectBehavior::Pointer( test_behavior ) );
-    AssertThat( test_behavior->was_deleted, Equals( false ) );
   }
 
   It( registers_behavior )

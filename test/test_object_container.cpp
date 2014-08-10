@@ -1,60 +1,10 @@
 #include "test_events.hpp"
+#include "test_behavior.hpp"
 #include <yarrr/object_container.hpp>
 #include <yarrr/object.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
-
-namespace
-{
-  class TestBehavior : public yarrr::ObjectBehavior
-  {
-    public:
-      add_polymorphic_ctci( "yarrr_another_test_behavior" );
-      TestBehavior(
-          std::function< void() > call_when_deleted,
-          std::function< void( const test::Event& ) > call_when_event_dispatched )
-        : m_call_when_deleted( call_when_deleted )
-        , m_call_when_event_is_dispatched( call_when_event_dispatched )
-      {
-      }
-
-      virtual void register_to( yarrr::Object& owner )
-      {
-        owner.dispatcher.register_listener< test::Event >( std::bind(
-              &TestBehavior::handle_event, this, std::placeholders::_1 ) );
-        owner.dispatcher.register_listener< TestBehavior >( std::bind(
-              &TestBehavior::handle_test_behavior, this, std::placeholders::_1 ) );
-      }
-
-      void handle_event( const test::Event& event )
-      {
-        m_call_when_event_is_dispatched( event );
-      }
-
-      virtual ~TestBehavior()
-      {
-        m_call_when_deleted();
-      }
-
-      bool was_object_updated{ false };
-      void handle_test_behavior( const TestBehavior& )
-      {
-        was_object_updated = true;
-      }
-
-      virtual yarrr::ObjectBehavior::Pointer clone() const override
-      {
-        return yarrr::ObjectBehavior::Pointer( new TestBehavior(
-              m_call_when_deleted,
-              m_call_when_event_is_dispatched ) );
-      }
-    private:
-
-      std::function< void() > m_call_when_deleted;
-      std::function< void( const test::Event& ) > m_call_when_event_is_dispatched;
-  };
-}
 
 Describe(an_object_container)
 {
@@ -63,15 +13,11 @@ Describe(an_object_container)
   {
     yarrr::Object::Pointer new_object( new yarrr::Object( id ) );
 
-    TestBehavior* new_behavior(
-          new TestBehavior(
+    test::Behavior* new_behavior(
+          new test::Behavior(
             [ this, id ]()
             {
               deleted_objects.push_back( id );
-            },
-            [ this ]( const test::Event& event )
-            {
-              dispatched_events.push_back( &event );
             } ) );
     behaviors.emplace( id, new_behavior );
 
@@ -84,7 +30,6 @@ Describe(an_object_container)
     behaviors.clear();
     test_container.reset( new yarrr::ObjectContainer() );
     deleted_objects.clear();
-    dispatched_events.clear();
 
     add_object_with_id( first_id );
     add_object_with_id( second_id );
@@ -107,17 +52,23 @@ Describe(an_object_container)
     test_container->delete_object( invalid_id );
   }
 
+  bool was_event_dispatched_to( yarrr::Object::Id id )
+  {
+    return behaviors[ id ]->dispatched_event == &test_event;
+  }
+
   It( dispatches_events_to_all_objects )
   {
     test_container->dispatch( test_event );
-    AssertThat( dispatched_events, Has().Exactly( 2 ).EqualTo( &test_event ) );
+    AssertThat( was_event_dispatched_to( first_id ), Equals( true ) );
+    AssertThat( was_event_dispatched_to( second_id ), Equals( true ) );
   }
 
   It( does_not_dispatch_to_deleted_objects )
   {
     test_container->delete_object( first_id );
     test_container->dispatch( test_event );
-    AssertThat( dispatched_events, Has().Exactly( 1 ).EqualTo( &test_event ) );
+    AssertThat( was_event_dispatched_to( second_id ), Equals( true ) );
   }
 
   It( can_tell_if_it_contains_an_object_or_not )
@@ -129,7 +80,7 @@ Describe(an_object_container)
   It( can_retrieve_an_object_with_a_given_id )
   {
     test_container->object_with_id( second_id ).dispatcher.dispatch( test_event );
-    AssertThat( dispatched_events, Has().Exactly( 1 ).EqualTo( &test_event ) );
+    AssertThat( was_event_dispatched_to( second_id ), Equals( true ) );
   }
 
   It( can_tell_the_number_of_owned_objects )
@@ -177,11 +128,10 @@ Describe(an_object_container)
     AssertThat( behaviors[ first_id ]->was_object_updated, Equals( false ) );
   }
 
-  std::unordered_map< yarrr::Object::Id, const TestBehavior* > behaviors;
+  std::unordered_map< yarrr::Object::Id, const test::Behavior* > behaviors;
 
   test::Event test_event;
   std::vector< yarrr::Object::Id > deleted_objects;
-  std::vector< const test::Event* > dispatched_events;
   const yarrr::Object::Id first_id{ 1 };
   const yarrr::Object::Id second_id{ 2 };
   const yarrr::Object::Id invalid_id{ 20 };
