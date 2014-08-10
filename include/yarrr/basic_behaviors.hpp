@@ -86,7 +86,6 @@ class Canon : public ObjectBehavior
     PhysicalBehavior* m_physical_behavior;
 };
 
-//todo: remove object container parameter
 class SelfDestructor : public ObjectBehavior
 {
   public:

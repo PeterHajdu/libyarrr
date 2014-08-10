@@ -1,3 +1,4 @@
+#include "test_events.hpp"
 #include <yarrr/object.hpp>
 #include <yarrr/entity.hpp>
 #include <yarrr/entity_factory.hpp>
@@ -10,18 +11,6 @@ using namespace igloo;
 namespace
 {
 
-class TestEvent
-{
-  public:
-    add_polymorphic_ctci( "test_event" );
-};
-
-class TestEventChild : public TestEvent
-{
-  public:
-    add_polymorphic_ctci( "test_event_child" );
-};
-
 class TestBehavior : public yarrr::ObjectBehavior
 {
   public:
@@ -32,10 +21,10 @@ class TestBehavior : public yarrr::ObjectBehavior
     virtual void register_to( yarrr::Object& owner ) override
     {
       was_registered = true;
-      owner.dispatcher.register_listener<TestEvent>( std::bind(
+      owner.dispatcher.register_listener<test::Event>( std::bind(
             &TestBehavior::handle_test_event, this, std::placeholders::_1 ) );
 
-      owner.dispatcher.register_listener<TestEventChild>( std::bind(
+      owner.dispatcher.register_listener< test::EventChild >( std::bind(
             &TestBehavior::handle_test_event_child, this, std::placeholders::_1 ) );
 
       owner.dispatcher.register_listener<TestBehavior>( std::bind(
@@ -56,14 +45,14 @@ class TestBehavior : public yarrr::ObjectBehavior
       dispatched_behaviors.push_back( &behavior );
     }
 
-    const TestEvent* dispatched_event{ nullptr };
-    void handle_test_event( const TestEvent& event )
+    const test::Event* dispatched_event{ nullptr };
+    void handle_test_event( const test::Event& event )
     {
       dispatched_event = &event;
     }
 
-    const TestEvent* dispatched_child_event{ nullptr };
-    void handle_test_event_child( const TestEventChild& event )
+    const test::Event* dispatched_child_event{ nullptr };
+    void handle_test_event_child( const test::EventChild& event )
     {
       dispatched_child_event = &event;
     }
@@ -103,14 +92,14 @@ Describe(an_object)
 
   It( dispatches_events_to_registered_listeners )
   {
-    TestEvent test_event;
+    test::Event test_event;
     test_object->dispatcher.dispatch( test_event );
     AssertThat( test_behavior->dispatched_event, Equals( &test_event ) );
   }
 
   It( dispatches_by_polymorphic_id_if_requested )
   {
-    std::unique_ptr< TestEvent > test_event( new TestEventChild() );
+    std::unique_ptr< test::Event > test_event( new test::EventChild() );
     test_object->dispatcher.polymorphic_dispatch( *test_event );
     AssertThat( nullptr == test_behavior->dispatched_event, Equals( true ) );
     AssertThat( test_behavior->dispatched_child_event, Equals( test_event.get() ) );
