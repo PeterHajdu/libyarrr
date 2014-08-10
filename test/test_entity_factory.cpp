@@ -1,70 +1,30 @@
+#include "test_entity.hpp"
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/entity.hpp>
-#include <yarrr/bitmagic.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
-
-namespace
-{
-
-class AutoTestEntity : public yarrr::Entity
-{
-  public:
-    add_polymorphic_ctci( "auto_test_entity" );
-};
-
-class TestEntity : public yarrr::Entity
-{
-  public:
-    int data;
-
-    TestEntity()
-      : data( 0 )
-    {
-    }
-
-    TestEntity( int data )
-      : data( data )
-    {
-    }
-
-    add_polymorphic_ctci( "test_entity" );
-
-  private:
-    virtual void do_serialize( yarrr::Serializer& serializer ) const override
-    {
-      serializer.push_back( data );
-    }
-
-    virtual void do_deserialize( yarrr::Deserializer& deserializer ) override
-    {
-      data = deserializer.pop_front<int>();
-    }
-};
-
-}
 
 Describe(the_entity_factory)
 {
   void SetUp()
   {
-    if ( !yarrr::EntityFactory::is_registered( TestEntity::ctci ) )
+    if ( !yarrr::EntityFactory::is_registered( test::Entity::ctci ) )
     {
-      yarrr::EntityFactory::register_class<TestEntity>();
+      yarrr::EntityFactory::register_class<test::Entity>();
     }
-    serialized_entity = TestEntity( test_data ).serialize();
+    serialized_entity = test::Entity( test_data ).serialize();
     entity = yarrr::EntityFactory::create( serialized_entity );
   }
 
   It( creates_instances_of_a_registered_class )
   {
-    AssertThat( entity->polymorphic_ctci(), Equals( TestEntity::ctci ) );
+    AssertThat( entity->polymorphic_ctci(), Equals( test::Entity::ctci ) );
   }
 
   It( deserializes_the_class )
   {
-    const TestEntity& test_entity( static_cast<const TestEntity&>( *entity ) );
+    const test::Entity& test_entity( static_cast<const test::Entity&>( *entity ) );
     AssertThat( test_entity.data, Equals( test_data ) );
   }
 
@@ -84,7 +44,7 @@ Describe(the_entity_factory)
 
   It( knows_if_a_class_is_registered )
   {
-    AssertThat( yarrr::EntityFactory::is_registered( TestEntity::ctci ), Equals( true ) );
+    AssertThat( yarrr::EntityFactory::is_registered( test::Entity::ctci ), Equals( true ) );
     AssertThat( yarrr::EntityFactory::is_registered( 0 ), Equals( false ) );
   }
 
@@ -92,6 +52,17 @@ Describe(the_entity_factory)
   yarrr::Data serialized_entity;
   yarrr::Entity::Pointer entity;
 };
+
+namespace
+{
+
+class AutoTestEntity : public yarrr::Entity
+{
+  public:
+    add_polymorphic_ctci( "auto_test_entity" );
+};
+
+}
 
 Describe(an_auto_register)
 {
@@ -101,11 +72,8 @@ Describe(an_auto_register)
 
   It( registers_entity_class_to_entity_factory )
   {
-    yarrr::AutoEntityRegister<AutoTestEntity>();
-    yarrr::Entity::Pointer entity(
-        yarrr::EntityFactory::create(
-          AutoTestEntity().serialize() ) );
-    AssertThat( entity->polymorphic_ctci(), Equals( AutoTestEntity::ctci ) );
+    yarrr::AutoEntityRegister< AutoTestEntity >();
+    AssertThat( yarrr::EntityFactory::is_registered( AutoTestEntity::ctci ), Equals( true ) );
   }
 };
 
