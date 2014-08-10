@@ -37,12 +37,12 @@ class Object final
     Object( const Id& id );
     const Id id;
     the::ctci::Dispatcher dispatcher;
+    the::ctci::ComponentRegistry components;
 
     void add_behavior( ObjectBehavior::Pointer&& behavior );
     std::unique_ptr< ObjectUpdate > generate_update() const;
 
   private:
-    the::ctci::ComponentRegistry m_components;
     BehaviorContainer m_behaviors;
 };
 
