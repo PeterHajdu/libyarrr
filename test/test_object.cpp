@@ -29,27 +29,25 @@ class TestBehavior : public yarrr::ObjectBehavior
     bool was_registered{ false };
     bool test_behavior_was_already_registered{ false };
     size_t number_of_test_behavior_registrations{ 1 };
-    virtual void register_to(
-        the::ctci::Dispatcher& dispatcher,
-        the::ctci::ComponentRegistry& components ) override
+    virtual void register_to( yarrr::Object& owner ) override
     {
       was_registered = true;
-      dispatcher.register_listener<TestEvent>( std::bind(
+      owner.dispatcher.register_listener<TestEvent>( std::bind(
             &TestBehavior::handle_test_event, this, std::placeholders::_1 ) );
 
-      dispatcher.register_listener<TestEventChild>( std::bind(
+      owner.dispatcher.register_listener<TestEventChild>( std::bind(
             &TestBehavior::handle_test_event_child, this, std::placeholders::_1 ) );
 
-      dispatcher.register_listener<TestBehavior>( std::bind(
+      owner.dispatcher.register_listener<TestBehavior>( std::bind(
             &TestBehavior::handle_behavior_dispatches, this, std::placeholders::_1 ) );
 
-      test_behavior_was_already_registered = components.has_component< TestBehavior >();
+      test_behavior_was_already_registered = owner.components.has_component< TestBehavior >();
       if ( test_behavior_was_already_registered )
       {
         number_of_test_behavior_registrations =
-          ++components.component< TestBehavior >().number_of_test_behavior_registrations;
+          ++owner.components.component< TestBehavior >().number_of_test_behavior_registrations;
       }
-      components.register_component( *this );
+      owner.components.register_component( *this );
     }
 
     std::vector< const TestBehavior* > dispatched_behaviors;

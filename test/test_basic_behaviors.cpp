@@ -1,5 +1,3 @@
-#include "object_spy.hpp"
-
 #include "test_graphical_engine.hpp"
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
@@ -20,18 +18,17 @@ Describe( a_physical_behavior )
 
   void SetUp()
   {
-    test_dispatcher.reset( new the::ctci::Dispatcher() );
-    test_registry.reset( new the::ctci::ComponentRegistry() );
+    test_object.reset( new yarrr::Object() );
 
     physical_behavior.reset( new yarrr::PhysicalBehavior() );
     physical_behavior->physical_parameters.velocity = { 100, 100 };
     physical_behavior->physical_parameters.coordinate = { 10, 3 };
-    physical_behavior->register_to( *test_dispatcher, *test_registry );
+    physical_behavior->register_to( *test_object );
   }
 
   It( registers_itself_as_a_component )
   {
-    AssertThat( &test_registry->component<yarrr::PhysicalBehavior>(), Equals( physical_behavior.get() ) );
+    AssertThat( &test_object->components.component<yarrr::PhysicalBehavior>(), Equals( physical_behavior.get() ) );
   }
 
   It( exposes_writable_physical_parameters )
@@ -45,7 +42,7 @@ Describe( a_physical_behavior )
     const yarrr::PhysicalParameters old_physical_parameters(
         physical_behavior->physical_parameters );
 
-    test_dispatcher->dispatch( yarrr::TimerUpdate( old_physical_parameters.timestamp + 100000 ) );
+    test_object->dispatcher.dispatch( yarrr::TimerUpdate( old_physical_parameters.timestamp + 100000 ) );
     AssertThat( old_physical_parameters, !Equals( physical_behavior->physical_parameters ) );
   }
 
@@ -56,7 +53,7 @@ Describe( a_physical_behavior )
         physical_behavior->physical_parameters );
 
     yarrr::PhysicalBehavior other_physical_behavior;
-    test_dispatcher->dispatch( other_physical_behavior );
+    test_object->dispatcher.dispatch( other_physical_behavior );
 
     AssertThat( old_physical_parameters, !Equals( physical_behavior->physical_parameters ) );
     AssertThat( other_physical_behavior.physical_parameters, !Equals( physical_behavior->physical_parameters ) );
@@ -85,8 +82,7 @@ Describe( a_physical_behavior )
   }
 
   std::unique_ptr< yarrr::PhysicalBehavior > physical_behavior;
-  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
-  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+  yarrr::Object::Pointer test_object;
 };
 
 Describe( an_engine )
@@ -94,11 +90,10 @@ Describe( an_engine )
 
   void SetUp()
   {
-    test_dispatcher.reset( new the::ctci::Dispatcher() );
-    test_registry.reset( new the::ctci::ComponentRegistry() );
+    test_object.reset( new yarrr::Object() );
 
-    physical_behavior.register_to( *test_dispatcher, *test_registry );
-    engine.register_to( *test_dispatcher, *test_registry );
+    physical_behavior.register_to( *test_object );
+    engine.register_to( *test_object );
   }
 
 
@@ -107,7 +102,7 @@ Describe( an_engine )
     const yarrr::PhysicalParameters old_physical_parameters(
         physical_behavior.physical_parameters );
 
-    test_dispatcher->dispatch( yarrr::Command( yarrr::Command::thruster, 0 ) );
+    test_object->dispatcher.dispatch( yarrr::Command( yarrr::Command::thruster, 0 ) );
 
     AssertThat( old_physical_parameters, !Equals( physical_behavior.physical_parameters ) );
   }
@@ -122,8 +117,7 @@ Describe( an_engine )
   yarrr::PhysicalBehavior physical_behavior;
   yarrr::Engine engine;
 
-  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
-  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+  yarrr::Object::Pointer test_object;
 };
 
 
@@ -132,12 +126,11 @@ Describe( a_canon )
 
   void SetUp()
   {
-    test_dispatcher.reset( new the::ctci::Dispatcher() );
-    test_registry.reset( new the::ctci::ComponentRegistry() );
+    test_object.reset( new yarrr::Object() );
 
-    physical_behavior.register_to( *test_dispatcher, *test_registry );
+    physical_behavior.register_to( *test_object );
     canon.reset( new yarrr::Canon() );
-    canon->register_to( *test_dispatcher, *test_registry );
+    canon->register_to( *test_object );
 
     was_canon_fired = false;
 
@@ -150,13 +143,13 @@ Describe( a_canon )
 
   It( creates_objects_only_for_fire_command )
   {
-    test_dispatcher->dispatch( yarrr::Command( yarrr::Command::cw, 0 ) );
+    test_object->dispatcher.dispatch( yarrr::Command( yarrr::Command::cw, 0 ) );
     AssertThat( was_canon_fired, Equals( false ) );
   }
 
   It( creates_new_objects_when_canon_is_fired )
   {
-    test_dispatcher->dispatch( yarrr::Command( yarrr::Command::fire, 0 ) );
+    test_object->dispatcher.dispatch( yarrr::Command( yarrr::Command::fire, 0 ) );
     AssertThat( was_canon_fired, Equals( true ) );
   }
 
@@ -165,8 +158,7 @@ Describe( a_canon )
   yarrr::PhysicalBehavior physical_behavior;
   std::unique_ptr< yarrr::Canon > canon;
 
-  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
-  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+  yarrr::Object::Pointer test_object;
 };
 
 
@@ -175,16 +167,15 @@ Describe( graphical_behaviors )
 
   void SetUp()
   {
-    test_dispatcher.reset( new the::ctci::Dispatcher() );
-    test_registry.reset( new the::ctci::ComponentRegistry() );
+    test_object.reset( new yarrr::Object() );
 
-    physical_behavior.register_to( *test_dispatcher, *test_registry );
+    physical_behavior.register_to( *test_object );
 
     ship_graphics.reset( new yarrr::ShipGraphics() );
-    ship_graphics->register_to( *test_dispatcher, *test_registry );
+    ship_graphics->register_to( *test_object );
 
     laser_graphics.reset( new yarrr::LaserGraphics() );
-    laser_graphics->register_to( *test_dispatcher, *test_registry );
+    laser_graphics->register_to( *test_object );
 
     graphical_engine = static_cast< test::GraphicalEngine* >( &the::ctci::service<yarrr::GraphicalEngine>() );
     graphical_engine->last_focused_to = physical_behavior.physical_parameters.coordinate + yarrr::Coordinate( 10, 10 );
@@ -200,7 +191,7 @@ Describe( graphical_behaviors )
   It( focuses_the_engine_to_the_object_if_it_receives_focus_on_object_event )
   {
     AssertThat( graphical_engine->last_focused_to, !Equals( physical_behavior.physical_parameters.coordinate ) );
-    test_dispatcher->dispatch( yarrr::FocusOnObject() );
+    test_object->dispatcher.dispatch( yarrr::FocusOnObject() );
     AssertThat( graphical_engine->last_focused_to, Equals( physical_behavior.physical_parameters.coordinate ) );
   }
 
@@ -224,8 +215,7 @@ Describe( graphical_behaviors )
 
   std::unique_ptr< yarrr::ShipGraphics > ship_graphics;
   std::unique_ptr< yarrr::LaserGraphics > laser_graphics;
-  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
-  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+  yarrr::Object::Pointer test_object;
 };
 
 Describe( self_destructor )
@@ -233,12 +223,11 @@ Describe( self_destructor )
 
   void SetUp()
   {
-    test_dispatcher.reset( new the::ctci::Dispatcher() );
-    test_registry.reset( new the::ctci::ComponentRegistry() );
+    test_object.reset( new yarrr::Object() );
     self_destructor.reset( new yarrr::SelfDestructor( object_id, lifespan ) );
 
-    self_destructor->register_to( *test_dispatcher, *test_registry );
-    test_dispatcher->dispatch( yarrr::TimerUpdate( now ) );
+    self_destructor->register_to( *test_object );
+    test_object->dispatcher.dispatch( yarrr::TimerUpdate( now ) );
 
     deleted_object_id = 0u;
     was_object_deleted = false;
@@ -259,13 +248,13 @@ Describe( self_destructor )
 
   It( should_not_delete_object_from_the_container_if_lifespan_is_not_exceeded )
   {
-    test_dispatcher->dispatch( yarrr::TimerUpdate( now + less_than_the_lifespan ) );
+    test_object->dispatcher.dispatch( yarrr::TimerUpdate( now + less_than_the_lifespan ) );
     AssertThat( was_object_deleted, Equals( false ) );
   }
 
   It( deletes_the_object_from_the_container_if_lifespan_is_exceeded )
   {
-    test_dispatcher->dispatch( yarrr::TimerUpdate( now + lifespan ) );
+    test_object->dispatcher.dispatch( yarrr::TimerUpdate( now + lifespan ) );
     AssertThat( was_object_deleted, Equals( true ) );
     AssertThat( deleted_object_id, Equals( object_id ) );
   }
@@ -274,8 +263,7 @@ Describe( self_destructor )
   bool was_object_deleted;
 
   std::unique_ptr< yarrr::SelfDestructor > self_destructor;
-  std::unique_ptr< the::ctci::Dispatcher > test_dispatcher;
-  std::unique_ptr< the::ctci::ComponentRegistry > test_registry;
+  yarrr::Object::Pointer test_object;
 
   yarrr::Object::Id object_id{ 100u };
   const the::time::Time now{ 100u };
@@ -289,31 +277,29 @@ Describe( ship_creator )
   void SetUp()
   {
     object = yarrr::create_ship();
-    object_spy = test::spy_on( *object );
   }
 
   It ( creates_objects_with_physical_parameters )
   {
-    AssertThat( object_spy->components->has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
+    AssertThat( object->components.has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
   }
 
   It ( creates_objects_with_an_engine )
   {
-    AssertThat( object_spy->components->has_component< yarrr::Engine >(), Equals( true ) );
+    AssertThat( object->components.has_component< yarrr::Engine >(), Equals( true ) );
   }
 
   It ( creates_objects_with_ship_graphics )
   {
-    AssertThat( object_spy->components->has_component< yarrr::ShipGraphics >(), Equals( true ) );
+    AssertThat( object->components.has_component< yarrr::ShipGraphics >(), Equals( true ) );
   }
 
   It ( creates_objects_with_a_canon )
   {
-    AssertThat( object_spy->components->has_component< yarrr::Canon >(), Equals( true ) );
+    AssertThat( object->components.has_component< yarrr::Canon >(), Equals( true ) );
   }
 
   yarrr::Object::Pointer object;
-  test::ObjectSpy* object_spy;
 };
 
 Describe( laser_creator )
@@ -323,20 +309,19 @@ Describe( laser_creator )
   {
     ships_physical_parameters.vangle = 100;
     object = yarrr::create_laser( ships_physical_parameters );
-    object_spy = test::spy_on( *object );
 
-    AssertThat( object_spy->components->has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
-    laser_parameters = object_spy->components->component<yarrr::PhysicalBehavior>().physical_parameters;
+    AssertThat( object->components.has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
+    laser_parameters = object->components.component<yarrr::PhysicalBehavior>().physical_parameters;
   }
 
   It ( creates_objects_with_laser_graphics )
   {
-    AssertThat( object_spy->components->has_component< yarrr::LaserGraphics >(), Equals( true ) );
+    AssertThat( object->components.has_component< yarrr::LaserGraphics >(), Equals( true ) );
   }
 
   It ( creates_objects_with_selfdestructor )
   {
-    AssertThat( object_spy->components->has_component< yarrr::SelfDestructor >(), Equals( true ) );
+    AssertThat( object->components.has_component< yarrr::SelfDestructor >(), Equals( true ) );
   }
 
   It ( creates_objects_that_do_not_spin )
@@ -352,6 +337,5 @@ Describe( laser_creator )
   yarrr::PhysicalParameters ships_physical_parameters;
   yarrr::PhysicalParameters laser_parameters;
   yarrr::Object::Pointer object;
-  test::ObjectSpy* object_spy;
 };
 

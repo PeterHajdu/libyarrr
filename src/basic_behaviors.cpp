@@ -30,14 +30,12 @@ PhysicalBehavior::PhysicalBehavior( const PhysicalParameters& physical_parameter
 }
 
 void
-PhysicalBehavior::register_to(
-      the::ctci::Dispatcher& dispatcher,
-      the::ctci::ComponentRegistry& registry )
+PhysicalBehavior::register_to( Object& owner )
 {
-  registry.register_component< PhysicalBehavior >( *this );
-  dispatcher.register_listener< TimerUpdate >( std::bind(
+  owner.components.register_component< PhysicalBehavior >( *this );
+  owner.dispatcher.register_listener< TimerUpdate >( std::bind(
         &PhysicalBehavior::handle_timer_update, this, std::placeholders::_1 ) );
-  dispatcher.register_listener< yarrr::PhysicalBehavior  >( std::bind(
+  owner.dispatcher.register_listener< yarrr::PhysicalBehavior  >( std::bind(
         &PhysicalBehavior::handle_network_update, this, std::placeholders::_1 ) );
 }
 
@@ -96,15 +94,13 @@ PhysicalBehavior::clone() const
 
 
 void
-Engine::register_to(
-    the::ctci::Dispatcher& dispatcher,
-    the::ctci::ComponentRegistry& registry )
+Engine::register_to( Object& owner )
 {
   m_ship_control.reset(
-      new ShipControl( registry.component< PhysicalBehavior >().physical_parameters ) );
-  dispatcher.register_listener< yarrr::Command  >(
+      new ShipControl( owner.components.component< PhysicalBehavior >().physical_parameters ) );
+  owner.dispatcher.register_listener< yarrr::Command  >(
       std::bind( &ShipControl::handle_command, *m_ship_control, std::placeholders::_1 ) );
-  registry.register_component( *this );
+  owner.components.register_component( *this );
 }
 
 
@@ -125,13 +121,11 @@ SelfDestructor::SelfDestructor(
 
 
 void
-SelfDestructor::register_to(
-    the::ctci::Dispatcher& dispatcher,
-    the::ctci::ComponentRegistry& components )
+SelfDestructor::register_to( Object& owner )
 {
-  dispatcher.register_listener< yarrr::TimerUpdate  >(
+  owner.dispatcher.register_listener< yarrr::TimerUpdate  >(
       std::bind( &SelfDestructor::handle_timer_update, this, std::placeholders::_1 ) );
-  components.register_component( *this );
+  owner.components.register_component( *this );
 }
 
 
@@ -166,14 +160,12 @@ Canon::Canon()
 
 
 void
-Canon::register_to(
-    the::ctci::Dispatcher& dispatcher,
-    the::ctci::ComponentRegistry& components )
+Canon::register_to( Object& owner )
 {
-  dispatcher.register_listener< yarrr::Command  >(
+  owner.dispatcher.register_listener< yarrr::Command  >(
       std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
-  m_physical_behavior = &components.component< yarrr::PhysicalBehavior >();
-  components.register_component( *this );
+  m_physical_behavior = &owner.components.component< yarrr::PhysicalBehavior >();
+  owner.components.register_component( *this );
 }
 
 
@@ -205,12 +197,10 @@ GraphicalBehavior::GraphicalBehavior()
 }
 
 void
-GraphicalBehavior::register_to(
-    the::ctci::Dispatcher& dispatcher,
-    the::ctci::ComponentRegistry& registry )
+GraphicalBehavior::register_to( Object& owner )
 {
-  m_physical_behavior = &registry.component< yarrr::PhysicalBehavior >();
-  dispatcher.register_listener< FocusOnObject >( std::bind(
+  m_physical_behavior = &owner.components.component< yarrr::PhysicalBehavior >();
+  owner.dispatcher.register_listener< FocusOnObject >( std::bind(
         &GraphicalBehavior::handle_focus_on_object, this, std::placeholders::_1 ) );
 }
 
@@ -236,12 +226,10 @@ ShipGraphics::clone() const
 }
 
 void
-ShipGraphics::register_to(
-    the::ctci::Dispatcher& dispatcher,
-    the::ctci::ComponentRegistry& components )
+ShipGraphics::register_to( Object& owner )
 {
-  components.register_component( *this );
-  GraphicalBehavior::register_to( dispatcher, components );
+  owner.components.register_component( *this );
+  GraphicalBehavior::register_to( owner );
 }
 
 
@@ -259,13 +247,12 @@ LaserGraphics::clone() const
 }
 
 
+//todo: this should be solved with template method
 void
-LaserGraphics::register_to(
-    the::ctci::Dispatcher& dispatcher,
-    the::ctci::ComponentRegistry& components )
+LaserGraphics::register_to( Object& owner )
 {
-  components.register_component( *this );
-  GraphicalBehavior::register_to( dispatcher, components );
+  owner.components.register_component( *this );
+  GraphicalBehavior::register_to( owner );
 }
 
 Object::Pointer

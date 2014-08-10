@@ -28,9 +28,7 @@ class PhysicalBehavior : public ObjectBehavior
     PhysicalBehavior() = default;
     PhysicalBehavior( const PhysicalParameters& );
 
-    virtual void register_to(
-        the::ctci::Dispatcher&,
-        the::ctci::ComponentRegistry& registry ) override;
+    virtual void register_to( Object& ) override;
 
     PhysicalParameters physical_parameters;
     virtual Pointer clone() const override;
@@ -50,9 +48,7 @@ class Engine : public ObjectBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_engine" );
-    virtual void register_to(
-        the::ctci::Dispatcher&,
-        the::ctci::ComponentRegistry& registry ) override;
+    virtual void register_to( Object& ) override;
 
     virtual Pointer clone() const override;
 
@@ -80,9 +76,7 @@ class Canon : public ObjectBehavior
     add_polymorphic_ctci( "yarrr_canon" );
     Canon();
 
-    virtual void register_to(
-        the::ctci::Dispatcher&,
-        the::ctci::ComponentRegistry& registry ) override;
+    virtual void register_to( Object& ) override;
 
     virtual Pointer clone() const override;
 
@@ -114,9 +108,7 @@ class SelfDestructor : public ObjectBehavior
         Object::Id object_id,
         const the::time::Time& lifespan );
 
-    virtual void register_to(
-        the::ctci::Dispatcher&,
-        the::ctci::ComponentRegistry& registry ) override;
+    virtual void register_to( Object& ) override;
 
     virtual Pointer clone() const override;
 
@@ -142,7 +134,7 @@ class GraphicalBehavior :
   public:
     GraphicalBehavior();
 
-    void register_to( the::ctci::Dispatcher& , the::ctci::ComponentRegistry& ) override;
+    void register_to( Object& ) override;
 
     Pointer clone() const = 0;
     virtual void draw() const = 0;
@@ -160,7 +152,7 @@ class ShipGraphics : public GraphicalBehavior
     add_polymorphic_ctci( "yarrr_ship_graphics" );
     virtual void draw() const;
     Pointer clone() const;
-    void register_to( the::ctci::Dispatcher& , the::ctci::ComponentRegistry& ) override;
+    void register_to( Object& ) override;
 };
 
 class LaserGraphics : public GraphicalBehavior
@@ -169,7 +161,7 @@ class LaserGraphics : public GraphicalBehavior
     add_polymorphic_ctci( "yarrr_laser_graphics" );
     virtual void draw() const;
     Pointer clone() const;
-    void register_to( the::ctci::Dispatcher& , the::ctci::ComponentRegistry& ) override;
+    void register_to( Object& ) override;
 };
 
 Object::Pointer create_ship();

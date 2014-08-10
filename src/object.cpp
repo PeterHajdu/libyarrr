@@ -40,7 +40,7 @@ Object::Object( const Id& id )
 void
 Object::add_behavior( ObjectBehavior::Pointer&& behavior )
 {
-  behavior->register_to( dispatcher, components );
+  behavior->register_to( *this );
   m_behaviors.emplace_back( std::move( behavior ) );
 }
 

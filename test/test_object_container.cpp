@@ -25,13 +25,11 @@ namespace
       {
       }
 
-      virtual void register_to(
-          the::ctci::Dispatcher& dispatcher,
-          the::ctci::ComponentRegistry& )
+      virtual void register_to( yarrr::Object& owner )
       {
-        dispatcher.register_listener< Event >( std::bind(
+        owner.dispatcher.register_listener< Event >( std::bind(
               &TestBehavior::handle_event, this, std::placeholders::_1 ) );
-        dispatcher.register_listener< TestBehavior >( std::bind(
+        owner.dispatcher.register_listener< TestBehavior >( std::bind(
               &TestBehavior::handle_test_behavior, this, std::placeholders::_1 ) );
       }
 

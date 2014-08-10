@@ -12,6 +12,8 @@
 namespace yarrr
 {
 
+class Object;
+
 class ObjectBehavior : public Entity
 {
   public:
@@ -19,14 +21,13 @@ class ObjectBehavior : public Entity
     typedef std::unique_ptr<ObjectBehavior> Pointer;
     virtual ~ObjectBehavior() = default;
 
-    virtual void register_to( the::ctci::Dispatcher&, the::ctci::ComponentRegistry& ) = 0;
+    virtual void register_to( Object& ) = 0;
     virtual Pointer clone() const = 0;
 };
 
 typedef std::vector< ObjectBehavior::Pointer > BehaviorContainer;
 
 class ObjectUpdate;
-
 class Object final
 {
   public:
