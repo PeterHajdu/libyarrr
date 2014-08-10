@@ -24,9 +24,6 @@ class TestBehavior : public yarrr::ObjectBehavior
       owner.dispatcher.register_listener<test::Event>( std::bind(
             &TestBehavior::handle_test_event, this, std::placeholders::_1 ) );
 
-      owner.dispatcher.register_listener< test::EventChild >( std::bind(
-            &TestBehavior::handle_test_event_child, this, std::placeholders::_1 ) );
-
       owner.dispatcher.register_listener<TestBehavior>( std::bind(
             &TestBehavior::handle_behavior_dispatches, this, std::placeholders::_1 ) );
 
@@ -49,12 +46,6 @@ class TestBehavior : public yarrr::ObjectBehavior
     void handle_test_event( const test::Event& event )
     {
       dispatched_event = &event;
-    }
-
-    const test::Event* dispatched_child_event{ nullptr };
-    void handle_test_event_child( const test::EventChild& event )
-    {
-      dispatched_child_event = &event;
     }
 
     bool was_deleted{ false };
@@ -95,14 +86,6 @@ Describe(an_object)
     test::Event test_event;
     test_object->dispatcher.dispatch( test_event );
     AssertThat( test_behavior->dispatched_event, Equals( &test_event ) );
-  }
-
-  It( dispatches_by_polymorphic_id_if_requested )
-  {
-    std::unique_ptr< test::Event > test_event( new test::EventChild() );
-    test_object->dispatcher.polymorphic_dispatch( *test_event );
-    AssertThat( nullptr == test_behavior->dispatched_event, Equals( true ) );
-    AssertThat( test_behavior->dispatched_child_event, Equals( test_event.get() ) );
   }
 
   It( is_identified_by_its_pointer_if_default_constructed )
