@@ -75,6 +75,7 @@ Describe( a_collider )
     collider_too_far->move_far_enough();
   }
 
+  //todo: add polymorphic object registration to ctci component registry and use template method to extract this
   It( registers_itself_as_a_component )
   {
     AssertThat(
