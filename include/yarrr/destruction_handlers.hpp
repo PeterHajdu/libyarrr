@@ -4,6 +4,7 @@
 
 namespace yarrr
 {
+class ObjectDestroyed;
 
 class DeleteWhenDestroyed : public ObjectBehavior
 {
@@ -11,6 +12,10 @@ class DeleteWhenDestroyed : public ObjectBehavior
     add_polymorphic_ctci( "yarrr_delete_when_destroyed" );
     virtual void register_to( Object& ) override;
     virtual Pointer clone() const override;
+
+  private:
+    void handle_object_destroyed( const ObjectDestroyed& ) const;
+    Object::Id m_object_id;
 };
 
 }
