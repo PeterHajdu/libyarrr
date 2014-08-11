@@ -90,19 +90,6 @@ class SelfDestructor : public ObjectBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_self_destructor" );
-    class DeleteObject
-    {
-      public:
-        add_ctci( "yarrr_self_destructor_delete_object" );
-
-        DeleteObject( Object::Id object_id )
-          : id( object_id )
-        {
-        }
-
-        const Object::Id id;
-    };
-
     SelfDestructor(
         Object::Id object_id,
         const the::time::Time& lifespan );

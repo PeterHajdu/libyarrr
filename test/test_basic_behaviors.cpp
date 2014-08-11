@@ -6,6 +6,7 @@
 #include <yarrr/object_container.hpp>
 #include <yarrr/dummy_graphical_engine.hpp>
 #include <yarrr/entity_factory.hpp>
+#include <yarrr/delete_object.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <thectci/service_registry.hpp>
@@ -232,11 +233,11 @@ Describe( self_destructor )
     deleted_object_id = 0u;
     was_object_deleted = false;
 
-    the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::SelfDestructor::DeleteObject >(
-        [ this ]( const yarrr::SelfDestructor::DeleteObject& delete_object )
+    the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::DeleteObject >(
+        [ this ]( const yarrr::DeleteObject& delete_object )
         {
           was_object_deleted = true;
-          deleted_object_id = delete_object.id;
+          deleted_object_id = delete_object.object_id();
         } );
   }
 

@@ -6,6 +6,7 @@
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/graphical_engine.hpp>
 #include <yarrr/engine_dispatcher.hpp>
+#include <yarrr/delete_object.hpp>
 
 #include <thectci/service_registry.hpp>
 #include <thelog/trace.hpp>
