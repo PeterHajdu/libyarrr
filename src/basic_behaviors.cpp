@@ -69,6 +69,7 @@ PhysicalBehavior::do_serialize( yarrr::Serializer& serializer ) const
     .push_back( physical_parameters.velocity.y )
     .push_back( physical_parameters.angle )
     .push_back( physical_parameters.vangle )
+    .push_back( physical_parameters.integrity )
     .push_back( physical_parameters.timestamp );
 }
 
@@ -82,6 +83,7 @@ PhysicalBehavior::do_deserialize( yarrr::Deserializer& deserializer )
   physical_parameters.velocity.y = deserializer.pop_front<int64_t>();
   physical_parameters.angle = deserializer.pop_front<int16_t>();
   physical_parameters.vangle = deserializer.pop_front<int16_t>();
+  physical_parameters.integrity = deserializer.pop_front<int16_t>();
   physical_parameters.timestamp = deserializer.pop_front<the::time::Time>();
 }
 

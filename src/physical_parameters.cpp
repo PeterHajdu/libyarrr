@@ -15,6 +15,7 @@ std::ostream& operator<<( std::ostream& output, const PhysicalParameters& physic
     << physical_parameters.angle << " "
     << physical_parameters.vangle << " "
     << physical_parameters.timestamp << " "
+    << physical_parameters.integrity << " "
     << "\n";
 
   return output;
@@ -28,6 +29,7 @@ bool operator==( const PhysicalParameters& l, const PhysicalParameters& r )
     l.velocity == r.velocity &&
     l.angle == r.angle &&
     l.vangle == r.vangle &&
+    l.integrity == r.integrity &&
     l.timestamp == r.timestamp;
 }
 

@@ -29,6 +29,7 @@ set(TEST_SOURCE_FILES
     test_engine_dispatcher.cpp
     test_main_thread_callback_queue.cpp
     test_services.cpp
+    test_collider.cpp
     )
 
 

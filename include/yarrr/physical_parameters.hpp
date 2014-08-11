@@ -14,6 +14,7 @@ namespace yarrr
       Angle angle;
       Angle vangle;
       the::time::Clock::Time timestamp;
+      int16_t integrity;
   };
 
 

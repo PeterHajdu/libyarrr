@@ -13,6 +13,7 @@ namespace
       l.velocity == r.velocity &&
       l.vangle == r.vangle &&
       l.timestamp == r.timestamp &&
+      l.integrity == r.integrity &&
       std::abs( l.angle - r.angle ) <= allowed_angle_delta;
   }
 }
