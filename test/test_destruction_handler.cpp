@@ -49,3 +49,55 @@ Describe( delete_when_destroyed )
   yarrr::Object::Pointer object;
 };
 
+Describe( respawn_when_destroyed )
+{
+  void SetUp()
+  {
+    object.reset( new yarrr::Object() );
+    physical_behavior = new yarrr::PhysicalBehavior();
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior ) );
+    physical_behavior->physical_parameters.coordinate = start_position;
+    physical_behavior->physical_parameters.velocity = start_velocity;
+
+    respawn_when_destroyed = new yarrr::RespawnWhenDestroyed();
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( respawn_when_destroyed ) );
+  }
+
+  It( registers_itself_as_a_component )
+  {
+    AssertThat(
+        &object->components.component< yarrr::RespawnWhenDestroyed >(),
+        Equals( respawn_when_destroyed ) );
+  }
+
+  void destroy_object()
+  {
+    object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
+  }
+
+  It( should_stop_object_when_destroyed )
+  {
+    destroy_object();
+    AssertThat(
+        physical_behavior->physical_parameters.velocity,
+        Equals( yarrr::Coordinate( 0, 0 ) ) );
+  }
+
+  It( should_teleport_object_to_the_origo_when_destroyed )
+  {
+    destroy_object();
+    AssertThat(
+        physical_behavior->physical_parameters.coordinate,
+        Equals( origo ) );
+  }
+
+  const yarrr::Coordinate start_position{ 100, 100 };
+  const yarrr::Coordinate start_velocity{ 100, 100 };
+
+  const yarrr::Coordinate origo{ 0, 0 };
+
+  yarrr::PhysicalBehavior* physical_behavior;
+  yarrr::RespawnWhenDestroyed* respawn_when_destroyed;
+  yarrr::Object::Pointer object;
+};
+
