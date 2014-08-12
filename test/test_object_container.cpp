@@ -1,7 +1,13 @@
 #include "test_events.hpp"
 #include "test_behavior.hpp"
+#include "test_services.hpp"
 #include <yarrr/object_container.hpp>
 #include <yarrr/object.hpp>
+#include <yarrr/physical_parameters.hpp>
+#include <yarrr/basic_behaviors.hpp>
+#include <yarrr/delete_object.hpp>
+#include <yarrr/engine_dispatcher.hpp>
+#include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
@@ -22,13 +28,13 @@ Describe(an_object_container)
     behaviors.emplace( id, new_behavior );
 
     new_object->add_behavior( yarrr::ObjectBehavior::Pointer( new_behavior ) );
-    test_container->add_object( std::move( new_object ) );
+    container->add_object( std::move( new_object ) );
   }
 
   void SetUp()
   {
     behaviors.clear();
-    test_container.reset( new yarrr::ObjectContainer() );
+    container.reset( new yarrr::ObjectContainer() );
     deleted_objects.clear();
 
     add_object_with_id( first_id );
@@ -42,14 +48,14 @@ Describe(an_object_container)
 
   It( can_delete_objects_by_id )
   {
-    test_container->delete_object( first_id );
+    container->delete_object( first_id );
     AssertThat( deleted_objects, Contains( first_id ) );
     AssertThat( deleted_objects, !Contains( second_id ) );
   }
 
   It( handles_invalid_id_deletion )
   {
-    test_container->delete_object( invalid_id );
+    container->delete_object( invalid_id );
   }
 
   bool was_event_dispatched_to( yarrr::Object::Id id )
@@ -59,33 +65,33 @@ Describe(an_object_container)
 
   It( dispatches_events_to_all_objects )
   {
-    test_container->dispatch( test_event );
+    container->dispatch( test_event );
     AssertThat( was_event_dispatched_to( first_id ), Equals( true ) );
     AssertThat( was_event_dispatched_to( second_id ), Equals( true ) );
   }
 
   It( does_not_dispatch_to_deleted_objects )
   {
-    test_container->delete_object( first_id );
-    test_container->dispatch( test_event );
+    container->delete_object( first_id );
+    container->dispatch( test_event );
     AssertThat( was_event_dispatched_to( second_id ), Equals( true ) );
   }
 
   It( can_tell_if_it_contains_an_object_or_not )
   {
-    AssertThat( test_container->has_object_with_id( second_id ), Equals( true ) );
-    AssertThat( test_container->has_object_with_id( invalid_id ), Equals( false ) );
+    AssertThat( container->has_object_with_id( second_id ), Equals( true ) );
+    AssertThat( container->has_object_with_id( invalid_id ), Equals( false ) );
   }
 
   It( can_retrieve_an_object_with_a_given_id )
   {
-    test_container->object_with_id( second_id ).dispatcher.dispatch( test_event );
+    container->object_with_id( second_id ).dispatcher.dispatch( test_event );
     AssertThat( was_event_dispatched_to( second_id ), Equals( true ) );
   }
 
   It( can_tell_the_number_of_owned_objects )
   {
-    AssertThat( test_container->size(), Equals( 2u ) );
+    AssertThat( container->size(), Equals( 2u ) );
   }
 
   bool contains_update_for( yarrr::Object::Id id, const std::vector< yarrr::ObjectUpdate::Pointer >& updates )
@@ -100,8 +106,8 @@ Describe(an_object_container)
 
   It( can_generates_object_updates )
   {
-    std::vector< yarrr::ObjectUpdate::Pointer > object_updates( test_container->generate_object_updates() );
-    AssertThat( object_updates, HasLength( test_container->size() ) );
+    std::vector< yarrr::ObjectUpdate::Pointer > object_updates( container->generate_object_updates() );
+    AssertThat( object_updates, HasLength( container->size() ) );
     AssertThat( contains_update_for( first_id, object_updates ), Equals( true ) );
     AssertThat( contains_update_for( second_id, object_updates ), Equals( true ) );
   }
@@ -109,21 +115,21 @@ Describe(an_object_container)
   It( creates_an_object_for_an_object_update_with_new_id )
   {
     const yarrr::ObjectUpdate dummy_object_update( invalid_id, yarrr::BehaviorContainer() );
-    test_container->handle_object_update( dummy_object_update );
-    AssertThat( test_container->has_object_with_id( invalid_id ), Equals( true ) );
+    container->handle_object_update( dummy_object_update );
+    AssertThat( container->has_object_with_id( invalid_id ), Equals( true ) );
   }
 
   yarrr::ObjectUpdate::Pointer create_object_update_for( yarrr::Object::Id id )
   {
     yarrr::ObjectUpdate::Pointer object_update(
-        test_container->object_with_id( id ).generate_update() );
+        container->object_with_id( id ).generate_update() );
     return object_update;
   }
 
   It( updates_the_correct_object_if_object_update_id_is_found )
   {
     yarrr::ObjectUpdate::Pointer dummy_object_update( create_object_update_for( second_id ) );
-    test_container->handle_object_update( *dummy_object_update );
+    container->handle_object_update( *dummy_object_update );
     AssertThat( behaviors[ second_id ]->was_object_updated, Equals( true ) );
     AssertThat( behaviors[ first_id ]->was_object_updated, Equals( false ) );
   }
@@ -135,6 +141,75 @@ Describe(an_object_container)
   const yarrr::Object::Id first_id{ 1 };
   const yarrr::Object::Id second_id{ 2 };
   const yarrr::Object::Id invalid_id{ 20 };
-  std::unique_ptr< yarrr::ObjectContainer > test_container;
+  std::unique_ptr< yarrr::ObjectContainer > container;
+
+};
+
+Describe( object_container_collision_checks )
+{
+
+  void add_number_of_objects( size_t n )
+  {
+    for ( size_t i( 0 ); i < n; ++i )
+    {
+      yarrr::Object::Pointer laser( create_laser( physical_parameters ) );
+      created_objects.push_back( laser->id );
+      container->add_object( std::move( laser ) );
+    }
+  }
+
+  void SetUp()
+  {
+    container.reset( new yarrr::ObjectContainer() );
+    created_objects.clear();
+    deleted_objects.clear();
+
+    the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::DeleteObject >(
+        [ this ]( const yarrr::DeleteObject& delete_object )
+        {
+          deleted_objects.push_back( delete_object.object_id() );
+        } );
+  }
+
+  void TearDown()
+  {
+    test::clean_engine_dispatcher();
+  }
+
+  void assert_deleted_all_created()
+  {
+    for ( const auto& object : created_objects )
+    {
+      AssertThat( deleted_objects, Contains( object ) );
+    }
+  }
+
+  It( can_check_object_collision )
+  {
+    add_number_of_objects( 3 );
+    container->check_collision();
+    assert_deleted_all_created();
+  }
+
+  It( should_not_collide_object_without_a_collider )
+  {
+    add_number_of_objects( 3 );
+    container->add_object( yarrr::Object::Pointer( new yarrr::Object() ) );
+    container->check_collision();
+    assert_deleted_all_created();
+  }
+
+  It( should_not_collide_an_object_with_itself )
+  {
+    add_number_of_objects( 1 );
+    container->add_object( yarrr::Object::Pointer( new yarrr::Object() ) );
+    container->check_collision();
+    AssertThat( deleted_objects, IsEmpty() );
+  }
+
+  std::vector< yarrr::Object::Id > created_objects;
+  std::vector< yarrr::Object::Id > deleted_objects;
+  yarrr::PhysicalParameters physical_parameters;
+  std::unique_ptr< yarrr::ObjectContainer > container;
 };
 

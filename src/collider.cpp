@@ -43,7 +43,7 @@ Collider::clone() const
 }
 
 void
-Collider::collide_if_needed( Collider& other )
+Collider::collide_if_needed_with( Collider& other )
 {
   assert( m_physical_behavior );
 

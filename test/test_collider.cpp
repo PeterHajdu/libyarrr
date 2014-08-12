@@ -85,7 +85,7 @@ Describe( a_collider )
 
   void collide_with( ColliderBundle& other )
   {
-    collider_bundle->collider->collide_if_needed( *other.collider );
+    collider_bundle->collider->collide_if_needed_with( *other.collider );
   }
 
   It( decreases_integrity_with_the_other_colliders_caused_damage_when_colliding )

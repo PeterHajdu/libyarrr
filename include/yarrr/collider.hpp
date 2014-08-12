@@ -23,7 +23,7 @@ class Collider : public ObjectBehavior
     virtual Pointer clone() const override;
     virtual ~Collider() = default;
 
-    void collide_if_needed( Collider& );
+    void collide_if_needed_with( Collider& );
 
   private:
     int16_t& current_integrity() const;

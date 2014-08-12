@@ -21,6 +21,8 @@ class ObjectContainer : public the::ctci::Dispatcher
     std::vector< ObjectUpdate::Pointer > generate_object_updates() const;
     void handle_object_update( const ObjectUpdate& );
 
+    void check_collision() const;
+
   private:
     typedef std::unordered_map< Object::Id, Object::Pointer > Objects;
     Objects m_objects;
