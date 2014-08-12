@@ -278,6 +278,7 @@ create_laser( const PhysicalParameters& ships_parameters )
   std::unique_ptr< PhysicalBehavior > physical_behavior( new yarrr::PhysicalBehavior( ships_parameters ) );
   physical_behavior->physical_parameters.vangle = 0;
   physical_behavior->physical_parameters.velocity += heading( ships_parameters, laser_speed );
+  physical_behavior->physical_parameters.coordinate += heading( ships_parameters, 100 );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior.release() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LaserGraphics() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( 0, 10 ) ) );
