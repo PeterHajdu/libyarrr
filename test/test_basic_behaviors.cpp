@@ -1,4 +1,5 @@
 #include "test_graphical_engine.hpp"
+#include "test_services.hpp"
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/physical_parameters.hpp>
@@ -142,6 +143,11 @@ Describe( a_canon )
           } );
   }
 
+  void TearDown()
+  {
+    test::clean_engine_dispatcher();
+  }
+
   It( creates_objects_only_for_fire_command )
   {
     test_object->dispatcher.dispatch( yarrr::Command( yarrr::Command::cw, 0 ) );
@@ -241,6 +247,10 @@ Describe( self_destructor )
         } );
   }
 
+  void TearDown()
+  {
+    test::clean_engine_dispatcher();
+  }
 
   It( is_not_registered_to_entity_factory )
   {

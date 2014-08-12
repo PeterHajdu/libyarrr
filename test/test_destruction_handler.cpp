@@ -6,6 +6,9 @@
 #include <yarrr/delete_object.hpp>
 
 #include <thectci/service_registry.hpp>
+
+#include "test_services.hpp"
+
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
@@ -27,6 +30,11 @@ Describe( delete_when_destroyed )
           was_object_deleted = true;
           deleted_object_id = delete_object.object_id();
         } );
+  }
+
+  void TearDown()
+  {
+    test::clean_engine_dispatcher();
   }
 
   It( registers_itself_as_a_component )
@@ -61,6 +69,11 @@ Describe( respawn_when_destroyed )
 
     respawn_when_destroyed = new yarrr::RespawnWhenDestroyed();
     object->add_behavior( yarrr::ObjectBehavior::Pointer( respawn_when_destroyed ) );
+  }
+
+  void TearDown()
+  {
+    test::clean_engine_dispatcher();
   }
 
   It( registers_itself_as_a_component )

@@ -2,6 +2,7 @@
 #include <yarrr/main_thread_callback_queue.hpp>
 #include <thectci/service_registry.hpp>
 
+#include "test_services.hpp"
 #include "test_graphical_engine.hpp"
 
 namespace
@@ -14,5 +15,11 @@ namespace
 
   the::ctci::AutoServiceRegister< yarrr::GraphicalEngine, test::GraphicalEngine >
     test_graphical_engine_register;
+}
+
+void
+test::clean_engine_dispatcher()
+{
+  the::ctci::service< yarrr::EngineDispatcher >().clear();
 }
 
