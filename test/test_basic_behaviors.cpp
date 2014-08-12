@@ -8,6 +8,8 @@
 #include <yarrr/dummy_graphical_engine.hpp>
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/delete_object.hpp>
+#include <yarrr/collider.hpp>
+#include <yarrr/destruction_handlers.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <thectci/service_registry.hpp>
@@ -310,6 +312,16 @@ Describe( ship_creator )
     AssertThat( object->components.has_component< yarrr::Canon >(), Equals( true ) );
   }
 
+  It ( creates_objects_with_a_collider )
+  {
+    AssertThat( object->components.has_component< yarrr::Collider >(), Equals( true ) );
+  }
+
+  It ( creates_objects_with_respawn_when_destroyed )
+  {
+    AssertThat( object->components.has_component< yarrr::RespawnWhenDestroyed >(), Equals( true ) );
+  }
+
   yarrr::Object::Pointer object;
 };
 
@@ -343,6 +355,16 @@ Describe( laser_creator )
   It ( creates_objects_that_move_with_a_different_velocity )
   {
     AssertThat( laser_parameters.velocity, !Equals( ships_physical_parameters.velocity ) );
+  }
+
+  It ( creates_objects_with_a_collider )
+  {
+    AssertThat( object->components.has_component< yarrr::Collider >(), Equals( true ) );
+  }
+
+  It ( creates_objects_with_delete_when_destroyed )
+  {
+    AssertThat( object->components.has_component< yarrr::DeleteWhenDestroyed >(), Equals( true ) );
   }
 
   yarrr::PhysicalParameters ships_physical_parameters;

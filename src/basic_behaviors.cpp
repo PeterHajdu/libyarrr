@@ -7,6 +7,8 @@
 #include <yarrr/graphical_engine.hpp>
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/delete_object.hpp>
+#include <yarrr/collider.hpp>
+#include <yarrr/destruction_handlers.hpp>
 
 #include <thectci/service_registry.hpp>
 #include <thelog/trace.hpp>
@@ -264,6 +266,8 @@ create_ship()
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Engine() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShipGraphics() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon() ) );
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( 100, 0 ) ) );
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::RespawnWhenDestroyed() ) );
   return ship;
 }
 
@@ -276,6 +280,8 @@ create_laser( const PhysicalParameters& ships_parameters )
   physical_behavior->physical_parameters.velocity += heading( ships_parameters, laser_speed );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior.release() ) );
   ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LaserGraphics() ) );
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( 0, 10 ) ) );
+  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DeleteWhenDestroyed() ) );
 
   ship->add_behavior( yarrr::ObjectBehavior::Pointer(
         new yarrr::SelfDestructor( ship->id, 3000000u ) ) );
