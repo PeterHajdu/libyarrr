@@ -38,7 +38,7 @@ Hud::build_hud_lines() const
 void
 Hud::print_lines( const Lines& lines ) const
 {
-  size_t y_coordinate_of_line{ 100u };
+  size_t y_coordinate_of_line{ 120u };
   for ( const auto& line: lines )
   {
     m_graphical_engine.print_text( 0, y_coordinate_of_line, line, Colour::white );
