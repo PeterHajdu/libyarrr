@@ -50,14 +50,12 @@ Terminal::handle_chat_message( const ChatMessage& message )
 void
 Terminal::draw() const
 {
-  //todo: this should be retrieved somehow from graphical engine
-  const int line_height( 15 );
   const int length( std::min( int( m_messages.size() ), m_number_of_shown_messages ) );
 
   for ( int i( 0 ); i < length; ++i )
   {
     m_graphical_engine.print_text_tokens(
-        0, i * line_height,
+        0, i * GraphicalEngine::font_height,
         m_messages[ m_first_message_index + i ] );
   }
 }

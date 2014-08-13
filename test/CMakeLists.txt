@@ -31,6 +31,7 @@ set(TEST_SOURCE_FILES
     test_services.cpp
     test_collider.cpp
     test_destruction_handler.cpp
+    test_hud.cpp
     )
 
 

@@ -5,6 +5,9 @@
 namespace yarrr
 {
 
+const Colour Colour::white{ 255, 255, 255, 255 };
+const size_t GraphicalEngine::font_height{ 15 };
+
 GraphicalObject::GraphicalObject( GraphicalEngine& graphical_engine )
   : m_graphical_engine( graphical_engine )
 {

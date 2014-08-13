@@ -26,6 +26,8 @@ class Colour
     uint8_t green;
     uint8_t blue;
     uint8_t alpha;
+
+    const static Colour white;
 };
 
 class TextToken
@@ -54,6 +56,7 @@ class GraphicalEngine
     void register_object( const GraphicalObject& );
     void delete_object( const GraphicalObject& );
 
+    static const size_t font_height;
   private:
     std::vector< std::reference_wrapper< const GraphicalObject > > m_objects;
 };
