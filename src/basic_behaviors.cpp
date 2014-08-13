@@ -11,7 +11,6 @@
 #include <yarrr/destruction_handlers.hpp>
 
 #include <thectci/service_registry.hpp>
-#include <thelog/trace.hpp>
 
 namespace
 {
@@ -60,6 +59,7 @@ PhysicalBehavior::handle_network_update( const PhysicalBehavior& update )
   physical_parameters.velocity = ( network_parameters.velocity + physical_parameters.velocity ) * 0.5;
   physical_parameters.angle = ( network_parameters.angle + physical_parameters.angle ) * 0.5;
   physical_parameters.vangle = ( network_parameters.vangle + physical_parameters.vangle ) * 0.5;
+  physical_parameters.integrity = network_parameters.integrity;
 }
 
 void
