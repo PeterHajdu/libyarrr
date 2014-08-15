@@ -32,7 +32,8 @@ class ParticleFactory
     add_ctci( "yarrr_particle_factory" );
     virtual ~ParticleFactory() = default;
 
-    virtual Particle::Pointer create( const PhysicalParameters& ) = 0;
+    //particle factory should take the ownership of the created particle
+    virtual void create( const PhysicalParameters& ) = 0;
 };
 
 }
