@@ -2,6 +2,7 @@
 
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/graphical_engine.hpp>
+#include <memory>
 
 namespace yarrr
 {
