@@ -41,7 +41,11 @@ void
 Engine::handle_command( const yarrr::Command& command ) const
 {
   m_ship_control->handle_command( command );
-  the::ctci::service< yarrr::ParticleFactory >().create( *m_physical_parameters );
+
+  yarrr::PhysicalParameters particle_parameters( *m_physical_parameters );
+  particle_parameters.velocity -= heading( *m_physical_parameters, 500 );
+  particle_parameters.coordinate -= heading( *m_physical_parameters, 100 );
+  the::ctci::service< yarrr::ParticleFactory >().create( particle_parameters );
 }
 
 }

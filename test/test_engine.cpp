@@ -57,7 +57,7 @@ Describe( an_engine )
         physical_parameters->coordinate );
     yarrr::huplons_to_metres_in_place( coordinate_difference );
 
-    AssertThat( yarrr::length_of( coordinate_difference ), IsLessThan( 1 ) );
+    AssertThat( yarrr::length_of( coordinate_difference ), IsLessThan( 30 ) );
   }
 
   test::ParticleFactory* particle_factory;
