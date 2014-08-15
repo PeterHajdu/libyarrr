@@ -18,6 +18,7 @@ set(SOURCE_FILES
   collider.cpp
   destruction_handlers.cpp
   hud.cpp
+  particle.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

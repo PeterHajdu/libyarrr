@@ -32,6 +32,7 @@ set(TEST_SOURCE_FILES
     test_collider.cpp
     test_destruction_handler.cpp
     test_hud.cpp
+    test_particles.cpp
     )
 
 

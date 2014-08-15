@@ -23,6 +23,15 @@ class GraphicalEngine : public yarrr::GraphicalEngine
       last_drawn_laser = parameters;
     }
 
+
+    yarrr::PhysicalParameters last_drawn_particle;
+    uint64_t age_of_last_drawn_particle;
+    virtual void draw_particle( const yarrr::PhysicalParameters& physical_parameters, uint64_t age ) override
+    {
+      last_drawn_particle = physical_parameters;
+      age_of_last_drawn_particle = age;
+    }
+
     std::vector< std::string > printed_texts;
     std::string last_printed_text;
     int x_of_printed_text{ 0 };
