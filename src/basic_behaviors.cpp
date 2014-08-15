@@ -21,6 +21,17 @@ namespace
   yarrr::AutoEntityRegister< yarrr::LaserGraphics > auto_laser_graphics_register;
 
   const int laser_speed{ 1000 };
+
+  yarrr::PhysicalParameters
+  zero_parameters()
+  {
+    yarrr::PhysicalParameters parameters;
+    parameters.coordinate = { 0, 0 };
+    parameters.velocity = { 0, 0 };
+    parameters.angle = 0;
+    parameters.vangle = 0;
+    return parameters;
+  }
 }
 
 namespace yarrr
@@ -28,6 +39,7 @@ namespace yarrr
 
 PhysicalBehavior::PhysicalBehavior()
   : ObjectBehavior( synchronize )
+  , physical_parameters( zero_parameters() )
 {
 }
 
