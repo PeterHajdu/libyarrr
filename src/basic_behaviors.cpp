@@ -25,9 +25,14 @@ namespace
 namespace yarrr
 {
 
+PhysicalBehavior::PhysicalBehavior()
+  : ObjectBehavior( synchronize )
+{
+}
 
 PhysicalBehavior::PhysicalBehavior( const PhysicalParameters& physical_parameters )
-  : physical_parameters( physical_parameters )
+  : ObjectBehavior( synchronize )
+  , physical_parameters( physical_parameters )
 {
 }
 
@@ -97,6 +102,10 @@ PhysicalBehavior::clone() const
   return ObjectBehavior::Pointer( new PhysicalBehavior( physical_parameters ) );
 }
 
+Engine::Engine()
+  : ObjectBehavior( synchronize )
+{
+}
 
 void
 Engine::register_to( Object& owner )
@@ -118,7 +127,8 @@ Engine::clone() const
 SelfDestructor::SelfDestructor(
     Object::Id object_id,
     const the::time::Time& lifespan )
-: m_lifespan( lifespan )
+: ObjectBehavior( do_not_syncronize )
+, m_lifespan( lifespan )
 , m_object_id( object_id )
 , m_time_to_die( 0u )
 {
@@ -159,7 +169,8 @@ SelfDestructor::clone() const
 }
 
 Canon::Canon()
-: m_physical_behavior( nullptr )
+: ObjectBehavior( do_not_syncronize )
+, m_physical_behavior( nullptr )
 {
 }
 
@@ -196,7 +207,8 @@ Canon::clone() const
 }
 
 GraphicalBehavior::GraphicalBehavior()
-  : yarrr::GraphicalObject( the::ctci::service< yarrr::GraphicalEngine >() )
+  : ObjectBehavior( synchronize )
+  , yarrr::GraphicalObject( the::ctci::service< yarrr::GraphicalEngine >() )
   , m_physical_behavior( nullptr )
 {
 }

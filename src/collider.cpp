@@ -17,7 +17,8 @@ namespace yarrr
 {
 
 Collider::Collider( int16_t initial_integrity, int16_t caused_damage )
-  : m_physical_behavior( nullptr )
+  : ObjectBehavior( do_not_syncronize )
+  , m_physical_behavior( nullptr )
   , m_initial_integrity( initial_integrity )
   , m_caused_damage( caused_damage )
   , m_dispatcher( nullptr )

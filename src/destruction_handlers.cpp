@@ -9,6 +9,11 @@
 namespace yarrr
 {
 
+DeleteWhenDestroyed::DeleteWhenDestroyed()
+  : ObjectBehavior( do_not_syncronize )
+{
+}
+
 void
 DeleteWhenDestroyed::register_to( Object& owner )
 {
@@ -33,7 +38,8 @@ DeleteWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
 
 
 RespawnWhenDestroyed::RespawnWhenDestroyed()
-  : m_physical_parameters( nullptr )
+  : ObjectBehavior( do_not_syncronize )
+  , m_physical_parameters( nullptr )
 {
 }
 

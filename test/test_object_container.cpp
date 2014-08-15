@@ -104,7 +104,7 @@ Describe(an_object_container)
         } );
   }
 
-  It( can_generates_object_updates )
+  It( can_generate_object_updates )
   {
     std::vector< yarrr::ObjectUpdate::Pointer > object_updates( container->generate_object_updates() );
     AssertThat( object_updates, HasLength( container->size() ) );

@@ -19,6 +19,17 @@ class ObjectBehavior : public Entity
   public:
     add_pure_polymorphic_ctci();
     typedef std::unique_ptr<ObjectBehavior> Pointer;
+
+    enum ShouldSynchronize : bool
+    {
+      synchronize = true,
+      do_not_syncronize = false
+    };
+
+    ObjectBehavior( ShouldSynchronize );
+
+    const ShouldSynchronize should_synchronize;
+
     virtual ~ObjectBehavior() = default;
 
     virtual void register_to( Object& ) = 0;

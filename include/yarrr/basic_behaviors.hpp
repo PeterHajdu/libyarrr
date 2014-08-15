@@ -25,7 +25,7 @@ class PhysicalBehavior : public ObjectBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_physical_behavior" );
-    PhysicalBehavior() = default;
+    PhysicalBehavior();
     PhysicalBehavior( const PhysicalParameters& );
 
     virtual void register_to( Object& ) override;
@@ -48,6 +48,8 @@ class Engine : public ObjectBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_engine" );
+
+    Engine();
     virtual void register_to( Object& ) override;
 
     virtual Pointer clone() const override;
@@ -56,7 +58,6 @@ class Engine : public ObjectBehavior
     std::unique_ptr< ShipControl > m_ship_control;
 };
 
-//todo: should not be sent to the client side
 class Canon : public ObjectBehavior
 {
   public:

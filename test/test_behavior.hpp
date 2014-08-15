@@ -10,7 +10,8 @@ class Behavior : public yarrr::ObjectBehavior
   public:
     add_polymorphic_ctci( "yarrr_another_test_behavior" );
     Behavior( std::function< void() > call_when_deleted = [](){} )
-      : m_call_when_deleted( call_when_deleted )
+      : ObjectBehavior( synchronize )
+      , m_call_when_deleted( call_when_deleted )
     {
     }
 
@@ -59,6 +60,28 @@ class Behavior : public yarrr::ObjectBehavior
 
   private:
     std::function< void() > m_call_when_deleted;
+};
+
+
+class NonSynchronizableBehavior : public yarrr::ObjectBehavior
+{
+  public:
+    add_polymorphic_ctci( "yarrr_nonsynchronizable_behavior" );
+    NonSynchronizableBehavior()
+      : ObjectBehavior( do_not_syncronize )
+    {
+    }
+
+    virtual void register_to( yarrr::Object& )
+    {
+    }
+
+    mutable bool was_cloned{ false };
+    virtual yarrr::ObjectBehavior::Pointer clone() const
+    {
+      was_cloned = true;
+      return Pointer{ nullptr };
+    }
 };
 
 }

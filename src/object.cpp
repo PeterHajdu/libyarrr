@@ -9,16 +9,18 @@ namespace
   yarrr::AutoEntityRegister<yarrr::ObjectUpdate> register_object_update;
 
   yarrr::BehaviorContainer
-  clone_behaviors( const yarrr::BehaviorContainer& behaviors )
+  clone_behaviors_for_synchronization( const yarrr::BehaviorContainer& behaviors )
   {
     yarrr::BehaviorContainer cloned_container;
-    std::transform(
-        std::begin( behaviors ), std::end( behaviors ),
-        std::back_inserter( cloned_container ),
-        []( const yarrr::ObjectBehavior::Pointer& behavior )
-        {
-          return behavior->clone();
-        } );
+    for( const auto& behavior : behaviors )
+    {
+      if ( !behavior->should_synchronize )
+      {
+        continue;
+      }
+
+      cloned_container.emplace_back( behavior->clone() );
+    }
     return cloned_container;
   }
 
@@ -26,6 +28,12 @@ namespace
 
 namespace yarrr
 {
+
+ObjectBehavior::ObjectBehavior( ShouldSynchronize should_synchronize )
+  : should_synchronize( should_synchronize )
+{
+}
+
 
 Object::Object()
   : id( Id( this ) )
@@ -48,7 +56,7 @@ Object::add_behavior( ObjectBehavior::Pointer&& behavior )
 ObjectUpdate::Pointer
 Object::generate_update() const
 {
-  return ObjectUpdate::Pointer( new ObjectUpdate( id, clone_behaviors( m_behaviors ) ) );
+  return ObjectUpdate::Pointer( new ObjectUpdate( id, clone_behaviors_for_synchronization( m_behaviors ) ) );
 }
 
 ObjectUpdate::ObjectUpdate()
