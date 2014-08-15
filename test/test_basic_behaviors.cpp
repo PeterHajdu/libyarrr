@@ -2,6 +2,7 @@
 #include "test_services.hpp"
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
+#include <yarrr/engine.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/command.hpp>
 #include <yarrr/object_container.hpp>
@@ -88,42 +89,6 @@ Describe( a_physical_behavior )
   std::unique_ptr< yarrr::PhysicalBehavior > physical_behavior;
   yarrr::Object::Pointer test_object;
 };
-
-Describe( an_engine )
-{
-
-  void SetUp()
-  {
-    test_object.reset( new yarrr::Object() );
-
-    physical_behavior.register_to( *test_object );
-    engine.register_to( *test_object );
-  }
-
-
-  It( updates_local_physical_state_when_a_command_arrives )
-  {
-    const yarrr::PhysicalParameters old_physical_parameters(
-        physical_behavior.physical_parameters );
-
-    test_object->dispatcher.dispatch( yarrr::Command( yarrr::Command::thruster, 0 ) );
-
-    AssertThat( old_physical_parameters, !Equals( physical_behavior.physical_parameters ) );
-  }
-
-
-  It( is_registered_to_entity_factory )
-  {
-    AssertThat( yarrr::EntityFactory::is_registered( yarrr::Engine::ctci ), Equals( true ) );
-  }
-
-
-  yarrr::PhysicalBehavior physical_behavior;
-  yarrr::Engine engine;
-
-  yarrr::Object::Pointer test_object;
-};
-
 
 Describe( a_canon )
 {

@@ -9,13 +9,14 @@
 #include <yarrr/delete_object.hpp>
 #include <yarrr/collider.hpp>
 #include <yarrr/destruction_handlers.hpp>
+#include <yarrr/engine.hpp>
 
 #include <thectci/service_registry.hpp>
 
 namespace
 {
-  yarrr::AutoEntityRegister< yarrr::PhysicalBehavior > auto_physical_behavior_register;
   yarrr::AutoEntityRegister< yarrr::Engine > auto_engine_register;
+  yarrr::AutoEntityRegister< yarrr::PhysicalBehavior > auto_physical_behavior_register;
   yarrr::AutoEntityRegister< yarrr::ShipGraphics > auto_ship_graphics_register;
   yarrr::AutoEntityRegister< yarrr::LaserGraphics > auto_laser_graphics_register;
 
@@ -100,28 +101,6 @@ ObjectBehavior::Pointer
 PhysicalBehavior::clone() const
 {
   return ObjectBehavior::Pointer( new PhysicalBehavior( physical_parameters ) );
-}
-
-Engine::Engine()
-  : ObjectBehavior( synchronize )
-{
-}
-
-void
-Engine::register_to( Object& owner )
-{
-  m_ship_control.reset(
-      new ShipControl( owner.components.component< PhysicalBehavior >().physical_parameters ) );
-  owner.dispatcher.register_listener< yarrr::Command  >(
-      std::bind( &ShipControl::handle_command, *m_ship_control, std::placeholders::_1 ) );
-  owner.components.register_component( *this );
-}
-
-
-ObjectBehavior::Pointer
-Engine::clone() const
-{
-  return Pointer( new Engine() );
 }
 
 SelfDestructor::SelfDestructor(

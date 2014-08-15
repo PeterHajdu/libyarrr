@@ -1,7 +1,6 @@
 #pragma once
 #include <yarrr/object.hpp>
 #include <yarrr/physical_parameters.hpp>
-#include <yarrr/ship_control.hpp>
 #include <thectci/id.hpp>
 #include <thetime/clock.hpp>
 #include <yarrr/graphical_engine.hpp>
@@ -42,21 +41,6 @@ class PhysicalBehavior : public ObjectBehavior
 };
 
 class Command;
-class ShipControl;
-
-class Engine : public ObjectBehavior
-{
-  public:
-    add_polymorphic_ctci( "yarrr_engine" );
-
-    Engine();
-    virtual void register_to( Object& ) override;
-
-    virtual Pointer clone() const override;
-
-  private:
-    std::unique_ptr< ShipControl > m_ship_control;
-};
 
 class Canon : public ObjectBehavior
 {
