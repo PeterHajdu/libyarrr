@@ -19,6 +19,8 @@ class Particle : public GraphicalObject
     virtual void draw() const override;
     void travel_in_time_to( const the::time::Time& );
 
+    bool is_alive() const;
+
   private:
     uint64_t age() const;
     PhysicalParameters m_physical_parameters;
@@ -34,6 +36,20 @@ class ParticleFactory
 
     //particle factory should take the ownership of the created particle
     virtual void create( const PhysicalParameters& ) = 0;
+};
+
+
+class ParticleContainer
+{
+  public:
+    typedef size_t size_type;
+    void push_back( Particle::Pointer&& );
+    void travel_in_time_to( const the::time::Time& );
+    size_type size() const;
+
+  private:
+    typedef std::vector< Particle::Pointer > Particles;
+    Particles m_particles;
 };
 
 }
