@@ -1,5 +1,6 @@
 #pragma once
 #include <ostream>
+#include <cmath>
 
 namespace yarrr
 {
@@ -127,6 +128,12 @@ namespace yarrr
   Vector<T> perpendicular( const Vector<T>& vector )
   {
     return Vector<T>( vector.y, -vector.x );
+  }
+
+  template <typename T>
+  T length_of( const Vector<T>& vector )
+  {
+    return T( std::sqrt( vector.x * vector.x + vector.y * vector.y ) );
   }
 
 }

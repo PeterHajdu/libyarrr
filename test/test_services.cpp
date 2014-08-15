@@ -4,6 +4,7 @@
 
 #include "test_services.hpp"
 #include "test_graphical_engine.hpp"
+#include "test_particle_factory.hpp"
 
 namespace
 {
@@ -15,6 +16,9 @@ namespace
 
   the::ctci::AutoServiceRegister< yarrr::GraphicalEngine, test::GraphicalEngine >
     test_graphical_engine_register;
+
+  the::ctci::AutoServiceRegister< yarrr::ParticleFactory, test::ParticleFactory >
+    test_particle_factory_register;
 }
 
 void

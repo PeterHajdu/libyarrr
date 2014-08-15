@@ -82,6 +82,11 @@ Describe(a_vector)
     AssertThat( yarrr::perpendicular( a ), Equals( Vector( 10, -100 ) ) );
   }
 
+  It(has_length_operation)
+  {
+    AssertThat( yarrr::length_of( a ), Equals( 100 ) );
+  }
+
   const Vector a{ 100, 10 };
   const Vector b{ 200, 20 };
 };
