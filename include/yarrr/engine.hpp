@@ -1,5 +1,6 @@
 #pragma once
 
+#include <yarrr/particle.hpp>
 #include <yarrr/object.hpp>
 #include <thectci/id.hpp>
 
@@ -26,6 +27,7 @@ class Engine : public ObjectBehavior
     void handle_command( const yarrr::Command& ) const;
     std::unique_ptr< ShipControl > m_ship_control;
     PhysicalParameters* m_physical_parameters;
+    const ParticleSource m_particle_source;
 };
 
 }

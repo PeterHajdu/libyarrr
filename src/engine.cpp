@@ -7,12 +7,18 @@
 
 #include <thectci/service_registry.hpp>
 
+namespace
+{
+  const size_t particle_speed_deviation{ 50 };
+}
+
 namespace yarrr
 {
 
 Engine::Engine()
   : ObjectBehavior( synchronize )
   , m_physical_parameters( nullptr )
+  , m_particle_source( particle_speed_deviation )
 {
 }
 
@@ -42,10 +48,10 @@ Engine::handle_command( const yarrr::Command& command ) const
 {
   m_ship_control->handle_command( command );
 
-  yarrr::PhysicalParameters particle_parameters( *m_physical_parameters );
-  particle_parameters.velocity -= heading( *m_physical_parameters, 500 );
-  particle_parameters.coordinate -= heading( *m_physical_parameters, 100 );
-  the::ctci::service< yarrr::ParticleFactory >().create( particle_parameters );
+  m_particle_source.create(
+      m_physical_parameters->timestamp,
+      m_physical_parameters->coordinate - heading( *m_physical_parameters, 100 ),
+      m_physical_parameters->velocity - heading( *m_physical_parameters, 500 ) );
 }
 
 }
