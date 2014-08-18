@@ -176,8 +176,8 @@ Describe(a_particle_source)
   std::vector< yarrr::PhysicalParameters > particle_parameters;
   const yarrr::Coordinate center{ 100, 100 };
   const yarrr::Coordinate velocity{ 1000, 1000 };
-  const uint64_t deviation{ 5 };
-  const uint64_t length_deviation{ deviation * 2 };
+  const int64_t deviation{ 5 };
+  const int64_t length_deviation{ deviation * 2 };
   test::ParticleFactory* particle_factory;
   std::unique_ptr< yarrr::ParticleSource > source;
 };
