@@ -28,6 +28,8 @@ Engine::Engine( const Engine& other )
   , m_physical_parameters( nullptr )
   , m_particle_source( particle_speed_deviation )
   , m_thruster( other.m_thruster )
+  , m_cw_jet( other.m_cw_jet )
+  , m_ccw_jet( other.m_ccw_jet )
 {
 }
 
@@ -61,6 +63,8 @@ void
 Engine::handle_engine_update( const yarrr::Engine& other )
 {
   m_thruster = other.m_thruster;
+  m_cw_jet = other.m_cw_jet;
+  m_ccw_jet = other.m_ccw_jet;
 }
 
 
@@ -68,33 +72,69 @@ void
 Engine::handle_command( const yarrr::Command& command )
 {
   m_ship_control->handle_command( command );
-  m_thruster.activate( command.timestamp() );
+  switch ( command.type() )
+  {
+    case Command::thruster: m_thruster.activate( command.timestamp() ); break;
+    case Command::cw: m_cw_jet.activate( command.timestamp() ); break;
+    case Command::ccw: m_ccw_jet.activate( command.timestamp() ); break;
+  }
 }
 
 void
 Engine::handle_timer_update( const yarrr::TimerUpdate& update ) const
 {
-  if ( !m_thruster.is_active_at( update.timestamp ) )
+  const Coordinate parallel( heading( *m_physical_parameters, 70 ) );
+
+  if ( m_thruster.is_active_at( update.timestamp ) )
   {
-    return;
+    m_particle_source.create(
+        m_physical_parameters->timestamp,
+        m_physical_parameters->coordinate - parallel,
+        m_physical_parameters->velocity - parallel * 5 );
   }
 
-  m_particle_source.create(
-      m_physical_parameters->timestamp,
-      m_physical_parameters->coordinate - heading( *m_physical_parameters, 100 ),
-      m_physical_parameters->velocity - heading( *m_physical_parameters, 500 ) );
+  const Coordinate perp( perpendicular( parallel ) );
+  if ( m_cw_jet.is_active_at( update.timestamp ) )
+  {
+    m_particle_source.create(
+        m_physical_parameters->timestamp,
+        m_physical_parameters->coordinate - parallel,
+        m_physical_parameters->velocity - perp * 5 );
+
+    m_particle_source.create(
+        m_physical_parameters->timestamp,
+        m_physical_parameters->coordinate + parallel,
+        m_physical_parameters->velocity + perp * 5 );
+  }
+
+  if ( m_ccw_jet.is_active_at( update.timestamp ) )
+  {
+    m_particle_source.create(
+        m_physical_parameters->timestamp,
+        m_physical_parameters->coordinate - parallel,
+        m_physical_parameters->velocity + perp * 5 );
+
+    m_particle_source.create(
+        m_physical_parameters->timestamp,
+        m_physical_parameters->coordinate + parallel,
+        m_physical_parameters->velocity - perp * 5 );
+  }
 }
 
 void
 Engine::do_serialize( Serializer& serializer ) const
 {
   m_thruster.serialize( serializer );
+  m_cw_jet.serialize( serializer );
+  m_ccw_jet.serialize( serializer );
 }
 
 void
 Engine::do_deserialize( Deserializer& deserializer )
 {
   m_thruster.deserialize( deserializer );
+  m_cw_jet.deserialize( deserializer );
+  m_ccw_jet.deserialize( deserializer );
 }
 
 const the::time::Time Jet::cooldown_time{ 100000 };

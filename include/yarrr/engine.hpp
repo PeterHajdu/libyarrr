@@ -59,6 +59,8 @@ class Engine : public ObjectBehavior
     const ParticleSource m_particle_source;
 
     Jet m_thruster;
+    Jet m_cw_jet;
+    Jet m_ccw_jet;
 };
 
 }
