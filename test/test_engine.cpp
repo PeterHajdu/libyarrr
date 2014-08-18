@@ -6,6 +6,7 @@
 #include <yarrr/command.hpp>
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/particle.hpp>
+#include <yarrr/bitmagic.hpp>
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
@@ -43,15 +44,21 @@ Describe( an_engine )
     AssertThat( old_physical_parameters, !Equals( *physical_parameters ) );
   }
 
-  It( creates_particles_when_it_is_on )
+  void activate_and_wait_for_particles()
   {
     object->dispatcher.dispatch( yarrr::Command( yarrr::Command::thruster, 0 ) );
+    object->dispatcher.dispatch( yarrr::TimerUpdate( 0 ) );
+  }
+
+  It( creates_particles_when_it_is_on )
+  {
+    activate_and_wait_for_particles();
     AssertThat( particle_factory->was_particle_created, Equals( true ) );
   }
 
-  It( created_particles_are_close_to_the_object )
+  It( creates_particles_close_to_the_object )
   {
-    object->dispatcher.dispatch( yarrr::Command( yarrr::Command::thruster, 0 ) );
+    activate_and_wait_for_particles();
     yarrr::Coordinate coordinate_difference(
         particle_factory->last_particle_parameters.coordinate -
         physical_parameters->coordinate );
@@ -63,5 +70,37 @@ Describe( an_engine )
   test::ParticleFactory* particle_factory;
   yarrr::PhysicalParameters* physical_parameters;
   yarrr::Object::Pointer object;
+};
+
+
+Describe( a_jet )
+{
+  void SetUp()
+  {
+    jet.activate( now );
+  }
+
+  It( is_active_until_a_cooldown_time )
+  {
+    AssertThat( jet.is_active_at( now ), Equals( true ) );
+    AssertThat( jet.is_active_at( now + yarrr::Jet::cooldown_time ), Equals( false ) );
+  }
+
+  It( is_serializable_and_deserializable )
+  {
+    yarrr::Data serialized_jet;
+    yarrr::Serializer serializer( serialized_jet );
+    jet.serialize( serializer );
+
+    yarrr::Deserializer deserializer( serialized_jet );
+    yarrr::Jet deserialized_jet;
+    deserialized_jet.deserialize( deserializer );
+
+    AssertThat( deserialized_jet.is_active_at( now ), Equals( true ) );
+    AssertThat( deserialized_jet.is_active_at( now + yarrr::Jet::cooldown_time ), Equals( false ) );
+  }
+
+  yarrr::Jet jet;
+  const the::time::Time now{ 1000 };
 };
 
