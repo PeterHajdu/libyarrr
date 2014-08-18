@@ -57,7 +57,10 @@ class ParticleSource
 {
   public:
     ParticleSource( size_t deviation );
-    void create( const Coordinate& center, const Coordinate& velocity ) const;
+    void create(
+        const the::time::Time&,
+        const Coordinate& center,
+        const Coordinate& velocity ) const;
 
   private:
     mutable std::uniform_int_distribution<int> m_distribution;

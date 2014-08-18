@@ -136,7 +136,7 @@ Describe(a_particle_source)
 
     for ( size_t i( 0 ); i < number_of_particles; ++i )
     {
-      source->create( center, velocity );
+      source->create( timestamp, center, velocity );
       particle_parameters.push_back( particle_factory->last_particle_parameters );
     }
 
@@ -144,10 +144,11 @@ Describe(a_particle_source)
   }
 
 
-  It( creates_particles_around_a_given_velocity_and_coordinate )
+  It( creates_particles_around_a_given_velocity_coordinate_timestamp )
   {
     for ( const auto& parameter : particle_parameters )
     {
+      AssertThat( parameter.timestamp, Equals( timestamp ) );
       AssertThat( parameter.coordinate, Equals( center ) );
       const yarrr::Coordinate velocity_difference( parameter.velocity - velocity );
       AssertThat( yarrr::length_of( velocity_difference ), IsLessThan( length_deviation ) );
@@ -174,6 +175,7 @@ Describe(a_particle_source)
 
   const size_t number_of_particles{ 100 };
   std::vector< yarrr::PhysicalParameters > particle_parameters;
+  const the::time::Time timestamp{ 5000 };
   const yarrr::Coordinate center{ 100, 100 };
   const yarrr::Coordinate velocity{ 1000, 1000 };
   const int64_t deviation{ 5 };

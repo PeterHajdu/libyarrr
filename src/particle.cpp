@@ -1,6 +1,7 @@
 #include <yarrr/particle.hpp>
 #include <thectci/service_registry.hpp>
 #include <cmath>
+#include <iostream>
 
 namespace
 {
@@ -81,9 +82,13 @@ ParticleSource::ParticleSource( size_t deviation )
 }
 
 void
-ParticleSource::create( const Coordinate& center, const Coordinate& velocity ) const
+ParticleSource::create(
+        const the::time::Time& timestamp,
+        const Coordinate& center,
+        const Coordinate& velocity ) const
 {
   yarrr::PhysicalParameters particle_parameters;
+  particle_parameters.timestamp = timestamp;
   particle_parameters.coordinate = center;
   particle_parameters.velocity = velocity +
     Coordinate( m_distribution( random_engine ), m_distribution( random_engine ) );
