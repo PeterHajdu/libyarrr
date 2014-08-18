@@ -1,6 +1,8 @@
 #include <yarrr/particle.hpp>
 #include "test_graphical_engine.hpp"
+#include "test_particle_factory.hpp"
 #include <yarrr/physical_parameters.hpp>
+#include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
@@ -121,5 +123,62 @@ Describe( a_particle_container )
   yarrr::Particle::Pointer particle;
 
   test::GraphicalEngine graphical_engine;
+};
+
+Describe(a_particle_source)
+{
+  void SetUp()
+  {
+    particle_factory = static_cast< test::ParticleFactory* >( &the::ctci::service< yarrr::ParticleFactory >() );
+    particle_factory->reset();
+    source.reset( new yarrr::ParticleSource( deviation ) );
+    particle_parameters.clear();
+
+    for ( size_t i( 0 ); i < number_of_particles; ++i )
+    {
+      source->create( center, velocity );
+      particle_parameters.push_back( particle_factory->last_particle_parameters );
+    }
+
+    AssertThat( particle_factory->was_particle_created, Equals( true ) );
+  }
+
+
+  It( creates_particles_around_a_given_velocity_and_coordinate )
+  {
+    for ( const auto& parameter : particle_parameters )
+    {
+      AssertThat( parameter.coordinate, Equals( center ) );
+      const yarrr::Coordinate velocity_difference( parameter.velocity - velocity );
+      AssertThat( yarrr::length_of( velocity_difference ), IsLessThan( length_deviation ) );
+    }
+  }
+
+  bool not_all_velocity_is_equal() const
+  {
+    for ( const auto& parameter : particle_parameters )
+    {
+      if ( parameter.velocity != velocity )
+      {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  It( creates_particles_with_some_random )
+  {
+    AssertThat( not_all_velocity_is_equal(), Equals( true ) );
+  }
+
+  const size_t number_of_particles{ 100 };
+  std::vector< yarrr::PhysicalParameters > particle_parameters;
+  const yarrr::Coordinate center{ 100, 100 };
+  const yarrr::Coordinate velocity{ 1000, 1000 };
+  const uint64_t deviation{ 5 };
+  const uint64_t length_deviation{ deviation * 2 };
+  test::ParticleFactory* particle_factory;
+  std::unique_ptr< yarrr::ParticleSource > source;
 };
 

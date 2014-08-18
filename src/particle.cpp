@@ -1,8 +1,13 @@
 #include <yarrr/particle.hpp>
+#include <thectci/service_registry.hpp>
+#include <cmath>
 
 namespace
 {
   const the::time::Time two_seconds{ 2000000 };
+
+  std::random_device random_device;
+  std::default_random_engine random_engine( random_device() );
 }
 
 namespace yarrr
@@ -68,6 +73,22 @@ ParticleContainer::size_type
 ParticleContainer::size() const
 {
   return m_particles.size();
+}
+
+ParticleSource::ParticleSource( size_t deviation )
+  : m_distribution( -deviation, deviation )
+{
+}
+
+void
+ParticleSource::create( const Coordinate& center, const Coordinate& velocity ) const
+{
+  yarrr::PhysicalParameters particle_parameters;
+  particle_parameters.coordinate = center;
+  particle_parameters.velocity = velocity +
+    Coordinate( m_distribution( random_engine ), m_distribution( random_engine ) );
+
+  the::ctci::service< ParticleFactory >().create( particle_parameters );
 }
 
 }

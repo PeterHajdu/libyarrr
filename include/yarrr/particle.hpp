@@ -3,6 +3,7 @@
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/graphical_engine.hpp>
 #include <memory>
+#include <random>
 
 namespace yarrr
 {
@@ -50,6 +51,16 @@ class ParticleContainer
   private:
     typedef std::vector< Particle::Pointer > Particles;
     Particles m_particles;
+};
+
+class ParticleSource
+{
+  public:
+    ParticleSource( size_t deviation );
+    void create( const Coordinate& center, const Coordinate& velocity ) const;
+
+  private:
+    mutable std::uniform_int_distribution<int> m_distribution;
 };
 
 }
