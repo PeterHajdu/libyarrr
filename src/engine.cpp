@@ -23,6 +23,14 @@ Engine::Engine()
 {
 }
 
+Engine::Engine( const Engine& other )
+  : ObjectBehavior( synchronize )
+  , m_physical_parameters( nullptr )
+  , m_particle_source( particle_speed_deviation )
+  , m_thruster( other.m_thruster )
+{
+}
+
 Engine::~Engine()
 {
 }
@@ -36,6 +44,8 @@ Engine::register_to( Object& owner )
       std::bind( &Engine::handle_command, this, std::placeholders::_1 ) );
   owner.dispatcher.register_listener< yarrr::TimerUpdate  >(
       std::bind( &Engine::handle_timer_update, this, std::placeholders::_1 ) );
+  owner.dispatcher.register_listener< yarrr::Engine  >(
+      std::bind( &Engine::handle_engine_update, this, std::placeholders::_1 ) );
   owner.components.register_component( *this );
 }
 
@@ -43,8 +53,16 @@ Engine::register_to( Object& owner )
 ObjectBehavior::Pointer
 Engine::clone() const
 {
-  return Pointer( new Engine() );
+  return Pointer( new Engine( *this ) );
 }
+
+
+void
+Engine::handle_engine_update( const yarrr::Engine& other )
+{
+  m_thruster = other.m_thruster;
+}
+
 
 void
 Engine::handle_command( const yarrr::Command& command )
@@ -70,14 +88,21 @@ Engine::handle_timer_update( const yarrr::TimerUpdate& update ) const
 void
 Engine::do_serialize( Serializer& serializer ) const
 {
+  m_thruster.serialize( serializer );
 }
 
 void
 Engine::do_deserialize( Deserializer& deserializer )
 {
+  m_thruster.deserialize( deserializer );
 }
 
 const the::time::Time Jet::cooldown_time{ 100000 };
+
+Jet::Jet( const Jet& other )
+  : m_active_until( other.m_active_until )
+{
+}
 
 Jet::Jet()
   : m_active_until( 0 )
@@ -106,6 +131,13 @@ void
 Jet::deserialize( Deserializer& deserializer )
 {
   m_active_until = deserializer.pop_front< the::time::Time >();
+}
+
+Jet&
+Jet::operator=( const Jet& other )
+{
+  m_active_until = other.m_active_until;
+  return *this;
 }
 
 }

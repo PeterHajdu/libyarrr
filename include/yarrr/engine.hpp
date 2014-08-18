@@ -20,6 +20,9 @@ class Jet
     static const the::time::Time cooldown_time;
 
     Jet();
+    Jet( const Jet& );
+    Jet& operator=( const Jet& );
+
     void activate( const the::time::Time& at );
     bool is_active_at( const the::time::Time& at ) const;
 
@@ -36,6 +39,7 @@ class Engine : public ObjectBehavior
     add_polymorphic_ctci( "yarrr_engine" );
 
     Engine();
+    Engine( const Engine& );
     virtual ~Engine();
 
     virtual void register_to( Object& ) override;
@@ -48,6 +52,8 @@ class Engine : public ObjectBehavior
 
     void handle_command( const yarrr::Command& );
     void handle_timer_update( const yarrr::TimerUpdate& ) const;
+    void handle_engine_update( const yarrr::Engine& );
+
     std::unique_ptr< ShipControl > m_ship_control;
     PhysicalParameters* m_physical_parameters;
     const ParticleSource m_particle_source;
