@@ -137,7 +137,7 @@ Engine::do_deserialize( Deserializer& deserializer )
   m_ccw_jet.deserialize( deserializer );
 }
 
-const the::time::Time Jet::cooldown_time{ 100000 };
+const the::time::Time Jet::cooldown_time{ 300000 };
 
 Jet::Jet( const Jet& other )
   : m_active_until( other.m_active_until )
