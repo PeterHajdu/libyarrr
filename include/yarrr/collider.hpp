@@ -17,7 +17,13 @@ class Collider : public ObjectBehavior
   public:
     add_polymorphic_ctci( "yarrr_collider" );
 
-    Collider( int16_t initial_integrity, int16_t caused_damage );
+    enum : int
+    {
+      ship_layer,
+      laser_layer
+    };
+
+    Collider( int layer, int16_t initial_integrity, int16_t caused_damage );
 
     virtual void register_to( Object& ) override;
     virtual Pointer clone() const override;
@@ -35,6 +41,7 @@ class Collider : public ObjectBehavior
     const int16_t m_initial_integrity;
     const int16_t m_caused_damage;
     the::ctci::Dispatcher* m_dispatcher;
+    const int m_layer;
 };
 
 }

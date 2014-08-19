@@ -265,32 +265,30 @@ Object::Pointer
 create_ship()
 {
   yarrr::Object::Pointer ship( new yarrr::Object() );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Engine() ) );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShipGraphics() ) );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon() ) );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( 100, 0 ) ) );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::RespawnWhenDestroyed() ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior() ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new Engine() ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new ShipGraphics() ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new Canon() ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer, 100, 0 ) ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new RespawnWhenDestroyed() ) );
   return ship;
 }
 
 Object::Pointer
-create_laser( const PhysicalParameters& ships_parameters )
+create_laser( const PhysicalParameters& laser_parameters )
 {
-  yarrr::Object::Pointer ship( new yarrr::Object() );
-  std::unique_ptr< PhysicalBehavior > physical_behavior( new yarrr::PhysicalBehavior( ships_parameters ) );
+  Object::Pointer laser( new Object() );
+  std::unique_ptr< PhysicalBehavior > physical_behavior( new PhysicalBehavior( laser_parameters ) );
   physical_behavior->physical_parameters.vangle = 0;
-  physical_behavior->physical_parameters.velocity += heading( ships_parameters, laser_speed );
-  physical_behavior->physical_parameters.coordinate += heading( ships_parameters, 100 );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior.release() ) );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LaserGraphics() ) );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( 0, 10 ) ) );
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DeleteWhenDestroyed() ) );
+  physical_behavior->physical_parameters.velocity += heading( laser_parameters, laser_speed );
+  physical_behavior->physical_parameters.coordinate += heading( laser_parameters, 100 );
+  laser->add_behavior( ObjectBehavior::Pointer( physical_behavior.release() ) );
+  laser->add_behavior( ObjectBehavior::Pointer( new LaserGraphics() ) );
+  laser->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::laser_layer, 0, 10 ) ) );
+  laser->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
+  laser->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( laser->id, 3000000u ) ) );
 
-  ship->add_behavior( yarrr::ObjectBehavior::Pointer(
-        new yarrr::SelfDestructor( ship->id, 3000000u ) ) );
-
-  return ship;
+  return laser;
 }
 
 }

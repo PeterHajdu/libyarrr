@@ -16,12 +16,13 @@ int64_t length_square( const yarrr::Coordinate& coordinate )
 namespace yarrr
 {
 
-Collider::Collider( int16_t initial_integrity, int16_t caused_damage )
+Collider::Collider( int layer, int16_t initial_integrity, int16_t caused_damage )
   : ObjectBehavior( do_not_syncronize )
   , m_physical_behavior( nullptr )
   , m_initial_integrity( initial_integrity )
   , m_caused_damage( caused_damage )
   , m_dispatcher( nullptr )
+  , m_layer( layer )
 {
 }
 
@@ -40,7 +41,7 @@ Collider::register_to( Object& owner )
 ObjectBehavior::Pointer
 Collider::clone() const
 {
-  return Pointer( new Collider( m_initial_integrity, m_caused_damage ) );
+  return Pointer( new Collider( m_layer, m_initial_integrity, m_caused_damage ) );
 }
 
 void
@@ -48,7 +49,8 @@ Collider::collide_if_needed_with( Collider& other )
 {
   assert( m_physical_behavior );
 
-  if ( is_collider_too_far( other ) )
+  const bool is_collider_on_the_same_layer( m_layer == other.m_layer );
+  if ( is_collider_on_the_same_layer || is_collider_too_far( other ) )
   {
     return;
   }

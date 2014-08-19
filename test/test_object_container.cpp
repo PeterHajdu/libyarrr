@@ -7,6 +7,8 @@
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/delete_object.hpp>
 #include <yarrr/engine_dispatcher.hpp>
+#include <yarrr/collider.hpp>
+#include <yarrr/destruction_handlers.hpp>
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
@@ -145,6 +147,21 @@ Describe(an_object_container)
 
 };
 
+namespace
+{
+
+yarrr::Object::Pointer
+create_test_laser( int layer, const yarrr::PhysicalParameters& physical_parameters )
+{
+  yarrr::Object::Pointer laser( new yarrr::Object() );
+  laser->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior( physical_parameters ) ) );
+  laser->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( layer, 0, 10 ) ) );
+  laser->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DeleteWhenDestroyed() ) );
+  return laser;
+}
+
+}
+
 Describe( object_container_collision_checks )
 {
 
@@ -152,7 +169,7 @@ Describe( object_container_collision_checks )
   {
     for ( size_t i( 0 ); i < n; ++i )
     {
-      yarrr::Object::Pointer laser( create_laser( physical_parameters ) );
+      yarrr::Object::Pointer laser( create_test_laser( i, physical_parameters ) );
       created_objects.push_back( laser->id );
       container->add_object( std::move( laser ) );
     }

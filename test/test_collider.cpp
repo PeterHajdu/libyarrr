@@ -12,8 +12,8 @@ namespace
   class ColliderBundle
   {
     public:
-      ColliderBundle( int16_t caused_damage )
-        : collider( new yarrr::Collider( initial_integrity, caused_damage ) )
+      ColliderBundle( int layer, int16_t caused_damage )
+        : collider( new yarrr::Collider( layer, initial_integrity, caused_damage ) )
         , physical_behavior( new yarrr::PhysicalBehavior() )
       {
         object.add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior ) );
@@ -23,8 +23,8 @@ namespace
               &ColliderBundle::handle_object_destroyed, this, std::placeholders::_1 ) );
       }
 
-      ColliderBundle( ColliderBundle& other, int16_t caused_damage )
-        : ColliderBundle( caused_damage )
+      ColliderBundle( ColliderBundle& other, int layer, int16_t caused_damage )
+        : ColliderBundle( layer, caused_damage )
       {
         physical_parameters() = other.physical_parameters();
       }
@@ -69,9 +69,9 @@ Describe( a_collider )
 
   void SetUp()
   {
-    collider_bundle.reset( new ColliderBundle( colliders_caused_damage ) );
-    colliding_bundle.reset( new ColliderBundle( *collider_bundle, collidings_caused_damage ) );
-    collider_too_far.reset( new ColliderBundle( *collider_bundle, colliders_caused_damage ) );
+    collider_bundle.reset( new ColliderBundle( yarrr::Collider::ship_layer, colliders_caused_damage ) );
+    colliding_bundle.reset( new ColliderBundle( *collider_bundle, yarrr::Collider::laser_layer, collidings_caused_damage ) );
+    collider_too_far.reset( new ColliderBundle( *collider_bundle, yarrr::Collider::laser_layer, colliders_caused_damage ) );
     collider_too_far->move_far_enough();
   }
 
@@ -99,6 +99,14 @@ Describe( a_collider )
     collide_with( *collider_too_far );
     AssertThat( collider_bundle->did_collide(), Equals( false ) )
     AssertThat( colliding_bundle->did_collide(), Equals( false ) )
+  }
+
+  It( does_not_collide_if_the_layers_are_equal )
+  {
+    std::unique_ptr< ColliderBundle > collider_on_the_same_layer( new ColliderBundle(
+          *collider_bundle, yarrr::Collider::ship_layer, colliders_caused_damage ) );
+    collide_with( *collider_on_the_same_layer );
+    AssertThat( collider_bundle->did_collide(), Equals( false ) )
   }
 
   It( sets_integrity_to_its_default_value_when_registered )
