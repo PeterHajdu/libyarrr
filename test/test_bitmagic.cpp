@@ -90,6 +90,46 @@ Describe(a_deserializer)
     test_deserializer.reset( new yarrr::Deserializer( test_buffer ) );
   }
 
+  It( pop_front_throws_exception_if_there_are_too_few_bytes_left )
+  {
+    set_up_deserializer();
+    typedef int too_bit_type;
+    AssertThrows( std::runtime_error, test_deserializer->pop_front< too_bit_type >() );
+    AssertThat(
+        std::string( LastException< std::runtime_error >().what() ),
+        Contains( "deserializer: not enough bytes left in the buffer" ) );
+  }
+
+  It( pop_front_throws_exception_if_there_are_less_bytes_left_than_length_field )
+  {
+    test_serializer->push_back( unsigned_32 );
+    set_up_deserializer();
+    AssertThrows( std::runtime_error, test_deserializer->pop_front< std::string >() );
+    AssertThat(
+        std::string( LastException< std::runtime_error >().what() ),
+        Contains( "deserializer: not enough bytes left in the buffer for string" ) );
+  }
+
+  It( peek_throws_exception_if_there_are_too_few_bytes_left )
+  {
+    set_up_deserializer();
+    typedef int too_bit_type;
+    AssertThrows( std::runtime_error, test_deserializer->peek< too_bit_type >() );
+    AssertThat(
+        std::string( LastException< std::runtime_error >().what() ),
+        Contains( "deserializer: not enough bytes left in the buffer" ) );
+  }
+
+  It( peek_throws_exception_if_there_are_less_bytes_left_than_length_field )
+  {
+    test_serializer->push_back( unsigned_32 );
+    set_up_deserializer();
+    AssertThrows( std::runtime_error, test_deserializer->peek< std::string >() );
+    AssertThat(
+        std::string( LastException< std::runtime_error >().what() ),
+        Contains( "deserializer: not enough bytes left in the buffer for string" ) );
+  }
+
   It( can_deserialize_serialized_integral_data )
   {
     test_serializer->push_back( signed_8 );
@@ -138,6 +178,7 @@ Describe(a_deserializer)
   const std::string first_string{ "alma" };
   const std::string second_string{ "fa" };
   const uint64_t unsigned_64{ 1123098348 };
+  const uint32_t unsigned_32{ 18348 };
   const int8_t signed_8{ 13 };
   typedef yarrr::Data TestBuffer;
   TestBuffer test_buffer;

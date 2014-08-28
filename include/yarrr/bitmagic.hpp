@@ -2,7 +2,6 @@
 
 #include <yarrr/types.hpp>
 #include <string>
-#include <cassert>
 
 namespace yarrr
 {
@@ -75,7 +74,11 @@ class Deserializer
 template <typename T>
 T Deserializer::pop_front()
 {
-  assert( bytes_left() >= sizeof( T ) );
+  if ( bytes_left() < sizeof( T ) )
+  {
+    throw std::runtime_error( "deserializer: not enough bytes left in the buffer" );
+  }
+
   const char * const position( m_position );
   m_position += sizeof( T );
   return *reinterpret_cast< const T* >( position );
@@ -85,7 +88,12 @@ template <> inline
 std::string Deserializer::pop_front<std::string>()
 {
   const uint32_t length( pop_front< uint32_t >() );
-  assert( bytes_left() >= length );
+
+  if ( bytes_left() < length )
+  {
+    throw std::runtime_error( "deserializer: not enough bytes left in the buffer for string" );
+  }
+
   const char * const position( m_position );
   m_position += length;
   return std::string( position, length );
@@ -94,7 +102,11 @@ std::string Deserializer::pop_front<std::string>()
 template <typename T>
 T Deserializer::peek() const
 {
-  assert( bytes_left() >= sizeof( T ) );
+  if ( bytes_left() < sizeof( T ) )
+  {
+    throw std::runtime_error( "deserializer: not enough bytes left in the buffer" );
+  }
+
   const char * const position( m_position );
   return *reinterpret_cast< const T* >( position );
 }
@@ -104,7 +116,11 @@ std::string Deserializer::peek<std::string>() const
 {
   typedef uint32_t LengthType;
   const LengthType length( peek< LengthType >() );
-  assert( bytes_left() - sizeof( LengthType ) >= length );
+  if ( bytes_left() < length )
+  {
+    throw std::runtime_error( "deserializer: not enough bytes left in the buffer for string" );
+  }
+
   const char * const position( m_position + sizeof( LengthType ) );
   return std::string( position, length );
 }
