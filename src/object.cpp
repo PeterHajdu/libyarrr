@@ -90,13 +90,9 @@ void
 ObjectUpdate::do_deserialize( Deserializer& deserializer )
 {
   m_id = deserializer.pop_front< Object::Id >();
-  if ( !deserializer.bytes_left() )
-  {
-    return;
-  }
 
   Entity::Pointer new_entity;
-  while ( ( new_entity = EntityFactory::create( deserializer ) ) )
+  while ( deserializer.bytes_left() && ( new_entity = EntityFactory::create( deserializer ) ) )
   {
     m_behaviors.push_back( ObjectBehavior::Pointer(
           static_cast< ObjectBehavior* >( new_entity.release() ) ) );

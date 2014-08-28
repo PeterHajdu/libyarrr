@@ -27,10 +27,21 @@ EntityFactory::get()
 Entity::Pointer
 EntityFactory::create( Deserializer& deserializer )
 {
+  the::ctci::Id class_id;
+  try
+  {
+    class_id = deserializer.peek< the::ctci::Id >();
+  }
+  catch ( std::runtime_error& error )
+  {
+    thelog( log::error )( "While parsing class id: ", error.what() );
+    return nullptr;
+  }
+
   try
   {
     EntityFactory& factory( get() );
-    Entity::Pointer entity( factory.m_factory.create( deserializer.peek< the::ctci::Id >() ) );
+    Entity::Pointer entity( factory.m_factory.create( class_id ) );
     if ( !entity )
     {
       return nullptr;
@@ -41,7 +52,7 @@ EntityFactory::create( Deserializer& deserializer )
   }
   catch ( std::runtime_error& error )
   {
-    thelog( log::error )( error.what() );
+    thelog( log::error )( error.what(), "class_id=", class_id );
   }
 
   return nullptr;
