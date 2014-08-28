@@ -1,5 +1,6 @@
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/bitmagic.hpp>
+#include <yarrr/log.hpp>
 #include <thectci/id.hpp>
 #include <memory>
 
@@ -26,19 +27,24 @@ EntityFactory::get()
 Entity::Pointer
 EntityFactory::create( Deserializer& deserializer )
 {
-  if ( deserializer.bytes_left() < sizeof( the::ctci::Id ) )
+  try
   {
-    return nullptr;
-  }
+    EntityFactory& factory( get() );
+    Entity::Pointer entity( factory.m_factory.create( deserializer.peek< the::ctci::Id >() ) );
+    if ( !entity )
+    {
+      return nullptr;
+    }
 
-  EntityFactory& factory( get() );
-  Entity::Pointer entity( factory.m_factory.create( deserializer.peek< the::ctci::Id >() ) );
-  if ( !entity )
-  {
+    entity->deserialize( deserializer );
     return entity;
   }
-  entity->deserialize( deserializer );
-  return entity;
+  catch ( std::runtime_error& error )
+  {
+    thelog( log::error )( error.what() );
+  }
+
+  return nullptr;
 }
 
 Entity::Pointer
