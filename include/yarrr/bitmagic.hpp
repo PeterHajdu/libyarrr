@@ -2,6 +2,7 @@
 
 #include <yarrr/types.hpp>
 #include <string>
+#include <stdexcept>
 
 namespace yarrr
 {
