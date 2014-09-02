@@ -23,16 +23,12 @@ set(TEST_SOURCE_FILES
     test_basic_behaviors.cpp
     test_engine.cpp
     test_graphical_engine.cpp
-    test_cli.cpp
-    test_terminal.cpp
-    test_stream_to_chat.cpp
     test_object_container.cpp
     test_engine_dispatcher.cpp
     test_main_thread_callback_queue.cpp
     test_services.cpp
     test_collider.cpp
     test_destruction_handler.cpp
-    test_hud.cpp
     test_particles.cpp
     )
 

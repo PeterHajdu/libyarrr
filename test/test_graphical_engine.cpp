@@ -1,5 +1,5 @@
 #include <yarrr/physical_parameters.hpp>
-#include "test_graphical_engine.hpp"
+#include <yarrr/test_graphical_engine.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;

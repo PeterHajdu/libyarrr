@@ -1,5 +1,5 @@
-#include "test_graphical_engine.hpp"
 #include "test_services.hpp"
+#include <yarrr/test_graphical_engine.hpp>
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/engine.hpp>

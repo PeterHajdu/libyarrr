@@ -1,6 +1,6 @@
 #include <yarrr/particle.hpp>
-#include "test_graphical_engine.hpp"
 #include "test_particle_factory.hpp"
+#include <yarrr/test_graphical_engine.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>

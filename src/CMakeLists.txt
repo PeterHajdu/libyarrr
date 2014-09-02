@@ -11,13 +11,9 @@ set(SOURCE_FILES
   object.cpp
   object_container.cpp
   basic_behaviors.cpp
-  stream_to_chat.cpp
   graphical_engine.cpp
-  cli.cpp
-  terminal.cpp
   collider.cpp
   destruction_handlers.cpp
-  hud.cpp
   particle.cpp
   engine.cpp
     )

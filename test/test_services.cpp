@@ -1,9 +1,9 @@
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/main_thread_callback_queue.hpp>
+#include <yarrr/test_graphical_engine.hpp>
 #include <thectci/service_registry.hpp>
 
 #include "test_services.hpp"
-#include "test_graphical_engine.hpp"
 #include "test_particle_factory.hpp"
 
 namespace
