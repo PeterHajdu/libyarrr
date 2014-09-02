@@ -16,6 +16,7 @@ set(SOURCE_FILES
   destruction_handlers.cpp
   particle.cpp
   engine.cpp
+  clock_sync_catcher.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
