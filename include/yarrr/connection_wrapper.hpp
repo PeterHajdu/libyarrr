@@ -27,7 +27,8 @@ class ConnectionWrapper : public the::ctci::Dispatcher
 
         if ( !entity )
         {
-          continue;
+          connection.drop();
+          return;
         }
 
         polymorphic_dispatch( *entity );

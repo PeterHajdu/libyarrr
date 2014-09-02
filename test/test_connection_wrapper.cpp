@@ -44,6 +44,12 @@ namespace
       {
         return 0 >= number_of_messages;
       }
+
+       bool was_dropped{ false };
+       void drop()
+       {
+         was_dropped = true;
+       }
   };
 
   typedef yarrr::ConnectionWrapper< TestConnection > TestWrapper;
@@ -100,6 +106,13 @@ Describe(a_connection_wrapper)
   {
     test_connection->has_one_invalid_entity = true;
     test_wrapper->process_incoming_messages();
+  }
+
+  It( drops_connection_if_invalid_entity_is_received )
+  {
+    test_connection->has_one_invalid_entity = true;
+    test_wrapper->process_incoming_messages();
+    AssertThat( test_connection->was_dropped, Equals( true ) );
   }
 
   const size_t number_of_entities{ 10 };
