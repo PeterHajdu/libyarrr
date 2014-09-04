@@ -6,6 +6,14 @@ namespace yarrr
 {
 class PhysicalBehavior;
 
+class Collide
+{
+  public:
+    add_ctci( "yarrr_collide" );
+    Collide( Object& );
+    yarrr::Object& with;
+};
+
 class ObjectDestroyed
 {
   public:
@@ -23,7 +31,7 @@ class Collider : public ObjectBehavior
       laser_layer
     };
 
-    Collider( int layer, int16_t initial_integrity, int16_t caused_damage );
+    Collider( int layer );
 
     virtual void register_to( Object& ) override;
     virtual Pointer clone() const override;
@@ -32,16 +40,31 @@ class Collider : public ObjectBehavior
     void collide_if_needed_with( Collider& );
 
   private:
-    int16_t& current_integrity() const;
     bool is_collider_too_far( const Collider& ) const;
     void collide_with( const Collider& ) const;
-    void reset_integrity() const;
 
     yarrr::PhysicalBehavior* m_physical_behavior;
-    const int16_t m_initial_integrity;
-    const int16_t m_caused_damage;
-    the::ctci::Dispatcher* m_dispatcher;
     const int m_layer;
+    yarrr::Object* m_owner_object;
+};
+
+class DamageCauser : public ObjectBehavior
+{
+  public:
+    add_polymorphic_ctci( "yarrr_damage_causer" );
+    DamageCauser( int initial_integrity );
+    virtual ~DamageCauser() = default;
+
+    virtual void register_to( Object& ) override;
+    virtual Pointer clone() const override;
+
+  private:
+    void handle_collision( const Collide& ) const;
+    void reset_integrity() const;
+
+    const int m_initial_integrity;
+    int16_t* m_integrity;
+    the::ctci::Dispatcher* m_dispatcher;
 };
 
 }

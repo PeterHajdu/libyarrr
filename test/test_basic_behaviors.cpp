@@ -282,6 +282,11 @@ Describe( ship_creator )
     AssertThat( object->components.has_component< yarrr::Collider >(), Equals( true ) );
   }
 
+  It ( creates_objects_with_a_damage_causer )
+  {
+    AssertThat( object->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
+  }
+
   It ( creates_objects_with_respawn_when_destroyed )
   {
     AssertThat( object->components.has_component< yarrr::RespawnWhenDestroyed >(), Equals( true ) );
@@ -325,6 +330,11 @@ Describe( laser_creator )
   It ( creates_objects_with_a_collider )
   {
     AssertThat( object->components.has_component< yarrr::Collider >(), Equals( true ) );
+  }
+
+  It ( creates_objects_with_a_damage_causer )
+  {
+    AssertThat( object->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
   }
 
   It ( creates_objects_with_delete_when_destroyed )

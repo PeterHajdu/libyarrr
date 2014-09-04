@@ -269,7 +269,8 @@ create_ship()
   ship->add_behavior( ObjectBehavior::Pointer( new Engine() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new ShipGraphics() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new Canon() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer, 100, 0 ) ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer ) ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 100 ) ) );
   ship->add_behavior( ObjectBehavior::Pointer( new RespawnWhenDestroyed() ) );
   return ship;
 }
@@ -284,7 +285,8 @@ create_laser( const PhysicalParameters& laser_parameters )
   physical_behavior->physical_parameters.coordinate += heading( laser_parameters, 100 );
   laser->add_behavior( ObjectBehavior::Pointer( physical_behavior.release() ) );
   laser->add_behavior( ObjectBehavior::Pointer( new LaserGraphics() ) );
-  laser->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::laser_layer, 0, 10 ) ) );
+  laser->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::laser_layer ) ) );
+  laser->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 10 ) ) );
   laser->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
   laser->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( laser->id, 3000000u ) ) );
 
