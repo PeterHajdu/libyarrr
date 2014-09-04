@@ -174,6 +174,8 @@ Canon::register_to( Object& owner )
       std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
   m_physical_behavior = &owner.components.component< yarrr::PhysicalBehavior >();
   owner.components.register_component( *this );
+  assert( owner.components.has_component< Inventory >() );
+  owner.components.component< Inventory >().register_item( *this );
 }
 
 

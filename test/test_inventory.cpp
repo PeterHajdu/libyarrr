@@ -5,7 +5,7 @@
 
 using namespace igloo;
 
-Describe_Only( an_invenory )
+Describe( an_invenory )
 {
   void SetUp()
   {

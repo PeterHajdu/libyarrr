@@ -97,6 +97,8 @@ Describe( a_canon )
   void SetUp()
   {
     object.reset( new yarrr::Object() );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
+    inventory = &object->components.component< yarrr::Inventory >();
 
     physical_behavior.register_to( *object );
     canon.reset( new yarrr::Canon() );
@@ -128,8 +130,15 @@ Describe( a_canon )
     AssertThat( was_canon_fired, Equals( true ) );
   }
 
+  It( registeres_itself_to_the_inventory )
+  {
+    AssertThat( inventory->items(), HasLength( 1 ) );
+    AssertThat( &inventory->items().back().get(), Equals( canon.get() ) );
+  }
+
   bool was_canon_fired;
 
+  yarrr::Inventory* inventory;
   yarrr::PhysicalBehavior physical_behavior;
   std::unique_ptr< yarrr::Canon > canon;
 
