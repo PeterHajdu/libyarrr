@@ -31,6 +31,7 @@ set(TEST_SOURCE_FILES
     test_destruction_handler.cpp
     test_particles.cpp
     test_damage_causer.cpp
+    test_inventory.cpp
     )
 
 

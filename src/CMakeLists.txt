@@ -17,6 +17,7 @@ set(SOURCE_FILES
   particle.cpp
   engine.cpp
   clock_sync_catcher.cpp
+  inventory.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
