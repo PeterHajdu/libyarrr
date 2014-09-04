@@ -1,4 +1,5 @@
 #include "test_services.hpp"
+#include <yarrr/inventory.hpp>
 #include <yarrr/test_graphical_engine.hpp>
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
@@ -290,6 +291,11 @@ Describe( ship_creator )
   It ( creates_objects_with_respawn_when_destroyed )
   {
     AssertThat( object->components.has_component< yarrr::RespawnWhenDestroyed >(), Equals( true ) );
+  }
+
+  It ( creates_objects_with_inventory )
+  {
+    AssertThat( object->components.has_component< yarrr::Inventory >(), Equals( true ) );
   }
 
   yarrr::Object::Pointer object;

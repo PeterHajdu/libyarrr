@@ -1,3 +1,4 @@
+#include <yarrr/inventory.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/command.hpp>
 #include <yarrr/ship_control.hpp>
@@ -265,6 +266,7 @@ Object::Pointer
 create_ship()
 {
   yarrr::Object::Pointer ship( new yarrr::Object() );
+  ship->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new Engine() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new ShipGraphics() ) );
