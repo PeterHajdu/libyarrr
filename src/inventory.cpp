@@ -20,5 +20,18 @@ Inventory::clone() const
   return Pointer( new Inventory() );
 }
 
+
+void
+Inventory::register_item( ObjectBehavior& item )
+{
+  m_items.emplace_back( item );
+}
+
+const Inventory::ItemContainer&
+Inventory::items() const
+{
+  return m_items;
+}
+
 }
 

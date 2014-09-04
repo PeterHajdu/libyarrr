@@ -18,6 +18,22 @@ Describe_Only( an_invenory )
     AssertThat( object->components.has_component< yarrr::Inventory >(), Equals( true ) );
   }
 
+  It( lets_behaviors_register_themselves )
+  {
+    yarrr::Inventory inventory;
+    inventory.register_item( inventory );
+  }
+
+  It( keeps_a_list_of_registered_items )
+  {
+    yarrr::Inventory inventory;
+    inventory.register_item( inventory );
+
+    const yarrr::Inventory::ItemContainer& items( inventory.items() );
+    AssertThat( items.size(), Equals( 1 ) );
+    AssertThat( &items.back().get(), Equals( &inventory ) );
+  }
+
   yarrr::Object::Pointer object;
 };
 
