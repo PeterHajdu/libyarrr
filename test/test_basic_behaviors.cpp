@@ -24,17 +24,17 @@ Describe( a_physical_behavior )
 
   void SetUp()
   {
-    test_object.reset( new yarrr::Object() );
+    object.reset( new yarrr::Object() );
 
     physical_behavior.reset( new yarrr::PhysicalBehavior() );
     physical_behavior->physical_parameters.velocity = { 100, 100 };
     physical_behavior->physical_parameters.coordinate = { 10, 3 };
-    physical_behavior->register_to( *test_object );
+    physical_behavior->register_to( *object );
   }
 
   It( registers_itself_as_a_component )
   {
-    AssertThat( &test_object->components.component<yarrr::PhysicalBehavior>(), Equals( physical_behavior.get() ) );
+    AssertThat( &object->components.component<yarrr::PhysicalBehavior>(), Equals( physical_behavior.get() ) );
   }
 
   It( exposes_writable_physical_parameters )
@@ -48,7 +48,7 @@ Describe( a_physical_behavior )
     const yarrr::PhysicalParameters old_physical_parameters(
         physical_behavior->physical_parameters );
 
-    test_object->dispatcher.dispatch( yarrr::TimerUpdate( old_physical_parameters.timestamp + 100000 ) );
+    object->dispatcher.dispatch( yarrr::TimerUpdate( old_physical_parameters.timestamp + 100000 ) );
     AssertThat( old_physical_parameters, !Equals( physical_behavior->physical_parameters ) );
   }
 
@@ -59,7 +59,7 @@ Describe( a_physical_behavior )
         physical_behavior->physical_parameters );
 
     yarrr::PhysicalBehavior other_physical_behavior;
-    test_object->dispatcher.dispatch( other_physical_behavior );
+    object->dispatcher.dispatch( other_physical_behavior );
 
     AssertThat( old_physical_parameters, !Equals( physical_behavior->physical_parameters ) );
     AssertThat( other_physical_behavior.physical_parameters, !Equals( physical_behavior->physical_parameters ) );
@@ -88,7 +88,7 @@ Describe( a_physical_behavior )
   }
 
   std::unique_ptr< yarrr::PhysicalBehavior > physical_behavior;
-  yarrr::Object::Pointer test_object;
+  yarrr::Object::Pointer object;
 };
 
 Describe( a_canon )
@@ -96,11 +96,11 @@ Describe( a_canon )
 
   void SetUp()
   {
-    test_object.reset( new yarrr::Object() );
+    object.reset( new yarrr::Object() );
 
-    physical_behavior.register_to( *test_object );
+    physical_behavior.register_to( *object );
     canon.reset( new yarrr::Canon() );
-    canon->register_to( *test_object );
+    canon->register_to( *object );
 
     was_canon_fired = false;
 
@@ -118,13 +118,13 @@ Describe( a_canon )
 
   It( creates_objects_only_for_fire_command )
   {
-    test_object->dispatcher.dispatch( yarrr::Command( yarrr::Command::cw, 0 ) );
+    object->dispatcher.dispatch( yarrr::Command( yarrr::Command::cw, 0 ) );
     AssertThat( was_canon_fired, Equals( false ) );
   }
 
   It( creates_new_objects_when_canon_is_fired )
   {
-    test_object->dispatcher.dispatch( yarrr::Command( yarrr::Command::fire, 0 ) );
+    object->dispatcher.dispatch( yarrr::Command( yarrr::Command::fire, 0 ) );
     AssertThat( was_canon_fired, Equals( true ) );
   }
 
@@ -133,7 +133,7 @@ Describe( a_canon )
   yarrr::PhysicalBehavior physical_behavior;
   std::unique_ptr< yarrr::Canon > canon;
 
-  yarrr::Object::Pointer test_object;
+  yarrr::Object::Pointer object;
 };
 
 
@@ -142,15 +142,15 @@ Describe( graphical_behaviors )
 
   void SetUp()
   {
-    test_object.reset( new yarrr::Object() );
+    object.reset( new yarrr::Object() );
 
-    physical_behavior.register_to( *test_object );
+    physical_behavior.register_to( *object );
 
     ship_graphics.reset( new yarrr::ShipGraphics() );
-    ship_graphics->register_to( *test_object );
+    ship_graphics->register_to( *object );
 
     laser_graphics.reset( new yarrr::LaserGraphics() );
-    laser_graphics->register_to( *test_object );
+    laser_graphics->register_to( *object );
 
     graphical_engine = static_cast< test::GraphicalEngine* >( &the::ctci::service<yarrr::GraphicalEngine>() );
     graphical_engine->last_focused_to = physical_behavior.physical_parameters.coordinate + yarrr::Coordinate( 10, 10 );
@@ -166,7 +166,7 @@ Describe( graphical_behaviors )
   It( focuses_the_engine_to_the_object_if_it_receives_focus_on_object_event )
   {
     AssertThat( graphical_engine->last_focused_to, !Equals( physical_behavior.physical_parameters.coordinate ) );
-    test_object->dispatcher.dispatch( yarrr::FocusOnObject() );
+    object->dispatcher.dispatch( yarrr::FocusOnObject() );
     AssertThat( graphical_engine->last_focused_to, Equals( physical_behavior.physical_parameters.coordinate ) );
   }
 
@@ -190,7 +190,7 @@ Describe( graphical_behaviors )
 
   std::unique_ptr< yarrr::ShipGraphics > ship_graphics;
   std::unique_ptr< yarrr::LaserGraphics > laser_graphics;
-  yarrr::Object::Pointer test_object;
+  yarrr::Object::Pointer object;
 };
 
 Describe( self_destructor )
@@ -198,11 +198,11 @@ Describe( self_destructor )
 
   void SetUp()
   {
-    test_object.reset( new yarrr::Object() );
+    object.reset( new yarrr::Object() );
     self_destructor.reset( new yarrr::SelfDestructor( object_id, lifespan ) );
 
-    self_destructor->register_to( *test_object );
-    test_object->dispatcher.dispatch( yarrr::TimerUpdate( now ) );
+    self_destructor->register_to( *object );
+    object->dispatcher.dispatch( yarrr::TimerUpdate( now ) );
 
     deleted_object_id = 0u;
     was_object_deleted = false;
@@ -227,13 +227,13 @@ Describe( self_destructor )
 
   It( should_not_delete_object_from_the_container_if_lifespan_is_not_exceeded )
   {
-    test_object->dispatcher.dispatch( yarrr::TimerUpdate( now + less_than_the_lifespan ) );
+    object->dispatcher.dispatch( yarrr::TimerUpdate( now + less_than_the_lifespan ) );
     AssertThat( was_object_deleted, Equals( false ) );
   }
 
   It( deletes_the_object_from_the_container_if_lifespan_is_exceeded )
   {
-    test_object->dispatcher.dispatch( yarrr::TimerUpdate( now + lifespan ) );
+    object->dispatcher.dispatch( yarrr::TimerUpdate( now + lifespan ) );
     AssertThat( was_object_deleted, Equals( true ) );
     AssertThat( deleted_object_id, Equals( object_id ) );
   }
@@ -242,7 +242,7 @@ Describe( self_destructor )
   bool was_object_deleted;
 
   std::unique_ptr< yarrr::SelfDestructor > self_destructor;
-  yarrr::Object::Pointer test_object;
+  yarrr::Object::Pointer object;
 
   yarrr::Object::Id object_id{ 100u };
   const the::time::Time now{ 100u };
