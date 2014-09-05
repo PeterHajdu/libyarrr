@@ -3,6 +3,7 @@
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/destruction_handlers.hpp>
+#include <yarrr/entity_factory.hpp>
 #include <thectci/service_registry.hpp>
 
 namespace
@@ -27,6 +28,8 @@ class LootGraphics : public yarrr::GraphicalBehavior
     void do_register_to( yarrr::Object& ) override {}
 };
 
+yarrr::AutoEntityRegister< LootGraphics > auto_loot_graphics_register;
+
 yarrr::Object::Pointer create_loot_object(
     const yarrr::PhysicalParameters& owner_parameters,
     const yarrr::Inventory::ItemContainer& items )
@@ -37,7 +40,7 @@ yarrr::Object::Pointer create_loot_object(
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( yarrr::Collider::loot_layer ) ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new LootGraphics() ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DeleteWhenDestroyed() ) );
-  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DamageCauser( 10 ) ) );
+  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DamageCauser( 30 ) ) );
 
   for ( const auto& item : items )
   {
