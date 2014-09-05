@@ -79,6 +79,11 @@ Describe( a_loot_dropper )
     AssertThat( created_object->components.has_component< yarrr::Inventory >(), Equals( true ) );
   }
 
+  It( creates_objects_with_collider )
+  {
+    AssertThat( created_object->components.has_component< yarrr::Collider >(), Equals( true ) );
+  }
+
   yarrr::Object::Pointer object;
   yarrr::Object::Pointer created_object;
 };

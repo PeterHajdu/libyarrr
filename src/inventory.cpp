@@ -11,6 +11,8 @@ yarrr::Object::Pointer create_loot_object()
 {
   yarrr::Object::Pointer loot_object( new yarrr::Object() );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
+  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
+  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( yarrr::Collider::loot_layer ) ) );
   return loot_object;
 }
 

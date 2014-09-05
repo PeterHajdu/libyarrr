@@ -28,7 +28,8 @@ class Collider : public ObjectBehavior
     enum : int
     {
       ship_layer,
-      laser_layer
+      laser_layer,
+      loot_layer
     };
 
     Collider( int layer );
