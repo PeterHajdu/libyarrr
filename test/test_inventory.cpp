@@ -106,11 +106,6 @@ Describe( a_loot_dropper )
     AssertThat( created_object->components.has_component< yarrr::Collider >(), Equals( true ) );
   }
 
-  It( creates_objects_with_ship_graphics )
-  {
-    AssertThat( created_object->components.has_component< yarrr::ShipGraphics >(), Equals( true ) );
-  }
-
   It( creates_objects_with_delete_when_destroyed )
   {
     AssertThat( created_object->components.has_component< yarrr::DeleteWhenDestroyed >(), Equals( true ) );

@@ -24,6 +24,9 @@ class GraphicalEngine : public yarrr::GraphicalEngine
     }
 
 
+    virtual void draw_loot( const yarrr::PhysicalParameters& parameters ) override {}
+
+
     yarrr::PhysicalParameters last_drawn_particle;
     uint64_t age_of_last_drawn_particle;
     virtual void draw_particle( const yarrr::PhysicalParameters& physical_parameters, uint64_t age ) override

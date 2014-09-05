@@ -46,6 +46,7 @@ class GraphicalEngine
     virtual void draw_particle( const PhysicalParameters&, uint64_t age ) = 0;
     virtual void draw_ship( const PhysicalParameters& ) = 0;
     virtual void draw_laser( const PhysicalParameters& ) = 0;
+    virtual void draw_loot( const PhysicalParameters& ) = 0;
     virtual void print_text( uint16_t x, uint16_t y, const std::string&, const Colour& ) = 0;
     virtual void print_text_tokens( uint16_t x, uint16_t y, const TextTokens& ) = 0;
     virtual void focus_to( const yarrr::Coordinate& ) = 0;

@@ -8,6 +8,25 @@
 namespace
 {
 
+class LootGraphics : public yarrr::GraphicalBehavior
+{
+  public:
+    add_polymorphic_ctci( "yarrr_loot_graphics" );
+
+    virtual void draw() const
+    {
+      m_graphical_engine.draw_loot( m_physical_behavior->physical_parameters );
+    }
+
+    yarrr::ObjectBehavior::Pointer clone() const
+    {
+      return yarrr::ObjectBehavior::Pointer( new LootGraphics() );
+    }
+
+  private:
+    void do_register_to( yarrr::Object& ) override {}
+};
+
 yarrr::Object::Pointer create_loot_object(
     const yarrr::PhysicalParameters& owner_parameters,
     const yarrr::Inventory::ItemContainer& items )
@@ -16,7 +35,7 @@ yarrr::Object::Pointer create_loot_object(
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior( owner_parameters ) ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( yarrr::Collider::loot_layer ) ) );
-  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShipGraphics() ) );
+  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new LootGraphics() ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DeleteWhenDestroyed() ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DamageCauser( 10 ) ) );
 
