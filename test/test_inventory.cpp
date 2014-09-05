@@ -36,7 +36,7 @@ Describe( an_invenory )
     inventory.register_item( inventory );
 
     const yarrr::Inventory::ItemContainer& items( inventory.items() );
-    AssertThat( items.size(), Equals( 1 ) );
+    AssertThat( items.size(), Equals( 1u ) );
     AssertThat( &items.back().get(), Equals( &inventory ) );
   }
 
@@ -98,7 +98,7 @@ Describe( a_loot_dropper )
 
   It( creates_objects_with_the_copy_of_the_owner_objects_items )
   {
-    AssertThat( created_objects_inventory->items(), HasLength( 1 ) );
+    AssertThat( created_objects_inventory->items(), HasLength( 1u ) );
   }
 
   It( creates_objects_with_collider )
