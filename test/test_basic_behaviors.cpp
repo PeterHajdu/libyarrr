@@ -106,8 +106,8 @@ Describe( a_canon )
 
     was_canon_fired = false;
 
-    the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::Canon::AddObject >(
-          [ this ]( const yarrr::Canon::AddObject& )
+    the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::ObjectCreated >(
+          [ this ]( const yarrr::ObjectCreated& )
           {
             was_canon_fired = true;
           } );

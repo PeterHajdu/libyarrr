@@ -189,7 +189,7 @@ Canon::handle_command( const Command& command ) const
 
   assert( m_physical_behavior );
 
-  the::ctci::service< yarrr::EngineDispatcher >().dispatch( Canon::AddObject(
+  the::ctci::service< yarrr::EngineDispatcher >().dispatch( ObjectCreated(
         create_laser( m_physical_behavior->physical_parameters ) ) );
 }
 
