@@ -42,5 +42,20 @@ class LootDropper : public ObjectBehavior
     Inventory* m_inventory;
 };
 
+class Collide;
+class LootAttacher : public ObjectBehavior
+{
+  public:
+    add_polymorphic_ctci( "yarrr_loot_attacher" );
+    LootAttacher();
+    virtual void register_to( Object& ) override;
+    virtual Pointer clone() const override;
+
+  private:
+    void attach_items_to( Object& ) const;
+    void handle_object_collided( const Collide& ) const;
+    Inventory* m_inventory;
+    the::ctci::Dispatcher* m_dispatcher;
+};
 }
 

@@ -41,6 +41,7 @@ yarrr::Object::Pointer create_loot_object(
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new LootGraphics() ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DeleteWhenDestroyed() ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DamageCauser( 30 ) ) );
+  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LootAttacher() ) );
 
   for ( const auto& item : items )
   {
@@ -88,6 +89,7 @@ Inventory::items() const
 LootDropper::LootDropper()
   : ObjectBehavior( do_not_syncronize )
   , m_owner_parameters( nullptr )
+  , m_inventory( nullptr )
 {
 }
 
@@ -114,5 +116,47 @@ LootDropper::clone() const
   return Pointer( new LootDropper() );
 }
 
+LootAttacher::LootAttacher()
+  : ObjectBehavior( do_not_syncronize )
+  , m_inventory( nullptr )
+  , m_dispatcher( nullptr )
+{
+}
+
+void
+LootAttacher::register_to( Object& owner )
+{
+  owner.components.register_component( *this );
+  owner.dispatcher.register_listener< yarrr::Collide >(
+      std::bind( &LootAttacher::handle_object_collided, this, std::placeholders::_1 ) );
+  m_inventory = &owner.components.component< Inventory >();
+  m_dispatcher = &owner.dispatcher;
+}
+
+void
+LootAttacher::handle_object_collided( const Collide& collide ) const
+{
+  if ( !collide.with.components.has_component< Inventory >() )
+  {
+    return;
+  }
+  attach_items_to( collide.with );
+}
+
+void
+LootAttacher::attach_items_to( Object& new_owner ) const
+{
+  for ( const auto& item : m_inventory->items() )
+  {
+    new_owner.add_behavior( item.get().clone() );
+  }
+  m_dispatcher->dispatch( ObjectDestroyed() );
+}
+
+ObjectBehavior::Pointer
+LootAttacher::clone() const
+{
+  return Pointer( new LootAttacher() );
+}
 }
 

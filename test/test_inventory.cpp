@@ -116,6 +116,11 @@ Describe( a_loot_dropper )
     AssertThat( created_object->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
   }
 
+  It( creates_objects_with_loot_attacher )
+  {
+    AssertThat( created_object->components.has_component< yarrr::LootAttacher >(), Equals( true ) );
+  }
+
   It( creates_objects_close_to_the_owner )
   {
     yarrr::Coordinate coordinate_difference(
@@ -132,5 +137,86 @@ Describe( a_loot_dropper )
   yarrr::PhysicalParameters* physical_parameters;
 
   const yarrr::Coordinate far_from_the_origo{ 100000, 1000000000 };
+};
+
+Describe( a_loot_attacher )
+{
+  yarrr::Object::Pointer create_object()
+  {
+    yarrr::Object::Pointer object( new yarrr::Object() );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
+    return object;
+  }
+
+  yarrr::Object::Pointer create_ship()
+  {
+    yarrr::Object::Pointer object( create_object() );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
+    return object;
+  }
+
+  yarrr::Object::Pointer create_loot()
+  {
+    yarrr::Object::Pointer object( create_object() );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon() ) );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon() ) );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LootAttacher() ) );
+    return object;
+  }
+
+  void SetUp()
+  {
+    loot = create_loot();
+    ship = create_ship();
+    laser = create_object();
+
+    was_loot_destroyed = false;
+    loot->dispatcher.register_listener< yarrr::ObjectDestroyed >(
+        [ this ]( const yarrr::ObjectDestroyed& )
+        {
+          was_loot_destroyed = true;
+        } );
+  }
+
+  void TearDown()
+  {
+    test::clean_engine_dispatcher();
+  }
+
+  It( registers_itsef_as_a_component )
+  {
+    AssertThat( loot->components.has_component< yarrr::LootAttacher >(), Equals( true ) );
+  }
+
+  It( attaches_its_items_to_a_colliding_object )
+  {
+    loot->dispatcher.dispatch( yarrr::Collide( *ship ) );
+    AssertThat( ship->components.has_component< yarrr::Canon >(), Equals( true ) );
+  }
+
+  It( attaches_all_items_to_a_colliding_object )
+  {
+    loot->dispatcher.dispatch( yarrr::Collide( *ship ) );
+    AssertThat( ship->components.component< yarrr::Inventory >().items(), HasLength( 2u ) );
+  }
+
+  It( attaches_items_only_to_objects_with_an_inventory )
+  {
+    loot->dispatcher.dispatch( yarrr::Collide( *laser ) );
+  }
+
+  It( destroys_the_owner_if_it_collides )
+  {
+    loot->dispatcher.dispatch( yarrr::Collide( *ship ) );
+    AssertThat( was_loot_destroyed, Equals( true ) );
+  }
+
+  yarrr::Object::Pointer loot;
+  yarrr::Object::Pointer ship;
+  yarrr::Object::Pointer laser;
+
+  bool was_loot_destroyed{ false };
 };
 
