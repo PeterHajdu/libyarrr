@@ -6,6 +6,8 @@
 #include <yarrr/entity_factory.hpp>
 #include <thectci/service_registry.hpp>
 
+#include <random>
+
 namespace
 {
 
@@ -30,23 +32,29 @@ class LootGraphics : public yarrr::GraphicalBehavior
 
 yarrr::AutoEntityRegister< LootGraphics > auto_loot_graphics_register;
 
-yarrr::Object::Pointer create_loot_object(
-    const yarrr::PhysicalParameters& owner_parameters,
-    const yarrr::Inventory::ItemContainer& items )
+std::random_device random_device;
+std::default_random_engine random_engine( random_device() );
+std::uniform_int_distribution<int> distribution{ -300, 300 };
+
+void add_random_velocity_to( yarrr::PhysicalParameters& physical_parameters )
 {
+  physical_parameters.velocity += yarrr::Coordinate( distribution( random_engine ), distribution( random_engine ) );
+}
+
+yarrr::Object::Pointer create_loot_object(
+    yarrr::PhysicalParameters new_physical_parameters,
+    const yarrr::ObjectBehavior& item )
+{
+  add_random_velocity_to( new_physical_parameters );
   yarrr::Object::Pointer loot_object( new yarrr::Object() );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
-  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior( owner_parameters ) ) );
+  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior( new_physical_parameters ) ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( yarrr::Collider::loot_layer ) ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new LootGraphics() ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DeleteWhenDestroyed() ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DamageCauser( 30 ) ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LootAttacher() ) );
-
-  for ( const auto& item : items )
-  {
-    loot_object->add_behavior( item.get().clone() );
-  }
+  loot_object->add_behavior( item.clone() );
 
   return loot_object;
 }
@@ -106,8 +114,11 @@ LootDropper::register_to( Object& owner )
 void
 LootDropper::handle_object_destroyed( const ObjectDestroyed& ) const
 {
-  the::ctci::service< yarrr::EngineDispatcher >().dispatch(
-      ObjectCreated( create_loot_object( *m_owner_parameters, m_inventory->items() ) ) );
+  for ( const auto& item : m_inventory->items() )
+  {
+    the::ctci::service< yarrr::EngineDispatcher >().dispatch(
+        ObjectCreated( create_loot_object( *m_owner_parameters, item.get() ) ) );
+  }
 }
 
 ObjectBehavior::Pointer

@@ -56,23 +56,28 @@ Describe( a_loot_dropper )
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior.release() ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LootDropper() ) );
-    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon() ) );
+
+    for ( size_t i( 0 ); i < number_of_canons; ++i )
+    {
+      object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon() ) );
+    }
+
     return object;
   }
 
   void SetUp()
   {
     object = create_object();
-    created_object.reset( nullptr );
+    created_objects.clear();
 
     the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::ObjectCreated >(
         [ this ]( const yarrr::ObjectCreated& object_created )
         {
-          created_object = std::move( object_created.object );
+          created_objects.emplace_back( std::move( object_created.object ) );
           created_objects_physical_parameters =
-            &created_object->components.component< yarrr::PhysicalBehavior >().physical_parameters;
+            &created_objects.back()->components.component< yarrr::PhysicalBehavior >().physical_parameters;
           created_objects_inventory =
-            &created_object->components.component< yarrr::Inventory >();
+            &created_objects.back()->components.component< yarrr::Inventory >();
         } );
     object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
   }
@@ -84,7 +89,7 @@ Describe( a_loot_dropper )
 
   bool objects_were_created()
   {
-    return nullptr != created_object.get();
+    return !created_objects.empty();
   }
 
   It( creates_objects_when_owner_is_destroyed )
@@ -92,34 +97,39 @@ Describe( a_loot_dropper )
     AssertThat( objects_were_created(), Equals( true ) );
   }
 
-  It( creates_objects_with_inventory )
+  It( creates_an_object_for_each_item_it_has )
   {
-    AssertThat( created_object->components.has_component< yarrr::Inventory >(), Equals( true ) );
+    AssertThat( created_objects.size(), Equals( number_of_canons ) );
   }
 
-  It( creates_objects_with_the_copy_of_the_owner_objects_items )
+  It( creates_objects_with_inventory )
   {
-    AssertThat( created_objects_inventory->items(), HasLength( 1u ) );
+    AssertThat( created_objects.back()->components.has_component< yarrr::Inventory >(), Equals( true ) );
+  }
+
+  It( creates_objects_with_one_item_of_the_owner )
+  {
+    AssertThat( created_objects.back()->components.component< yarrr::Inventory >().items(), HasLength( 1u ) );
   }
 
   It( creates_objects_with_collider )
   {
-    AssertThat( created_object->components.has_component< yarrr::Collider >(), Equals( true ) );
+    AssertThat( created_objects.back()->components.has_component< yarrr::Collider >(), Equals( true ) );
   }
 
   It( creates_objects_with_delete_when_destroyed )
   {
-    AssertThat( created_object->components.has_component< yarrr::DeleteWhenDestroyed >(), Equals( true ) );
+    AssertThat( created_objects.back()->components.has_component< yarrr::DeleteWhenDestroyed >(), Equals( true ) );
   }
 
   It( creates_destructable_objects )
   {
-    AssertThat( created_object->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
+    AssertThat( created_objects.back()->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
   }
 
   It( creates_objects_with_loot_attacher )
   {
-    AssertThat( created_object->components.has_component< yarrr::LootAttacher >(), Equals( true ) );
+    AssertThat( created_objects.back()->components.has_component< yarrr::LootAttacher >(), Equals( true ) );
   }
 
   It( creates_objects_close_to_the_owner )
@@ -132,12 +142,13 @@ Describe( a_loot_dropper )
   }
 
   yarrr::Object::Pointer object;
-  yarrr::Object::Pointer created_object;
+  std::vector< yarrr::Object::Pointer > created_objects;
   yarrr::PhysicalParameters* created_objects_physical_parameters;
   const yarrr::Inventory* created_objects_inventory;
   yarrr::PhysicalParameters* physical_parameters;
 
   const yarrr::Coordinate far_from_the_origo{ 100000, 1000000000 };
+  size_t number_of_canons{ 3 };
 };
 
 Describe( a_loot_attacher )
