@@ -4,6 +4,7 @@
 #include <yarrr/inventory.hpp>
 #include <thectci/service_registry.hpp>
 #include <yarrr/engine_dispatcher.hpp>
+#include <iostream>
 
 namespace yarrr
 {
@@ -11,6 +12,8 @@ namespace yarrr
 Canon::Canon()
 : ObjectBehavior( do_not_syncronize )
 , m_physical_parameters( nullptr )
+, m_index( 0 )
+, m_number_of_canons( 1 )
 {
 }
 
@@ -21,9 +24,29 @@ Canon::register_to( Object& owner )
   owner.dispatcher.register_listener< yarrr::Command  >(
       std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
   m_physical_parameters = &owner.components.component< yarrr::PhysicalBehavior >().physical_parameters;
-  owner.components.register_component( *this );
   assert( owner.components.has_component< Inventory >() );
   owner.components.component< Inventory >().register_item( *this );
+
+  register_component_to( owner.components );
+}
+
+
+void
+Canon::register_component_to( the::ctci::ComponentRegistry& components )
+{
+  if ( components.has_component< Canon >() )
+  {
+    m_index = components.component< Canon >().generate_next_index();
+  }
+
+  components.register_component( *this );
+}
+
+
+int
+Canon::generate_next_index()
+{
+  return m_number_of_canons++;
 }
 
 
@@ -38,7 +61,18 @@ Canon::handle_command( const Command& command ) const
   assert( m_physical_parameters );
 
   the::ctci::service< yarrr::EngineDispatcher >().dispatch( ObjectCreated(
-        create_laser( *m_physical_parameters ) ) );
+        create_laser( generate_physical_parameters() ) ) );
+}
+
+
+PhysicalParameters
+Canon::generate_physical_parameters() const
+{
+  PhysicalParameters new_parameters( *m_physical_parameters );
+  const yarrr::Coordinate difference( perpendicular( heading( new_parameters, 50 ) ) );
+  const int left_or_right( m_index % 2 ? -1 : 1 );
+  new_parameters.coordinate += difference * m_index * left_or_right * 0.5;
+  return new_parameters;
 }
 
 

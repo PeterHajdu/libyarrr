@@ -24,18 +24,21 @@ Describe( a_canon )
 
   void SetUp()
   {
+    bullets.clear();
+
     object.reset( new yarrr::Object() );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
     inventory = &object->components.component< yarrr::Inventory >();
 
-    physical_behavior.register_to( *object );
     add_canon();
 
     was_canon_fired = false;
 
     the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::ObjectCreated >(
-          [ this ]( const yarrr::ObjectCreated& )
+          [ this ]( const yarrr::ObjectCreated& object_created )
           {
+            bullets.push_back( object_created.object->components.component< yarrr::PhysicalBehavior >().physical_parameters );
             was_canon_fired = true;
           } );
   }
@@ -69,12 +72,24 @@ Describe( a_canon )
     AssertThat( inventory->items(), HasLength( 2u ) );
   }
 
+  It( places_canons_apart )
+  {
+    add_canon();
+    object->dispatcher.dispatch( yarrr::Command( yarrr::Command::fire, 0 ) );
+    AssertThat( bullets, HasLength( 2u ) );
+    const yarrr::Coordinate canon_coordinate_difference(
+        bullets[ 0 ].coordinate - bullets[ 1 ].coordinate );
+
+    AssertThat( canon_coordinate_difference, !Equals( zero ) );
+  }
+
   bool was_canon_fired;
 
   yarrr::Inventory* inventory;
-  yarrr::PhysicalBehavior physical_behavior;
 
   yarrr::Object::Pointer object;
   std::vector< yarrr::Canon* > canons;
+  std::vector< yarrr::PhysicalParameters > bullets;
+  const yarrr::Coordinate zero{ 0, 0 };
 };
 
