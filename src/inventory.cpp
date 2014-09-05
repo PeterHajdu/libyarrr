@@ -18,6 +18,7 @@ yarrr::Object::Pointer create_loot_object(
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( yarrr::Collider::loot_layer ) ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShipGraphics() ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DeleteWhenDestroyed() ) );
+  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DamageCauser( 10 ) ) );
 
   for ( const auto& item : items )
   {

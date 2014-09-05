@@ -116,6 +116,10 @@ Describe( a_loot_dropper )
     AssertThat( created_object->components.has_component< yarrr::DeleteWhenDestroyed >(), Equals( true ) );
   }
 
+  It( creates_destructable_objects )
+  {
+    AssertThat( created_object->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
+  }
 
   It( creates_objects_close_to_the_owner )
   {
