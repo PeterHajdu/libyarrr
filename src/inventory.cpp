@@ -33,5 +33,21 @@ Inventory::items() const
   return m_items;
 }
 
+LootDropper::LootDropper()
+  : ObjectBehavior( do_not_syncronize )
+{
+}
+
+void
+LootDropper::register_to( Object& )
+{
+}
+
+ObjectBehavior::Pointer
+LootDropper::clone() const
+{
+  return Pointer( new LootDropper() );
+}
+
 }
 

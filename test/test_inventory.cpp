@@ -37,3 +37,25 @@ Describe( an_invenory )
   yarrr::Object::Pointer object;
 };
 
+Describe( a_loot_dropper )
+{
+
+  void SetUp()
+  {
+    object.reset( new yarrr::Object() );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LootDropper() ) );
+  }
+
+  It( is_instantiable )
+  {
+    yarrr::LootDropper loot_dropper;
+    (void) loot_dropper;
+  }
+
+  It( creates_objects_when_owner_is_destroyed )
+  {
+  }
+
+  yarrr::Object::Pointer object;
+};
+

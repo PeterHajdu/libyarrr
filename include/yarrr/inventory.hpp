@@ -24,5 +24,14 @@ class Inventory : public ObjectBehavior
     ItemContainer m_items;
 };
 
+class LootDropper : public ObjectBehavior
+{
+  public:
+    add_polymorphic_ctci( "yarrr_loot_dropper" );
+    LootDropper();
+    virtual void register_to( Object& ) override;
+    virtual Pointer clone() const override;
+};
+
 }
 
