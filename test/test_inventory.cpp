@@ -1,7 +1,12 @@
 #include <yarrr/inventory.hpp>
+#include <yarrr/collider.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/object.hpp>
+#include <yarrr/engine_dispatcher.hpp>
+#include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
+
+#include "test_services.hpp"
 
 using namespace igloo;
 
@@ -44,18 +49,32 @@ Describe( a_loot_dropper )
   {
     object.reset( new yarrr::Object() );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LootDropper() ) );
+    created_object.reset( nullptr );
+
+    the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::ObjectCreated >(
+        [ this ]( const yarrr::ObjectCreated& object_created )
+        {
+          created_object = std::move( object_created.object );
+        } );
   }
 
-  It( is_instantiable )
+  void TearDown()
   {
-    yarrr::LootDropper loot_dropper;
-    (void) loot_dropper;
+    test::clean_engine_dispatcher();
+  }
+
+  bool objects_were_created()
+  {
+    return nullptr != created_object.get();
   }
 
   It( creates_objects_when_owner_is_destroyed )
   {
+    object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
+    AssertThat( objects_were_created(), Equals( true ) );
   }
 
   yarrr::Object::Pointer object;
+  yarrr::Object::Pointer created_object;
 };
 

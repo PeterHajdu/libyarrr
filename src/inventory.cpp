@@ -1,4 +1,8 @@
 #include <yarrr/inventory.hpp>
+#include <yarrr/collider.hpp>
+#include <yarrr/engine_dispatcher.hpp>
+#include <yarrr/basic_behaviors.hpp>
+#include <thectci/service_registry.hpp>
 
 namespace yarrr
 {
@@ -39,8 +43,17 @@ LootDropper::LootDropper()
 }
 
 void
-LootDropper::register_to( Object& )
+LootDropper::register_to( Object& owner )
 {
+  owner.dispatcher.register_listener< yarrr::ObjectDestroyed >(
+      std::bind( &LootDropper::handle_object_destroyed, this, std::placeholders::_1 ) );
+}
+
+void
+LootDropper::handle_object_destroyed( const ObjectDestroyed& ) const
+{
+  the::ctci::service< yarrr::EngineDispatcher >().dispatch(
+      ObjectCreated( Object::Pointer( new Object() ) ) );
 }
 
 ObjectBehavior::Pointer

@@ -24,6 +24,8 @@ class Inventory : public ObjectBehavior
     ItemContainer m_items;
 };
 
+
+class ObjectDestroyed;
 class LootDropper : public ObjectBehavior
 {
   public:
@@ -31,6 +33,9 @@ class LootDropper : public ObjectBehavior
     LootDropper();
     virtual void register_to( Object& ) override;
     virtual Pointer clone() const override;
+
+  private:
+    void handle_object_destroyed( const ObjectDestroyed& ) const;
 };
 
 }
