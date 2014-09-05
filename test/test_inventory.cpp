@@ -48,6 +48,10 @@ Describe( a_loot_dropper )
   void SetUp()
   {
     object.reset( new yarrr::Object() );
+    std::unique_ptr< yarrr::PhysicalBehavior > physical_behavior( new yarrr::PhysicalBehavior() );
+    physical_parameters = &physical_behavior->physical_parameters;
+    physical_parameters->coordinate = far_from_the_origo;
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior.release() ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LootDropper() ) );
     created_object.reset( nullptr );
 
@@ -55,6 +59,8 @@ Describe( a_loot_dropper )
         [ this ]( const yarrr::ObjectCreated& object_created )
         {
           created_object = std::move( object_created.object );
+          created_objects_physical_parameters =
+            &created_object->components.component< yarrr::PhysicalBehavior >().physical_parameters;
         } );
     object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
   }
@@ -84,7 +90,20 @@ Describe( a_loot_dropper )
     AssertThat( created_object->components.has_component< yarrr::Collider >(), Equals( true ) );
   }
 
+  It( creates_objects_close_to_the_owner )
+  {
+    yarrr::Coordinate coordinate_difference(
+        created_objects_physical_parameters->coordinate -
+        physical_parameters->coordinate );
+    yarrr::huplons_to_metres_in_place( coordinate_difference );
+    AssertThat( yarrr::length_of( coordinate_difference ), IsLessThan( 30 ) );
+  }
+
   yarrr::Object::Pointer object;
   yarrr::Object::Pointer created_object;
+  yarrr::PhysicalParameters* created_objects_physical_parameters;
+  yarrr::PhysicalParameters* physical_parameters;
+
+  const yarrr::Coordinate far_from_the_origo{ 100000, 1000000000 };
 };
 
