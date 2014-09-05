@@ -71,6 +71,7 @@ LootDropper::LootDropper()
 void
 LootDropper::register_to( Object& owner )
 {
+  owner.components.register_component( *this );
   owner.dispatcher.register_listener< yarrr::ObjectDestroyed >(
       std::bind( &LootDropper::handle_object_destroyed, this, std::placeholders::_1 ) );
   m_owner_parameters = &owner.components.component< PhysicalBehavior >().physical_parameters;

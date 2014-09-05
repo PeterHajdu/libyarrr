@@ -307,6 +307,11 @@ Describe( ship_creator )
     AssertThat( object->components.has_component< yarrr::Inventory >(), Equals( true ) );
   }
 
+  It ( creates_objects_with_loot_dropper )
+  {
+    AssertThat( object->components.has_component< yarrr::LootDropper >(), Equals( true ) );
+  }
+
   yarrr::Object::Pointer object;
 };
 

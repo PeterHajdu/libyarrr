@@ -270,6 +270,7 @@ create_ship()
   yarrr::Object::Pointer ship( new yarrr::Object() );
   ship->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior() ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new LootDropper() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new Engine() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new ShipGraphics() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new Canon() ) );
