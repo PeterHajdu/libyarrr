@@ -18,6 +18,7 @@ set(SOURCE_FILES
   engine.cpp
   clock_sync_catcher.cpp
   inventory.cpp
+  canon.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

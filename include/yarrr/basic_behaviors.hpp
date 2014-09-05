@@ -54,24 +54,6 @@ class PhysicalBehavior : public ObjectBehavior
     virtual void do_deserialize( Deserializer& deserializer ) override;
 };
 
-class Command;
-
-class Canon : public ObjectBehavior
-{
-  public:
-    add_polymorphic_ctci( "yarrr_canon" );
-    Canon();
-
-    virtual void register_to( Object& ) override;
-
-    virtual Pointer clone() const override;
-
-  private:
-    void handle_command( const Command& ) const;
-
-    PhysicalBehavior* m_physical_behavior;
-};
-
 class SelfDestructor : public ObjectBehavior
 {
   public:

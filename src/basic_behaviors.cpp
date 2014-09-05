@@ -1,7 +1,5 @@
-#include <yarrr/inventory.hpp>
 #include <yarrr/basic_behaviors.hpp>
-#include <yarrr/command.hpp>
-#include <yarrr/ship_control.hpp>
+#include <yarrr/inventory.hpp>
 #include <yarrr/object_container.hpp>
 #include <yarrr/bitmagic.hpp>
 #include <yarrr/entity_factory.hpp>
@@ -11,6 +9,7 @@
 #include <yarrr/collider.hpp>
 #include <yarrr/destruction_handlers.hpp>
 #include <yarrr/engine.hpp>
+#include <yarrr/canon.hpp>
 
 #include <thectci/service_registry.hpp>
 
@@ -160,45 +159,6 @@ SelfDestructor::clone() const
   return Pointer( new SelfDestructor( m_object_id, m_lifespan ) );
 }
 
-Canon::Canon()
-: ObjectBehavior( do_not_syncronize )
-, m_physical_behavior( nullptr )
-{
-}
-
-
-void
-Canon::register_to( Object& owner )
-{
-  owner.dispatcher.register_listener< yarrr::Command  >(
-      std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
-  m_physical_behavior = &owner.components.component< yarrr::PhysicalBehavior >();
-  owner.components.register_component( *this );
-  assert( owner.components.has_component< Inventory >() );
-  owner.components.component< Inventory >().register_item( *this );
-}
-
-
-void
-Canon::handle_command( const Command& command ) const
-{
-  if ( command.type() != Command::fire )
-  {
-    return;
-  }
-
-  assert( m_physical_behavior );
-
-  the::ctci::service< yarrr::EngineDispatcher >().dispatch( ObjectCreated(
-        create_laser( m_physical_behavior->physical_parameters ) ) );
-}
-
-
-ObjectBehavior::Pointer
-Canon::clone() const
-{
-  return Pointer( new Canon() );
-}
 
 GraphicalBehavior::GraphicalBehavior()
   : ObjectBehavior( synchronize )
