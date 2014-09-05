@@ -27,6 +27,7 @@ class Inventory : public ObjectBehavior
 
 class ObjectDestroyed;
 class PhysicalParameters;
+class Inventory;
 class LootDropper : public ObjectBehavior
 {
   public:
@@ -38,6 +39,7 @@ class LootDropper : public ObjectBehavior
   private:
     void handle_object_destroyed( const ObjectDestroyed& ) const;
     PhysicalParameters* m_owner_parameters;
+    Inventory* m_inventory;
 };
 
 }
