@@ -16,6 +16,12 @@ using namespace igloo;
 Describe( a_canon )
 {
 
+  void add_canon()
+  {
+    canons.push_back( new yarrr::Canon() );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( canons.back() ) );
+  }
+
   void SetUp()
   {
     object.reset( new yarrr::Object() );
@@ -23,8 +29,7 @@ Describe( a_canon )
     inventory = &object->components.component< yarrr::Inventory >();
 
     physical_behavior.register_to( *object );
-    canon.reset( new yarrr::Canon() );
-    canon->register_to( *object );
+    add_canon();
 
     was_canon_fired = false;
 
@@ -54,16 +59,22 @@ Describe( a_canon )
 
   It( registeres_itself_to_the_inventory )
   {
-    AssertThat( inventory->items(), HasLength( 1 ) );
-    AssertThat( &inventory->items().back().get(), Equals( canon.get() ) );
+    AssertThat( inventory->items(), HasLength( 1u ) );
+    AssertThat( &inventory->items().back().get(), Equals( canons.back() ) );
+  }
+
+  It( allows_more_canon_registration_to_the_same_object )
+  {
+    add_canon();
+    AssertThat( inventory->items(), HasLength( 2u ) );
   }
 
   bool was_canon_fired;
 
   yarrr::Inventory* inventory;
   yarrr::PhysicalBehavior physical_behavior;
-  std::unique_ptr< yarrr::Canon > canon;
 
   yarrr::Object::Pointer object;
+  std::vector< yarrr::Canon* > canons;
 };
 
