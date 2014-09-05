@@ -2,6 +2,7 @@
 #include <yarrr/collider.hpp>
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
+#include <yarrr/destruction_handlers.hpp>
 #include <thectci/service_registry.hpp>
 
 namespace
@@ -15,6 +16,8 @@ yarrr::Object::Pointer create_loot_object(
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior( owner_parameters ) ) );
   loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( yarrr::Collider::loot_layer ) ) );
+  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShipGraphics() ) );
+  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DeleteWhenDestroyed() ) );
 
   for ( const auto& item : items )
   {

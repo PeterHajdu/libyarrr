@@ -3,6 +3,7 @@
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/object.hpp>
 #include <yarrr/engine_dispatcher.hpp>
+#include <yarrr/destruction_handlers.hpp>
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
@@ -104,6 +105,17 @@ Describe( a_loot_dropper )
   {
     AssertThat( created_object->components.has_component< yarrr::Collider >(), Equals( true ) );
   }
+
+  It( creates_objects_with_ship_graphics )
+  {
+    AssertThat( created_object->components.has_component< yarrr::ShipGraphics >(), Equals( true ) );
+  }
+
+  It( creates_objects_with_delete_when_destroyed )
+  {
+    AssertThat( created_object->components.has_component< yarrr::DeleteWhenDestroyed >(), Equals( true ) );
+  }
+
 
   It( creates_objects_close_to_the_owner )
   {
