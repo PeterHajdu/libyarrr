@@ -56,6 +56,7 @@ Describe( a_loot_dropper )
         {
           created_object = std::move( object_created.object );
         } );
+    object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
   }
 
   void TearDown()
@@ -70,8 +71,12 @@ Describe( a_loot_dropper )
 
   It( creates_objects_when_owner_is_destroyed )
   {
-    object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
     AssertThat( objects_were_created(), Equals( true ) );
+  }
+
+  It( creates_objects_with_inventory )
+  {
+    AssertThat( created_object->components.has_component< yarrr::Inventory >(), Equals( true ) );
   }
 
   yarrr::Object::Pointer object;

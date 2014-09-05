@@ -4,6 +4,18 @@
 #include <yarrr/basic_behaviors.hpp>
 #include <thectci/service_registry.hpp>
 
+namespace
+{
+
+yarrr::Object::Pointer create_loot_object()
+{
+  yarrr::Object::Pointer loot_object( new yarrr::Object() );
+  loot_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
+  return loot_object;
+}
+
+}
+
 namespace yarrr
 {
 
@@ -53,7 +65,7 @@ void
 LootDropper::handle_object_destroyed( const ObjectDestroyed& ) const
 {
   the::ctci::service< yarrr::EngineDispatcher >().dispatch(
-      ObjectCreated( Object::Pointer( new Object() ) ) );
+      ObjectCreated( create_loot_object() ) );
 }
 
 ObjectBehavior::Pointer
