@@ -155,6 +155,11 @@ Describe( loot_creator )
     AssertThat( object->components.has_component< yarrr::LootAttacher >(), Equals( true ) );
   }
 
+  It( creates_a_self_destructing_object )
+  {
+    AssertThat( object->components.has_component< yarrr::SelfDestructor >(), Equals( true ) );
+  }
+
   yarrr::PhysicalParameters loots_physical_parameters;
   yarrr::Canon canon;
   yarrr::Object::Pointer object;
