@@ -118,3 +118,45 @@ Describe( laser_creator )
   yarrr::Object::Pointer object;
 };
 
+Describe( loot_creator )
+{
+  void SetUp()
+  {
+    object = yarrr::create_loot( loots_physical_parameters, canon );
+  }
+
+  It( creates_objects_with_inventory )
+  {
+    AssertThat( object->components.has_component< yarrr::Inventory >(), Equals( true ) );
+  }
+
+  It( creates_objects_with_one_item_of_the_owner )
+  {
+    AssertThat( object->components.component< yarrr::Inventory >().items(), HasLength( 1u ) );
+  }
+
+  It( creates_objects_with_collider )
+  {
+    AssertThat( object->components.has_component< yarrr::Collider >(), Equals( true ) );
+  }
+
+  It( creates_objects_with_delete_when_destroyed )
+  {
+    AssertThat( object->components.has_component< yarrr::DeleteWhenDestroyed >(), Equals( true ) );
+  }
+
+  It( creates_destructable_objects )
+  {
+    AssertThat( object->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
+  }
+
+  It( creates_objects_with_loot_attacher )
+  {
+    AssertThat( object->components.has_component< yarrr::LootAttacher >(), Equals( true ) );
+  }
+
+  yarrr::PhysicalParameters loots_physical_parameters;
+  yarrr::Canon canon;
+  yarrr::Object::Pointer object;
+};
+

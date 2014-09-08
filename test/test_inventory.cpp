@@ -102,36 +102,6 @@ Describe( a_loot_dropper )
     AssertThat( created_objects.size(), Equals( number_of_canons ) );
   }
 
-  It( creates_objects_with_inventory )
-  {
-    AssertThat( created_objects.back()->components.has_component< yarrr::Inventory >(), Equals( true ) );
-  }
-
-  It( creates_objects_with_one_item_of_the_owner )
-  {
-    AssertThat( created_objects.back()->components.component< yarrr::Inventory >().items(), HasLength( 1u ) );
-  }
-
-  It( creates_objects_with_collider )
-  {
-    AssertThat( created_objects.back()->components.has_component< yarrr::Collider >(), Equals( true ) );
-  }
-
-  It( creates_objects_with_delete_when_destroyed )
-  {
-    AssertThat( created_objects.back()->components.has_component< yarrr::DeleteWhenDestroyed >(), Equals( true ) );
-  }
-
-  It( creates_destructable_objects )
-  {
-    AssertThat( created_objects.back()->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
-  }
-
-  It( creates_objects_with_loot_attacher )
-  {
-    AssertThat( created_objects.back()->components.has_component< yarrr::LootAttacher >(), Equals( true ) );
-  }
-
   It( creates_objects_close_to_the_owner )
   {
     yarrr::Coordinate coordinate_difference(
