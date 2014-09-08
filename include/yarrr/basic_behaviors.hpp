@@ -124,8 +124,5 @@ class LaserGraphics : public GraphicalBehavior
     void do_register_to( Object& ) override;
 };
 
-Object::Pointer create_ship();
-Object::Pointer create_laser( const PhysicalParameters& ships_parameters );
-
 }
 

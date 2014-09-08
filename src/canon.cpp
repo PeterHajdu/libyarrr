@@ -2,6 +2,7 @@
 #include <yarrr/command.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/inventory.hpp>
+#include <yarrr/object_creator.hpp>
 #include <thectci/service_registry.hpp>
 #include <yarrr/engine_dispatcher.hpp>
 #include <iostream>

@@ -20,8 +20,6 @@ namespace
   yarrr::AutoEntityRegister< yarrr::ShipGraphics > auto_ship_graphics_register;
   yarrr::AutoEntityRegister< yarrr::LaserGraphics > auto_laser_graphics_register;
 
-  const int laser_speed{ 1000 };
-
   yarrr::PhysicalParameters
   zero_parameters()
   {
@@ -222,40 +220,6 @@ void
 LaserGraphics::do_register_to( Object& owner )
 {
   owner.components.register_component( *this );
-}
-
-Object::Pointer
-create_ship()
-{
-  yarrr::Object::Pointer ship( new yarrr::Object() );
-  ship->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new LootDropper() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new Engine() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new ShipGraphics() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new Canon() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer ) ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 100 ) ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new RespawnWhenDestroyed() ) );
-  return ship;
-}
-
-Object::Pointer
-create_laser( const PhysicalParameters& laser_parameters )
-{
-  Object::Pointer laser( new Object() );
-  std::unique_ptr< PhysicalBehavior > physical_behavior( new PhysicalBehavior( laser_parameters ) );
-  physical_behavior->physical_parameters.vangle = 0;
-  physical_behavior->physical_parameters.velocity += heading( laser_parameters, laser_speed );
-  physical_behavior->physical_parameters.coordinate += heading( laser_parameters, 100 );
-  laser->add_behavior( ObjectBehavior::Pointer( physical_behavior.release() ) );
-  laser->add_behavior( ObjectBehavior::Pointer( new LaserGraphics() ) );
-  laser->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::laser_layer ) ) );
-  laser->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 10 ) ) );
-  laser->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
-  laser->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( laser->id, 3000000u ) ) );
-
-  return laser;
 }
 
 }

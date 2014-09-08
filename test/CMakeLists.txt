@@ -33,6 +33,7 @@ set(TEST_SOURCE_FILES
     test_damage_causer.cpp
     test_inventory.cpp
     test_canon.cpp
+    test_object_creator.cpp
     )
 
 
