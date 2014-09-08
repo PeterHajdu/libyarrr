@@ -8,10 +8,44 @@
 #include <yarrr/collider.hpp>
 #include <yarrr/destruction_handlers.hpp>
 
+#include <yarrr/entity_factory.hpp>
+
+#include <random>
+
 namespace
 {
 
+class LootGraphics : public yarrr::GraphicalBehavior
+{
+  public:
+    add_polymorphic_ctci( "yarrr_loot_graphics" );
+
+    virtual void draw() const
+    {
+      m_graphical_engine.draw_loot( m_physical_behavior->physical_parameters );
+    }
+
+    yarrr::ObjectBehavior::Pointer clone() const
+    {
+      return yarrr::ObjectBehavior::Pointer( new LootGraphics() );
+    }
+
+  private:
+    void do_register_to( yarrr::Object& ) override {}
+};
+
+yarrr::AutoEntityRegister< LootGraphics > auto_loot_graphics_register;
+
 const int laser_speed{ 1000 };
+
+std::random_device random_device;
+std::default_random_engine random_engine( random_device() );
+std::uniform_int_distribution<int> distribution{ -300, 300 };
+
+void add_random_velocity_to( yarrr::PhysicalParameters& physical_parameters )
+{
+  physical_parameters.velocity += yarrr::Coordinate( distribution( random_engine ), distribution( random_engine ) );
+}
 
 }
 
@@ -20,9 +54,27 @@ namespace yarrr
 {
 
 Object::Pointer
+create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& item )
+{
+  add_random_velocity_to( new_physical_parameters );
+  Object::Pointer loot( new Object() );
+  loot->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
+  loot->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior( new_physical_parameters ) ) );
+  loot->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::loot_layer ) ) );
+  loot->add_behavior( ObjectBehavior::Pointer( new LootGraphics() ) );
+  loot->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
+  loot->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 30 ) ) );
+  loot->add_behavior( ObjectBehavior::Pointer( new LootAttacher() ) );
+  loot->add_behavior( item.clone() );
+
+  return loot;
+}
+
+
+Object::Pointer
 create_ship()
 {
-  yarrr::Object::Pointer ship( new yarrr::Object() );
+  Object::Pointer ship( new Object() );
   ship->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new LootDropper() ) );
