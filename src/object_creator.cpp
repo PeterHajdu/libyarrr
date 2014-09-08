@@ -65,7 +65,7 @@ create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& i
   loot->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
   loot->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 30 ) ) );
   loot->add_behavior( ObjectBehavior::Pointer( new LootAttacher() ) );
-  loot->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( loot->id, 6000000u ) ) );
+  loot->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( loot->id, 36000000u ) ) );
   loot->add_behavior( item.clone() );
 
   return loot;
