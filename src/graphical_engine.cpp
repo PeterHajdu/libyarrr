@@ -5,10 +5,10 @@
 namespace yarrr
 {
 
-const Colour White{ 255, 255, 255, 255 };
-const Colour Red{ 255, 0, 0, 255 };
-const Colour Green{ 0, 255, 0, 255 };
-const Colour Strange{ 255, 255, 0, 255 };
+const Colour Colour::White{ 255, 255, 255, 255 };
+const Colour Colour::Red{ 255, 0, 0, 255 };
+const Colour Colour::Green{ 0, 255, 0, 255 };
+const Colour Colour::Strange{ 255, 255, 0, 255 };
 const size_t GraphicalEngine::font_height{ 15 };
 
 GraphicalObject::GraphicalObject( GraphicalEngine& graphical_engine )
