@@ -15,10 +15,8 @@ DeleteWhenDestroyed::DeleteWhenDestroyed()
 }
 
 void
-DeleteWhenDestroyed::register_to( Object& owner )
+DeleteWhenDestroyed::do_register_to( Object& owner )
 {
-  owner.components.register_component( *this );
-  m_object_id = owner.id;
   owner.dispatcher.register_listener< yarrr::ObjectDestroyed >( std::bind(
         &DeleteWhenDestroyed::handle_object_destroyed, this, std::placeholders::_1 ) );
 }
@@ -33,7 +31,7 @@ DeleteWhenDestroyed::clone() const
 void
 DeleteWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
 {
-  the::ctci::service< EngineDispatcher >().dispatch( DeleteObject( m_object_id ) );
+  the::ctci::service< EngineDispatcher >().dispatch( DeleteObject( m_object->id ) );
 }
 
 
@@ -45,9 +43,8 @@ RespawnWhenDestroyed::RespawnWhenDestroyed()
 
 
 void
-RespawnWhenDestroyed::register_to( Object& owner )
+RespawnWhenDestroyed::do_register_to( Object& owner )
 {
-  owner.components.register_component( *this );
   owner.dispatcher.register_listener< yarrr::ObjectDestroyed >( std::bind(
         &RespawnWhenDestroyed::handle_object_destroyed, this, std::placeholders::_1 ) );
   assert( owner.components.has_component< yarrr::PhysicalBehavior >() );

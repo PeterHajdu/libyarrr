@@ -42,11 +42,11 @@ class Engine : public ObjectBehavior
     Engine( const Engine& );
     virtual ~Engine();
 
-    virtual void register_to( Object& ) override;
 
     virtual Pointer clone() const override;
 
   private:
+    virtual void do_register_to( Object& ) override;
     virtual void do_serialize( Serializer& serializer ) const;
     virtual void do_deserialize( Deserializer& deserializer );
 

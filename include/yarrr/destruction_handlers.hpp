@@ -12,12 +12,12 @@ class DeleteWhenDestroyed : public ObjectBehavior
   public:
     add_polymorphic_ctci( "yarrr_delete_when_destroyed" );
     DeleteWhenDestroyed();
-    virtual void register_to( Object& ) override;
     virtual Pointer clone() const override;
 
   private:
+    virtual void do_register_to( Object& ) override;
+
     void handle_object_destroyed( const ObjectDestroyed& ) const;
-    Object::Id m_object_id;
 };
 
 class RespawnWhenDestroyed : public ObjectBehavior
@@ -26,10 +26,11 @@ class RespawnWhenDestroyed : public ObjectBehavior
     add_polymorphic_ctci( "yarrr_respawn_when_destroyed" );
 
     RespawnWhenDestroyed();
-    virtual void register_to( Object& ) override;
     virtual Pointer clone() const override;
 
   private:
+    virtual void do_register_to( Object& ) override;
+
     void handle_object_destroyed( const ObjectDestroyed& ) const;
     PhysicalParameters* m_physical_parameters;
 };

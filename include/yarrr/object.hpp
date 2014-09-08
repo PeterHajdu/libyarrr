@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <vector>
+#include <functional>
 
 namespace yarrr
 {
@@ -27,13 +28,17 @@ class ObjectBehavior : public Entity
     };
 
     ObjectBehavior( ShouldSynchronize );
-
     const ShouldSynchronize should_synchronize;
+    void register_to( Object& );
 
     virtual ~ObjectBehavior() = default;
-
-    virtual void register_to( Object& ) = 0;
     virtual Pointer clone() const = 0;
+
+  protected:
+    Object* m_object;
+
+  private:
+    virtual void do_register_to( Object& ) = 0;
 };
 
 typedef std::vector< ObjectBehavior::Pointer > BehaviorContainer;

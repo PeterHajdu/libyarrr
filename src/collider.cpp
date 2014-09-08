@@ -24,16 +24,13 @@ Collider::Collider( int layer )
   : ObjectBehavior( do_not_syncronize )
   , m_physical_behavior( nullptr )
   , m_layer( layer )
-  , m_owner_object( nullptr )
 {
 }
 
 
 void
-Collider::register_to( Object& owner )
+Collider::do_register_to( Object& owner )
 {
-  m_owner_object = &owner;
-  owner.components.register_component( *this );
   assert( owner.components.has_component< PhysicalBehavior >() );
   m_physical_behavior = &owner.components.component< PhysicalBehavior >();
 }
@@ -79,7 +76,7 @@ Collider::is_collider_too_far( const Collider& other ) const
 void
 Collider::collide_with( const Collider& other ) const
 {
-  m_owner_object->dispatcher.dispatch( Collide( *other.m_owner_object ) );
+  m_object->dispatcher.dispatch( Collide( *other.m_object ) );
 }
 
 
@@ -87,19 +84,16 @@ DamageCauser::DamageCauser( int initial_integrity )
   : ObjectBehavior( do_not_syncronize )
   , m_initial_integrity( initial_integrity )
   , m_integrity( nullptr )
-  , m_dispatcher( nullptr )
 {
 }
 
 
 void
-DamageCauser::register_to( Object& owner )
+DamageCauser::do_register_to( Object& owner )
 {
-  owner.components.register_component( *this );
   assert( owner.components.has_component< PhysicalBehavior >() );
   m_integrity = &owner.components.component< PhysicalBehavior >().physical_parameters.integrity;
-  m_dispatcher= &owner.dispatcher;
-  m_dispatcher->register_listener< Collide >(
+  owner.dispatcher.register_listener< Collide >(
       std::bind( &DamageCauser::handle_collision, this, std::placeholders::_1 ) );
   reset_integrity();
 }
@@ -122,8 +116,7 @@ DamageCauser::handle_collision( const Collide& ) const
   if ( destroyed )
   {
     reset_integrity();
-    assert( m_dispatcher );
-    m_dispatcher->dispatch( yarrr::ObjectDestroyed() );
+    m_object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
   }
 }
 

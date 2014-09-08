@@ -41,12 +41,12 @@ class PhysicalBehavior : public ObjectBehavior
     PhysicalBehavior();
     PhysicalBehavior( const PhysicalParameters& );
 
-    virtual void register_to( Object& ) override;
-
     PhysicalParameters physical_parameters;
     virtual Pointer clone() const override;
     virtual ~PhysicalBehavior() = default;
   private:
+    virtual void do_register_to( Object& ) override;
+
     void handle_timer_update( const TimerUpdate& );
     void handle_network_update( const PhysicalBehavior& );
 
@@ -62,11 +62,11 @@ class SelfDestructor : public ObjectBehavior
         Object::Id object_id,
         const the::time::Time& lifespan );
 
-    virtual void register_to( Object& ) override;
-
     virtual Pointer clone() const override;
 
   private:
+    virtual void do_register_to( Object& ) override;
+
     void handle_timer_update( const TimerUpdate& );
 
     the::time::Time m_lifespan;
@@ -88,8 +88,6 @@ class GraphicalBehavior :
   public:
     GraphicalBehavior();
 
-    void register_to( Object& ) override;
-
     Pointer clone() const = 0;
     virtual void draw() const = 0;
 
@@ -98,8 +96,7 @@ class GraphicalBehavior :
 
   private:
     void handle_focus_on_object( const FocusOnObject& );
-
-    virtual void do_register_to( Object& ) = 0;
+    virtual void do_register_to( Object& ) override;
 };
 
 class ShipGraphics : public GraphicalBehavior
@@ -108,9 +105,6 @@ class ShipGraphics : public GraphicalBehavior
     add_polymorphic_ctci( "yarrr_ship_graphics" );
     virtual void draw() const;
     Pointer clone() const;
-
-  private:
-    void do_register_to( Object& ) override;
 };
 
 class LaserGraphics : public GraphicalBehavior
@@ -119,9 +113,6 @@ class LaserGraphics : public GraphicalBehavior
     add_polymorphic_ctci( "yarrr_laser_graphics" );
     virtual void draw() const;
     Pointer clone() const;
-
-  private:
-    void do_register_to( Object& ) override;
 };
 
 }

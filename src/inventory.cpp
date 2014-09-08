@@ -16,11 +16,6 @@ Inventory::Inventory()
 {
 }
 
-void
-Inventory::register_to( Object& owner )
-{
-  owner.components.register_component( *this );
-}
 
 ObjectBehavior::Pointer
 Inventory::clone() const
@@ -28,6 +23,10 @@ Inventory::clone() const
   return Pointer( new Inventory() );
 }
 
+void
+Inventory::do_register_to( Object& )
+{
+}
 
 void
 Inventory::register_item( ObjectBehavior& item )
@@ -49,9 +48,8 @@ LootDropper::LootDropper()
 }
 
 void
-LootDropper::register_to( Object& owner )
+LootDropper::do_register_to( Object& owner )
 {
-  owner.components.register_component( *this );
   owner.dispatcher.register_listener< yarrr::ObjectDestroyed >(
       std::bind( &LootDropper::handle_object_destroyed, this, std::placeholders::_1 ) );
   m_owner_parameters = &owner.components.component< PhysicalBehavior >().physical_parameters;
@@ -77,18 +75,15 @@ LootDropper::clone() const
 LootAttacher::LootAttacher()
   : ObjectBehavior( do_not_syncronize )
   , m_inventory( nullptr )
-  , m_dispatcher( nullptr )
 {
 }
 
 void
-LootAttacher::register_to( Object& owner )
+LootAttacher::do_register_to( Object& owner )
 {
-  owner.components.register_component( *this );
   owner.dispatcher.register_listener< yarrr::Collide >(
       std::bind( &LootAttacher::handle_object_collided, this, std::placeholders::_1 ) );
   m_inventory = &owner.components.component< Inventory >();
-  m_dispatcher = &owner.dispatcher;
 }
 
 void
@@ -108,7 +103,7 @@ LootAttacher::attach_items_to( Object& new_owner ) const
   {
     new_owner.add_behavior( item.get().clone() );
   }
-  m_dispatcher->dispatch( ObjectDestroyed() );
+  m_object->dispatcher.dispatch( ObjectDestroyed() );
 }
 
 ObjectBehavior::Pointer

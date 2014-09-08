@@ -29,9 +29,6 @@ class LootGraphics : public yarrr::GraphicalBehavior
     {
       return yarrr::ObjectBehavior::Pointer( new LootGraphics() );
     }
-
-  private:
-    void do_register_to( yarrr::Object& ) override {}
 };
 
 yarrr::AutoEntityRegister< LootGraphics > auto_loot_graphics_register;

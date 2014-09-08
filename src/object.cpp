@@ -31,9 +31,17 @@ namespace yarrr
 
 ObjectBehavior::ObjectBehavior( ShouldSynchronize should_synchronize )
   : should_synchronize( should_synchronize )
+  , m_object( nullptr )
 {
 }
 
+void
+ObjectBehavior::register_to( Object& owner )
+{
+  m_object = &owner;
+  do_register_to( owner );
+  owner.components.register_polymorphic_component( *this );
+}
 
 Object::Object()
   : id( Id( this ) )

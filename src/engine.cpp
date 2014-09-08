@@ -38,7 +38,7 @@ Engine::~Engine()
 }
 
 void
-Engine::register_to( Object& owner )
+Engine::do_register_to( Object& owner )
 {
   m_physical_parameters = &owner.components.component< PhysicalBehavior >().physical_parameters;
   m_ship_control.reset( new ShipControl( *m_physical_parameters ) );
@@ -48,7 +48,6 @@ Engine::register_to( Object& owner )
       std::bind( &Engine::handle_timer_update, this, std::placeholders::_1 ) );
   owner.dispatcher.register_listener< yarrr::Engine  >(
       std::bind( &Engine::handle_engine_update, this, std::placeholders::_1 ) );
-  owner.components.register_component( *this );
 }
 
 

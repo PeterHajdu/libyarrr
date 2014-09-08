@@ -34,19 +34,18 @@ class Collider : public ObjectBehavior
 
     Collider( int layer );
 
-    virtual void register_to( Object& ) override;
     virtual Pointer clone() const override;
     virtual ~Collider() = default;
 
     void collide_if_needed_with( Collider& );
 
   private:
+    virtual void do_register_to( Object& ) override;
     bool is_collider_too_far( const Collider& ) const;
     void collide_with( const Collider& ) const;
 
     yarrr::PhysicalBehavior* m_physical_behavior;
     const int m_layer;
-    yarrr::Object* m_owner_object;
 };
 
 class DamageCauser : public ObjectBehavior
@@ -56,16 +55,15 @@ class DamageCauser : public ObjectBehavior
     DamageCauser( int initial_integrity );
     virtual ~DamageCauser() = default;
 
-    virtual void register_to( Object& ) override;
     virtual Pointer clone() const override;
 
   private:
+    virtual void do_register_to( Object& ) override;
     void handle_collision( const Collide& ) const;
     void reset_integrity() const;
 
     const int m_initial_integrity;
     int16_t* m_integrity;
-    the::ctci::Dispatcher* m_dispatcher;
 };
 
 }

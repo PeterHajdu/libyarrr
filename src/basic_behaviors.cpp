@@ -48,9 +48,8 @@ PhysicalBehavior::PhysicalBehavior( const PhysicalParameters& physical_parameter
 }
 
 void
-PhysicalBehavior::register_to( Object& owner )
+PhysicalBehavior::do_register_to( Object& owner )
 {
-  owner.components.register_component< PhysicalBehavior >( *this );
   owner.dispatcher.register_listener< TimerUpdate >( std::bind(
         &PhysicalBehavior::handle_timer_update, this, std::placeholders::_1 ) );
   owner.dispatcher.register_listener< yarrr::PhysicalBehavior  >( std::bind(
@@ -125,11 +124,10 @@ SelfDestructor::SelfDestructor(
 
 
 void
-SelfDestructor::register_to( Object& owner )
+SelfDestructor::do_register_to( Object& owner )
 {
   owner.dispatcher.register_listener< yarrr::TimerUpdate  >(
       std::bind( &SelfDestructor::handle_timer_update, this, std::placeholders::_1 ) );
-  owner.components.register_component( *this );
 }
 
 
@@ -166,12 +164,11 @@ GraphicalBehavior::GraphicalBehavior()
 }
 
 void
-GraphicalBehavior::register_to( Object& owner )
+GraphicalBehavior::do_register_to( Object& owner )
 {
   m_physical_behavior = &owner.components.component< yarrr::PhysicalBehavior >();
   owner.dispatcher.register_listener< FocusOnObject >( std::bind(
         &GraphicalBehavior::handle_focus_on_object, this, std::placeholders::_1 ) );
-  do_register_to( owner );
 }
 
 void
@@ -196,13 +193,6 @@ ShipGraphics::clone() const
 }
 
 void
-ShipGraphics::do_register_to( Object& owner )
-{
-  owner.components.register_component( *this );
-}
-
-
-void
 LaserGraphics::draw() const
 {
   assert( m_physical_behavior );
@@ -213,13 +203,6 @@ ObjectBehavior::Pointer
 LaserGraphics::clone() const
 {
   return Pointer( new LaserGraphics() );
-}
-
-
-void
-LaserGraphics::do_register_to( Object& owner )
-{
-  owner.components.register_component( *this );
 }
 
 }

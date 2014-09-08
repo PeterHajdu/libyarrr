@@ -20,7 +20,7 @@ Canon::Canon()
 
 
 void
-Canon::register_to( Object& owner )
+Canon::do_register_to( Object& owner )
 {
   owner.dispatcher.register_listener< yarrr::Command  >(
       std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
@@ -28,19 +28,10 @@ Canon::register_to( Object& owner )
   assert( owner.components.has_component< Inventory >() );
   owner.components.component< Inventory >().register_item( *this );
 
-  register_component_to( owner.components );
-}
-
-
-void
-Canon::register_component_to( the::ctci::ComponentRegistry& components )
-{
-  if ( components.has_component< Canon >() )
+  if ( owner.components.has_component< Canon >() )
   {
-    m_index = components.component< Canon >().generate_next_index();
+    m_index = owner.components.component< Canon >().generate_next_index();
   }
-
-  components.register_component( *this );
 }
 
 

@@ -13,13 +13,12 @@ class Canon : public ObjectBehavior
     add_polymorphic_ctci( "yarrr_canon" );
     Canon();
 
-    virtual void register_to( Object& ) override;
     virtual Pointer clone() const override;
 
   private:
+    virtual void do_register_to( Object& ) override;
     int generate_next_index();
     void handle_command( const Command& ) const;
-    void register_component_to( the::ctci::ComponentRegistry& components );
     PhysicalParameters generate_physical_parameters() const;
 
     PhysicalParameters* m_physical_parameters;
