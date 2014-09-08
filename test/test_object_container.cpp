@@ -132,8 +132,8 @@ Describe(an_object_container)
   {
     yarrr::ObjectUpdate::Pointer dummy_object_update( create_object_update_for( second_id ) );
     container->handle_object_update( *dummy_object_update );
-    AssertThat( behaviors[ second_id ]->was_object_updated, Equals( true ) );
-    AssertThat( behaviors[ first_id ]->was_object_updated, Equals( false ) );
+    AssertThat( behaviors[ second_id ]->was_updated(), Equals( true ) );
+    AssertThat( behaviors[ first_id ]->was_updated(), Equals( false ) );
   }
 
   std::unordered_map< yarrr::Object::Id, const test::Behavior* > behaviors;

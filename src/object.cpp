@@ -31,8 +31,22 @@ namespace yarrr
 
 ObjectBehavior::ObjectBehavior( ShouldSynchronize should_synchronize )
   : should_synchronize( should_synchronize )
+  , m_id( Id( this ) )
   , m_object( nullptr )
 {
+}
+
+ObjectBehavior::ObjectBehavior( ShouldSynchronize should_synchronize, const Id& id )
+  : should_synchronize( should_synchronize )
+  , m_id( id )
+  , m_object( nullptr )
+{
+}
+
+const ObjectBehavior::Id&
+ObjectBehavior::id() const
+{
+  return m_id;
 }
 
 void
@@ -41,6 +55,20 @@ ObjectBehavior::register_to( Object& owner )
   m_object = &owner;
   do_register_to( owner );
   owner.components.register_polymorphic_component( *this );
+}
+
+void
+ObjectBehavior::do_serialize( Serializer& serializer ) const
+{
+  serializer.push_back( m_id );
+  serialize_behavior( serializer );
+}
+
+void
+ObjectBehavior::do_deserialize( Deserializer& deserializer )
+{
+  m_id = deserializer.pop_front< Id >();
+  deserialize_behavior( deserializer );
 }
 
 Object::Object()
@@ -58,6 +86,27 @@ Object::add_behavior( ObjectBehavior::Pointer&& behavior )
 {
   behavior->register_to( *this );
   m_behaviors.emplace_back( std::move( behavior ) );
+}
+
+
+void
+Object::update_behavior( ObjectBehavior::Pointer&& updater_behavior )
+{
+  const ObjectBehavior::Id behavior_id( updater_behavior->id() );
+  BehaviorContainer::const_iterator found_behavior( std::find_if(
+        std::begin( m_behaviors ), std::end( m_behaviors ),
+        [ behavior_id ]( const ObjectBehavior::Pointer& behavior )
+        {
+          return behavior_id == behavior->id();
+        }) );
+
+  if ( found_behavior == m_behaviors.end() )
+  {
+    add_behavior( std::move( updater_behavior ) );
+    return;
+  }
+
+  (*found_behavior)->update( *updater_behavior );
 }
 
 
@@ -119,11 +168,11 @@ ObjectUpdate::create_object() const
 }
 
 void
-ObjectUpdate::update_object( const Object& object ) const
+ObjectUpdate::update_object( Object& object ) const
 {
   for ( const auto& behavior : m_behaviors )
   {
-    object.dispatcher.polymorphic_dispatch( *behavior );
+    object.update_behavior( behavior->clone() );
   }
 }
 

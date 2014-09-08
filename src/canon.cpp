@@ -11,13 +11,20 @@ namespace yarrr
 {
 
 Canon::Canon()
-: ObjectBehavior( do_not_syncronize )
+: ObjectBehavior( synchronize )
 , m_physical_parameters( nullptr )
 , m_index( 0 )
 , m_number_of_canons( 1 )
 {
 }
 
+Canon::Canon( const Id& id )
+: ObjectBehavior( synchronize, id )
+, m_physical_parameters( nullptr )
+, m_index( 0 )
+, m_number_of_canons( 1 )
+{
+}
 
 void
 Canon::do_register_to( Object& owner )
@@ -71,7 +78,7 @@ Canon::generate_physical_parameters() const
 ObjectBehavior::Pointer
 Canon::clone() const
 {
-  return Pointer( new Canon() );
+  return Pointer( new Canon( id() ) );
 }
 
 }

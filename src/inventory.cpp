@@ -7,20 +7,30 @@
 #include <yarrr/object_creator.hpp>
 #include <thectci/service_registry.hpp>
 
+namespace
+{
+
+yarrr::AutoEntityRegister< yarrr::Inventory > auto_inventory_register;
+
+}
 
 namespace yarrr
 {
 
 Inventory::Inventory()
-  : ObjectBehavior( do_not_syncronize )
+  : ObjectBehavior( synchronize )
 {
 }
 
+Inventory::Inventory( const Id& id )
+  : ObjectBehavior( synchronize, id )
+{
+}
 
 ObjectBehavior::Pointer
 Inventory::clone() const
 {
-  return Pointer( new Inventory() );
+  return Pointer( new Inventory( id() ) );
 }
 
 void
@@ -41,7 +51,7 @@ Inventory::items() const
 }
 
 LootDropper::LootDropper()
-  : ObjectBehavior( do_not_syncronize )
+  : ObjectBehavior( do_not_synchronize )
   , m_owner_parameters( nullptr )
   , m_inventory( nullptr )
 {
@@ -73,7 +83,7 @@ LootDropper::clone() const
 }
 
 LootAttacher::LootAttacher()
-  : ObjectBehavior( do_not_syncronize )
+  : ObjectBehavior( do_not_synchronize )
   , m_inventory( nullptr )
 {
 }

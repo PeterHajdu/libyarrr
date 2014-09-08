@@ -12,6 +12,7 @@ class Inventory : public ObjectBehavior
   public:
     add_polymorphic_ctci( "yarrr_inventory" );
     Inventory();
+    Inventory( const Id& id );
     virtual Pointer clone() const override;
 
     void register_item( ObjectBehavior& );

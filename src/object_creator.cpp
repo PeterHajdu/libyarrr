@@ -19,6 +19,11 @@ class LootGraphics : public yarrr::GraphicalBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_loot_graphics" );
+    LootGraphics() = default;
+    LootGraphics( const yarrr::ObjectBehavior::Id& id )
+      : GraphicalBehavior( id )
+    {
+    }
 
     virtual void draw() const
     {
@@ -27,7 +32,7 @@ class LootGraphics : public yarrr::GraphicalBehavior
 
     yarrr::ObjectBehavior::Pointer clone() const
     {
-      return yarrr::ObjectBehavior::Pointer( new LootGraphics() );
+      return yarrr::ObjectBehavior::Pointer( new LootGraphics( id() ) );
     }
 };
 

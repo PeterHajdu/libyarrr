@@ -20,6 +20,12 @@ Describe( an_invenory )
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
   }
 
+  It( clones_the_id )
+  {
+    yarrr::Inventory inventory;
+    AssertThat( inventory.clone()->id(), Equals( inventory.id() ) );
+  }
+
   It( registers_itsef_as_a_component )
   {
     AssertThat( object->components.has_component< yarrr::Inventory >(), Equals( true ) );

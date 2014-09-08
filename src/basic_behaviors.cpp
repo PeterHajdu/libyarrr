@@ -47,13 +47,17 @@ PhysicalBehavior::PhysicalBehavior( const PhysicalParameters& physical_parameter
 {
 }
 
+PhysicalBehavior::PhysicalBehavior( const PhysicalParameters& physical_parameters, const Id& id )
+  : ObjectBehavior( synchronize, id )
+  , physical_parameters( physical_parameters )
+{
+}
+
 void
 PhysicalBehavior::do_register_to( Object& owner )
 {
   owner.dispatcher.register_listener< TimerUpdate >( std::bind(
         &PhysicalBehavior::handle_timer_update, this, std::placeholders::_1 ) );
-  owner.dispatcher.register_listener< yarrr::PhysicalBehavior  >( std::bind(
-        &PhysicalBehavior::handle_network_update, this, std::placeholders::_1 ) );
 }
 
 
@@ -65,8 +69,9 @@ PhysicalBehavior::handle_timer_update( const TimerUpdate& timer_update )
 
 
 void
-PhysicalBehavior::handle_network_update( const PhysicalBehavior& update )
+PhysicalBehavior::update( const ObjectBehavior& behavior )
 {
+  const PhysicalBehavior& update( static_cast< const PhysicalBehavior& >( behavior ) );
   PhysicalParameters network_parameters( update.physical_parameters );
   //todo: move to physical parameters to a function with a ratio parameter
   travel_in_time_to( physical_parameters.timestamp, network_parameters );
@@ -78,7 +83,7 @@ PhysicalBehavior::handle_network_update( const PhysicalBehavior& update )
 }
 
 void
-PhysicalBehavior::do_serialize( yarrr::Serializer& serializer ) const
+PhysicalBehavior::serialize_behavior( yarrr::Serializer& serializer ) const
 {
   serializer
     .push_back( physical_parameters.coordinate.x )
@@ -93,7 +98,7 @@ PhysicalBehavior::do_serialize( yarrr::Serializer& serializer ) const
 
 
 void
-PhysicalBehavior::do_deserialize( yarrr::Deserializer& deserializer )
+PhysicalBehavior::deserialize_behavior( yarrr::Deserializer& deserializer )
 {
   physical_parameters.coordinate.x = deserializer.pop_front<int64_t>();
   physical_parameters.coordinate.y = deserializer.pop_front<int64_t>();
@@ -109,13 +114,13 @@ PhysicalBehavior::do_deserialize( yarrr::Deserializer& deserializer )
 ObjectBehavior::Pointer
 PhysicalBehavior::clone() const
 {
-  return ObjectBehavior::Pointer( new PhysicalBehavior( physical_parameters ) );
+  return ObjectBehavior::Pointer( new PhysicalBehavior( physical_parameters, m_id ) );
 }
 
 SelfDestructor::SelfDestructor(
     Object::Id object_id,
     const the::time::Time& lifespan )
-: ObjectBehavior( do_not_syncronize )
+: ObjectBehavior( do_not_synchronize )
 , m_lifespan( lifespan )
 , m_object_id( object_id )
 , m_time_to_die( 0u )
@@ -163,6 +168,13 @@ GraphicalBehavior::GraphicalBehavior()
 {
 }
 
+GraphicalBehavior::GraphicalBehavior( const Id& id )
+  : ObjectBehavior( synchronize, id )
+  , yarrr::GraphicalObject( the::ctci::service< yarrr::GraphicalEngine >() )
+  , m_physical_behavior( nullptr )
+{
+}
+
 void
 GraphicalBehavior::do_register_to( Object& owner )
 {
@@ -178,6 +190,10 @@ GraphicalBehavior::handle_focus_on_object( const FocusOnObject& )
   m_graphical_engine.focus_to( m_physical_behavior->physical_parameters.coordinate );
 }
 
+ShipGraphics::ShipGraphics( const Id& id )
+  : GraphicalBehavior( id )
+{
+}
 
 void
 ShipGraphics::draw() const
@@ -189,7 +205,12 @@ ShipGraphics::draw() const
 ObjectBehavior::Pointer
 ShipGraphics::clone() const
 {
-  return Pointer( new ShipGraphics() );
+  return Pointer( new ShipGraphics( id() ) );
+}
+
+LaserGraphics::LaserGraphics( const Id& id )
+  : GraphicalBehavior( id )
+{
 }
 
 void
@@ -202,7 +223,7 @@ LaserGraphics::draw() const
 ObjectBehavior::Pointer
 LaserGraphics::clone() const
 {
-  return Pointer( new LaserGraphics() );
+  return Pointer( new LaserGraphics( id() ) );
 }
 
 }

@@ -50,8 +50,78 @@ Describe(an_object)
     AssertThat( one_object.id, Equals( 123u ) );
   }
 
+  It( can_update_a_behavior )
+  {
+    test::Behavior* update_behavior( new test::Behavior( test_behavior->id() ) );
+    object->update_behavior( yarrr::ObjectBehavior::Pointer( update_behavior ) );
+    AssertThat( test_behavior->was_updated(), Equals( true ) );
+    AssertThat( test_behavior->updated_with, Equals( update_behavior ) );
+  }
+
+  It( updates_only_behavior_with_matching_id )
+  {
+    const yarrr::ObjectBehavior::Id not_existing_id( test_behavior->id() + 1 );
+    test::Behavior* update_behavior( new test::Behavior( not_existing_id ) );
+    object->update_behavior( yarrr::ObjectBehavior::Pointer( update_behavior ) );
+    AssertThat( test_behavior->was_updated(), Equals( false ) );
+  }
+
+  It( adds_updating_behavior_if_id_is_unknown )
+  {
+    const yarrr::ObjectBehavior::Id not_existing_id( test_behavior->id() + 1 );
+    test::Behavior* new_behavior( new test::Behavior( not_existing_id ) );
+    object->update_behavior( yarrr::ObjectBehavior::Pointer( new_behavior ) );
+    AssertThat( new_behavior->was_registered, Equals( true ) );
+  }
+
   yarrr::Object::Pointer object;
   test::Behavior* test_behavior;
+};
+
+Describe( an_object_behavior )
+{
+  void SetUp()
+  {
+    object.reset( new yarrr::Object() );
+    test_behavior = new test::Behavior();
+    behavior.reset( test_behavior );
+    behavior->register_to( *object );
+    serialized_data = behavior->serialize();
+    deserialized_behavior.reset( new test::Behavior() );
+    deserialized_behavior->deserialize( serialized_data );
+  }
+
+  It( registers_child_objects )
+  {
+    AssertThat( test_behavior->was_registered, Equals( true ) );
+  }
+
+  It( registers_child_as_a_component )
+  {
+    AssertThat( object->components.has_component< test::Behavior >(), Equals( true ) );
+  }
+
+  It( has_an_id )
+  {
+    AssertThat( behavior->id(), IsGreaterThan( 0u ) );
+  }
+
+  It( serializes_and_deserializes_the_same_id )
+  {
+    AssertThat( deserialized_behavior->id(), Equals( behavior->id() ) );
+  }
+
+  It( calls_child_class_serializer_and_deserializer )
+  {
+    AssertThat( deserialized_behavior->some_data, Equals( test_behavior->some_data ) );
+  }
+
+  yarrr::Data serialized_data;
+  yarrr::Object::Pointer object;
+  yarrr::ObjectBehavior::Pointer behavior;
+  test::Behavior* test_behavior;
+
+  std::unique_ptr< test::Behavior > deserialized_behavior;
 };
 
 Describe( an_object_update )
@@ -116,13 +186,13 @@ Describe( an_object_update )
         Equals( number_of_behaviors_to_add + 1u ) );
   }
 
-  It( can_dispatch_behaviors_as_events_on_an_object )
+  It( updates_objects_by_updating_the_contained_behaviors )
   {
-    const test::Behavior& one_of_the_behaviors( *test_behaviors.back() );
     object_update->update_object( *object );
-    AssertThat(
-        one_of_the_behaviors.number_of_behaviors_dispatched,
-        Equals( number_of_behaviors_to_add ) );
+    for ( const auto& behavior : test_behaviors )
+    {
+      AssertThat( behavior->updated_with->id(), Equals( behavior->id() ) );
+    }
   }
 
   It( should_not_update_non_synchronizable_behaviors )

@@ -44,6 +44,11 @@ Describe( an_engine )
     AssertThat( yarrr::EntityFactory::is_registered( yarrr::Engine::ctci ), Equals( true ) );
   }
 
+  It( clones_the_id )
+  {
+    yarrr::ObjectBehavior::Pointer cloned_engine( engine->clone() );
+    AssertThat( cloned_engine->id(), Equals( engine->id() ) );
+  }
 
   It( updates_local_physical_state_when_a_command_arrives )
   {
@@ -88,7 +93,7 @@ Describe( an_engine )
     another_object->dispatcher.dispatch( yarrr::TimerUpdate( 0 ) );
     AssertThat( particle_factory->was_particle_created, Equals( false ) );
 
-    another_object->dispatcher.dispatch( deserialized_engine );
+    engine->update( deserialized_engine );
     another_object->dispatcher.dispatch( yarrr::TimerUpdate( 0 ) );
     AssertThat( particle_factory->was_particle_created, Equals( true ) );
   }

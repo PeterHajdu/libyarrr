@@ -21,7 +21,7 @@ Collide::Collide( Object& the_other_object )
 }
 
 Collider::Collider( int layer )
-  : ObjectBehavior( do_not_syncronize )
+  : ObjectBehavior( do_not_synchronize )
   , m_physical_behavior( nullptr )
   , m_layer( layer )
 {
@@ -81,7 +81,7 @@ Collider::collide_with( const Collider& other ) const
 
 
 DamageCauser::DamageCauser( int initial_integrity )
-  : ObjectBehavior( do_not_syncronize )
+  : ObjectBehavior( do_not_synchronize )
   , m_initial_integrity( initial_integrity )
   , m_integrity( nullptr )
 {

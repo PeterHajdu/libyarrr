@@ -24,7 +24,7 @@ Engine::Engine()
 }
 
 Engine::Engine( const Engine& other )
-  : ObjectBehavior( synchronize )
+  : ObjectBehavior( synchronize, other.m_id )
   , m_physical_parameters( nullptr )
   , m_particle_source( particle_speed_deviation )
   , m_thruster( other.m_thruster )
@@ -46,8 +46,6 @@ Engine::do_register_to( Object& owner )
       std::bind( &Engine::handle_command, this, std::placeholders::_1 ) );
   owner.dispatcher.register_listener< yarrr::TimerUpdate  >(
       std::bind( &Engine::handle_timer_update, this, std::placeholders::_1 ) );
-  owner.dispatcher.register_listener< yarrr::Engine  >(
-      std::bind( &Engine::handle_engine_update, this, std::placeholders::_1 ) );
 }
 
 
@@ -59,11 +57,12 @@ Engine::clone() const
 
 
 void
-Engine::handle_engine_update( const yarrr::Engine& other )
+Engine::update( const ObjectBehavior& other )
 {
-  m_thruster = other.m_thruster;
-  m_cw_jet = other.m_cw_jet;
-  m_ccw_jet = other.m_ccw_jet;
+  const Engine& update( static_cast< const Engine& >( other ) );
+  m_thruster = update.m_thruster;
+  m_cw_jet = update.m_cw_jet;
+  m_ccw_jet = update.m_ccw_jet;
 }
 
 
@@ -121,7 +120,7 @@ Engine::handle_timer_update( const yarrr::TimerUpdate& update ) const
 }
 
 void
-Engine::do_serialize( Serializer& serializer ) const
+Engine::serialize_behavior( Serializer& serializer ) const
 {
   m_thruster.serialize( serializer );
   m_cw_jet.serialize( serializer );
@@ -129,7 +128,7 @@ Engine::do_serialize( Serializer& serializer ) const
 }
 
 void
-Engine::do_deserialize( Deserializer& deserializer )
+Engine::deserialize_behavior( Deserializer& deserializer )
 {
   m_thruster.deserialize( deserializer );
   m_cw_jet.deserialize( deserializer );

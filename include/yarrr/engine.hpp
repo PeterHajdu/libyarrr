@@ -44,15 +44,15 @@ class Engine : public ObjectBehavior
 
 
     virtual Pointer clone() const override;
+    virtual void update( const ObjectBehavior& ) override;
 
   private:
     virtual void do_register_to( Object& ) override;
-    virtual void do_serialize( Serializer& serializer ) const;
-    virtual void do_deserialize( Deserializer& deserializer );
+    virtual void serialize_behavior( Serializer& serializer ) const;
+    virtual void deserialize_behavior( Deserializer& deserializer );
 
     void handle_command( const yarrr::Command& );
     void handle_timer_update( const yarrr::TimerUpdate& ) const;
-    void handle_engine_update( const yarrr::Engine& );
 
     std::unique_ptr< ShipControl > m_ship_control;
     PhysicalParameters* m_physical_parameters;

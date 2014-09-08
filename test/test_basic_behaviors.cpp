@@ -33,6 +33,11 @@ Describe( a_physical_behavior )
     physical_behavior->register_to( *object );
   }
 
+  It( clones_the_id )
+  {
+    AssertThat( physical_behavior->clone()->id(), Equals( physical_behavior->id() ) );
+  }
+
   It( registers_itself_as_a_component )
   {
     AssertThat( &object->components.component<yarrr::PhysicalBehavior>(), Equals( physical_behavior.get() ) );
@@ -60,7 +65,7 @@ Describe( a_physical_behavior )
         physical_behavior->physical_parameters );
 
     yarrr::PhysicalBehavior other_physical_behavior;
-    object->dispatcher.dispatch( other_physical_behavior );
+    physical_behavior->update( other_physical_behavior );
 
     AssertThat( old_physical_parameters, !Equals( physical_behavior->physical_parameters ) );
     AssertThat( other_physical_behavior.physical_parameters, !Equals( physical_behavior->physical_parameters ) );
@@ -109,6 +114,12 @@ Describe( graphical_behaviors )
 
     graphical_engine = static_cast< test::GraphicalEngine* >( &the::ctci::service<yarrr::GraphicalEngine>() );
     graphical_engine->last_focused_to = physical_behavior.physical_parameters.coordinate + yarrr::Coordinate( 10, 10 );
+  }
+
+  It( clones_the_id )
+  {
+    AssertThat( laser_graphics->clone()->id(), Equals( laser_graphics->id() ) );
+    AssertThat( ship_graphics->clone()->id(), Equals( ship_graphics->id() ) );
   }
 
 

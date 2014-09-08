@@ -14,7 +14,7 @@ class ObjectContainer : public the::ctci::Dispatcher
     void delete_object( Object::Id );
 
     bool has_object_with_id( Object::Id ) const;
-    const Object& object_with_id( Object::Id ) const;
+    Object& object_with_id( Object::Id ) const;
 
     size_type size() const;
 

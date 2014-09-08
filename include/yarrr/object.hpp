@@ -21,24 +21,38 @@ class ObjectBehavior : public Entity
     add_pure_polymorphic_ctci();
     typedef std::unique_ptr<ObjectBehavior> Pointer;
 
+    typedef uint64_t Id;
+
     enum ShouldSynchronize : bool
     {
       synchronize = true,
-      do_not_syncronize = false
+      do_not_synchronize = false
     };
 
     ObjectBehavior( ShouldSynchronize );
+    ObjectBehavior( ShouldSynchronize, const Id& id );
+
+    const Id& id() const;
+
     const ShouldSynchronize should_synchronize;
     void register_to( Object& );
 
     virtual ~ObjectBehavior() = default;
     virtual Pointer clone() const = 0;
 
+    virtual void update( const ObjectBehavior& ) {}
+
   protected:
+    Id m_id;
     Object* m_object;
 
   private:
     virtual void do_register_to( Object& ) = 0;
+    virtual void do_serialize( Serializer& serializer ) const override final;
+    virtual void do_deserialize( Deserializer& deserializer ) override final;
+
+    virtual void serialize_behavior( Serializer& serializer ) const {};
+    virtual void deserialize_behavior( Deserializer& deserializer ) {};
 };
 
 typedef std::vector< ObjectBehavior::Pointer > BehaviorContainer;
@@ -57,6 +71,8 @@ class Object final
     the::ctci::ComponentRegistry components;
 
     void add_behavior( ObjectBehavior::Pointer&& behavior );
+    void update_behavior( ObjectBehavior::Pointer&& behavior );
+
     std::unique_ptr< ObjectUpdate > generate_update() const;
 
   private:
@@ -73,7 +89,7 @@ class ObjectUpdate : public Entity
     ObjectUpdate( const Object::Id&, BehaviorContainer&& );
     const Object::Id& id() const;
     Object::Pointer create_object() const;
-    void update_object( const Object& ) const;
+    void update_object( Object& ) const;
 
   private:
     Object::Id m_id;

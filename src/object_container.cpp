@@ -49,7 +49,7 @@ ObjectContainer::has_object_with_id( Object::Id id ) const
 }
 
 
-const Object&
+Object&
 ObjectContainer::object_with_id( Object::Id id ) const
 {
   Objects::const_iterator object( m_objects.find( id ) );

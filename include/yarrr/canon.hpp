@@ -12,6 +12,7 @@ class Canon : public ObjectBehavior
   public:
     add_polymorphic_ctci( "yarrr_canon" );
     Canon();
+    Canon( const Id& id );
 
     virtual Pointer clone() const override;
 

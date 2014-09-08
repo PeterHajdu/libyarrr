@@ -48,6 +48,12 @@ Describe( a_canon )
     test::clean_engine_dispatcher();
   }
 
+  It( clones_the_id )
+  {
+    yarrr::Canon canon;
+    AssertThat( canon.clone()->id(), Equals( canon.id() ) );
+  }
+
   It( creates_objects_only_for_fire_command )
   {
     object->dispatcher.dispatch( yarrr::Command( yarrr::Command::cw, 0 ) );

@@ -40,18 +40,19 @@ class PhysicalBehavior : public ObjectBehavior
     add_polymorphic_ctci( "yarrr_physical_behavior" );
     PhysicalBehavior();
     PhysicalBehavior( const PhysicalParameters& );
+    PhysicalBehavior( const PhysicalParameters&, const Id& );
 
     PhysicalParameters physical_parameters;
     virtual Pointer clone() const override;
     virtual ~PhysicalBehavior() = default;
+    virtual void update( const ObjectBehavior& ) override;
   private:
     virtual void do_register_to( Object& ) override;
 
     void handle_timer_update( const TimerUpdate& );
-    void handle_network_update( const PhysicalBehavior& );
 
-    virtual void do_serialize( Serializer& serializer ) const override;
-    virtual void do_deserialize( Deserializer& deserializer ) override;
+    virtual void serialize_behavior( Serializer& serializer ) const override;
+    virtual void deserialize_behavior( Deserializer& deserializer ) override;
 };
 
 class SelfDestructor : public ObjectBehavior
@@ -87,6 +88,7 @@ class GraphicalBehavior :
 {
   public:
     GraphicalBehavior();
+    GraphicalBehavior( const Id& id );
 
     Pointer clone() const = 0;
     virtual void draw() const = 0;
@@ -103,6 +105,8 @@ class ShipGraphics : public GraphicalBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_ship_graphics" );
+    ShipGraphics() = default;
+    ShipGraphics( const Id& id );
     virtual void draw() const;
     Pointer clone() const;
 };
@@ -111,6 +115,8 @@ class LaserGraphics : public GraphicalBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_laser_graphics" );
+    LaserGraphics() = default;
+    LaserGraphics( const Id& id );
     virtual void draw() const;
     Pointer clone() const;
 };
