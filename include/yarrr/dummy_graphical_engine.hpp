@@ -15,6 +15,10 @@ class DummyGraphicalEngine : public yarrr::GraphicalEngine
     virtual void print_text_tokens( uint16_t, uint16_t, const yarrr::TextTokens& ) override {}
     virtual void focus_to( const yarrr::Coordinate& ) override {}
     virtual void update_screen() override {}
+    virtual const Coordinate& screen_resolution() const { return resolution; }
+
+  private:
+    const Coordinate resolution{ 0, 0 };
 };
 
 }

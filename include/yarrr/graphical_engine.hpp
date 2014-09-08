@@ -55,6 +55,7 @@ class GraphicalEngine
     virtual void focus_to( const yarrr::Coordinate& ) = 0;
     virtual ~GraphicalEngine() = default;
     virtual void update_screen() = 0;
+    virtual const Coordinate& screen_resolution() const = 0;
 
     void draw_objects() const;
 

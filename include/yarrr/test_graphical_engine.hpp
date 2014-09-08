@@ -68,6 +68,14 @@ class GraphicalEngine : public yarrr::GraphicalEngine
     }
 
     virtual void update_screen() override {}
+
+    virtual const yarrr::Coordinate& screen_resolution() const
+    {
+      return resolution;
+    }
+
+  private:
+    const yarrr::Coordinate resolution{ 0, 0 };
 };
 
 }
