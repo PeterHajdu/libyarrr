@@ -27,7 +27,10 @@ class Colour
     uint8_t blue;
     uint8_t alpha;
 
-    const static Colour white;
+    const static Colour White;
+    const static Colour Green;
+    const static Colour Red;
+    const static Colour Strange;
 };
 
 class TextToken
