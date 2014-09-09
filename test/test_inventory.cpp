@@ -9,6 +9,7 @@
 #include <igloo/igloo_alt.h>
 
 #include "test_services.hpp"
+#include "test_item.hpp"
 
 using namespace igloo;
 
@@ -18,12 +19,14 @@ Describe( an_invenory )
   {
     object.reset( new yarrr::Object() );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
+
+    inventory.reset( new yarrr::Inventory() );
+    item.reset( new test::TestItem() );
   }
 
   It( clones_the_id )
   {
-    yarrr::Inventory inventory;
-    AssertThat( inventory.clone()->id(), Equals( inventory.id() ) );
+    AssertThat( inventory->clone()->id(), Equals( inventory->id() ) );
   }
 
   It( registers_itsef_as_a_component )
@@ -31,23 +34,23 @@ Describe( an_invenory )
     AssertThat( object->components.has_component< yarrr::Inventory >(), Equals( true ) );
   }
 
-  It( lets_behaviors_register_themselves )
+  It( lets_items_register_themselves )
   {
-    yarrr::Inventory inventory;
-    inventory.register_item( inventory );
+    inventory->register_item( *item );
   }
 
   It( keeps_a_list_of_registered_items )
   {
-    yarrr::Inventory inventory;
-    inventory.register_item( inventory );
+    inventory->register_item( *item );
 
-    const yarrr::Inventory::ItemContainer& items( inventory.items() );
+    const yarrr::Inventory::ItemContainer& items( inventory->items() );
     AssertThat( items.size(), Equals( 1u ) );
-    AssertThat( &items.back().get(), Equals( &inventory ) );
+    AssertThat( &items.back().get(), Equals( item.get() ) );
   }
 
   yarrr::Object::Pointer object;
+  std::unique_ptr< yarrr::Inventory > inventory;
+  std::unique_ptr< test::TestItem > item;
 };
 
 Describe( a_loot_dropper )

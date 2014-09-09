@@ -48,6 +48,12 @@ Describe( a_canon )
     test::clean_engine_dispatcher();
   }
 
+  It( is_called_canon )
+  {
+    yarrr::Canon canon;
+    AssertThat( canon.name(), Equals( "canon" ) );
+  }
+
   It( clones_the_id )
   {
     yarrr::Canon canon;

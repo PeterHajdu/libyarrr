@@ -39,7 +39,7 @@ Inventory::do_register_to( Object& )
 }
 
 void
-Inventory::register_item( ObjectBehavior& item )
+Inventory::register_item( Item& item )
 {
   m_items.emplace_back( item );
 }

@@ -7,11 +7,16 @@
 #include <yarrr/engine_dispatcher.hpp>
 #include <iostream>
 
+namespace
+{
+  const char * canon_name = "canon";
+}
+
 namespace yarrr
 {
 
 Canon::Canon()
-: ObjectBehavior( synchronize )
+: Item( canon_name )
 , m_physical_parameters( nullptr )
 , m_index( 0 )
 , m_number_of_canons( 1 )
@@ -19,7 +24,7 @@ Canon::Canon()
 }
 
 Canon::Canon( const Id& id )
-: ObjectBehavior( synchronize, id )
+: Item( id, canon_name )
 , m_physical_parameters( nullptr )
 , m_index( 0 )
 , m_number_of_canons( 1 )
@@ -27,13 +32,11 @@ Canon::Canon( const Id& id )
 }
 
 void
-Canon::do_register_to( Object& owner )
+Canon::register_item_to( Object& owner )
 {
   owner.dispatcher.register_listener< yarrr::Command  >(
       std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
   m_physical_parameters = &owner.components.component< yarrr::PhysicalBehavior >().physical_parameters;
-  assert( owner.components.has_component< Inventory >() );
-  owner.components.component< Inventory >().register_item( *this );
 
   if ( owner.components.has_component< Canon >() )
   {

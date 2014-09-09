@@ -20,6 +20,7 @@ set(SOURCE_FILES
   inventory.cpp
   canon.cpp
   object_creator.cpp
+  item.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
