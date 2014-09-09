@@ -24,6 +24,13 @@ namespace
     return cloned_container;
   }
 
+
+  yarrr::ObjectBehavior::Id last_behavior_id{ 0 };
+  yarrr::ObjectBehavior::Id
+  generate_next_behavior_id()
+  {
+    return last_behavior_id++;
+  }
 }
 
 namespace yarrr
@@ -31,7 +38,7 @@ namespace yarrr
 
 ObjectBehavior::ObjectBehavior( ShouldSynchronize should_synchronize )
   : should_synchronize( should_synchronize )
-  , m_id( Id( this ) )
+  , m_id( generate_next_behavior_id() )
   , m_object( nullptr )
 {
 }
