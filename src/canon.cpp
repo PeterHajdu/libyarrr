@@ -3,13 +3,15 @@
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/inventory.hpp>
 #include <yarrr/object_creator.hpp>
-#include <thectci/service_registry.hpp>
+#include <yarrr/entity_factory.hpp>
 #include <yarrr/engine_dispatcher.hpp>
-#include <iostream>
+#include <thectci/service_registry.hpp>
 
 namespace
 {
+
   const char * canon_name = "canon";
+  yarrr::AutoEntityRegister< yarrr::Canon > auto_canon_register;
 }
 
 namespace yarrr
