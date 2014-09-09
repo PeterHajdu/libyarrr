@@ -59,16 +59,25 @@ Describe( delete_when_destroyed )
 
 Describe( respawn_when_destroyed )
 {
+  void destroy_object()
+  {
+    object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
+  }
+
   void SetUp()
   {
     object.reset( new yarrr::Object() );
-    physical_behavior = new yarrr::PhysicalBehavior();
-    object->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior ) );
-    physical_behavior->physical_parameters.coordinate = start_position;
-    physical_behavior->physical_parameters.velocity = start_velocity;
-
     respawn_when_destroyed = new yarrr::RespawnWhenDestroyed();
     object->add_behavior( yarrr::ObjectBehavior::Pointer( respawn_when_destroyed ) );
+
+    was_player_killed = false;
+    the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::PlayerKilled >(
+        [ this ]( const yarrr::PlayerKilled& player_killed )
+        {
+          was_player_killed = true;
+          destroyed_object_id = player_killed.object_id;
+        } );
+    destroy_object();
   }
 
   void TearDown()
@@ -83,33 +92,18 @@ Describe( respawn_when_destroyed )
         Equals( respawn_when_destroyed ) );
   }
 
-  void destroy_object()
+  It( should_send_player_killed_event_to_the_engine_when_object_is_destroyed )
   {
-    object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
+    AssertThat( was_player_killed, Equals( true ) );
   }
 
-  It( should_stop_object_when_destroyed )
+  It( should_send_the_object_id_in_the_player_killed_event )
   {
-    destroy_object();
-    AssertThat(
-        physical_behavior->physical_parameters.velocity,
-        Equals( yarrr::Coordinate( 0, 0 ) ) );
+    AssertThat( destroyed_object_id, Equals( object->id ) );
   }
 
-  It( should_teleport_object_to_the_origo_when_destroyed )
-  {
-    destroy_object();
-    AssertThat(
-        physical_behavior->physical_parameters.coordinate,
-        Equals( origo ) );
-  }
-
-  const yarrr::Coordinate start_position{ 100, 100 };
-  const yarrr::Coordinate start_velocity{ 100, 100 };
-
-  const yarrr::Coordinate origo{ 0, 0 };
-
-  yarrr::PhysicalBehavior* physical_behavior;
+  bool was_player_killed;
+  yarrr::Object::Id destroyed_object_id;
   yarrr::RespawnWhenDestroyed* respawn_when_destroyed;
   yarrr::Object::Pointer object;
 };

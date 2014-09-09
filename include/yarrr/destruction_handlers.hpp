@@ -20,6 +20,16 @@ class DeleteWhenDestroyed : public ObjectBehavior
     void handle_object_destroyed( const ObjectDestroyed& ) const;
 };
 
+
+class PlayerKilled
+{
+  public:
+    add_ctci( "yarrr_player_killed" );
+    PlayerKilled( const Object::Id& id );
+    const Object::Id object_id;
+};
+
+
 class RespawnWhenDestroyed : public ObjectBehavior
 {
   public:
@@ -30,9 +40,7 @@ class RespawnWhenDestroyed : public ObjectBehavior
 
   private:
     virtual void do_register_to( Object& ) override;
-
     void handle_object_destroyed( const ObjectDestroyed& ) const;
-    PhysicalParameters* m_physical_parameters;
 };
 
 }

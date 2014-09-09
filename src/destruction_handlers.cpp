@@ -37,7 +37,6 @@ DeleteWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
 
 RespawnWhenDestroyed::RespawnWhenDestroyed()
   : ObjectBehavior( do_not_synchronize )
-  , m_physical_parameters( nullptr )
 {
 }
 
@@ -47,8 +46,6 @@ RespawnWhenDestroyed::do_register_to( Object& owner )
 {
   owner.dispatcher.register_listener< yarrr::ObjectDestroyed >( std::bind(
         &RespawnWhenDestroyed::handle_object_destroyed, this, std::placeholders::_1 ) );
-  assert( owner.components.has_component< yarrr::PhysicalBehavior >() );
-  m_physical_parameters = &owner.components.component< yarrr::PhysicalBehavior >().physical_parameters;
 }
 
 ObjectBehavior::Pointer
@@ -61,10 +58,15 @@ RespawnWhenDestroyed::clone() const
 void
 RespawnWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
 {
-  assert( m_physical_parameters );
-  m_physical_parameters->velocity = yarrr::Coordinate( 0, 0 );
-  m_physical_parameters->coordinate = yarrr::Coordinate( 0, 0 );
+  the::ctci::service< EngineDispatcher >().dispatch( PlayerKilled( m_object->id ) );
 }
+
+
+PlayerKilled::PlayerKilled( const Object::Id& id )
+  : object_id( id )
+{
+}
+
 
 }
 
