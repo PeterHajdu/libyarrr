@@ -100,5 +100,11 @@ class ObjectUpdate : public Entity
     BehaviorContainer m_behaviors;
 };
 
+template < typename Component >
+Component& component_of( const Object& object )
+{
+  return object.components.component< Component >();
+}
+
 }
 

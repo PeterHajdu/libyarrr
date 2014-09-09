@@ -16,6 +16,17 @@ yarrr::AutoEntityRegister< test::Behavior > register_test_behavior;
 
 }
 
+Describe(the_component_of)
+{
+  It( returns_the_reference_of_the_requested_component )
+  {
+    yarrr::Object object;
+    test::Behavior* behavior( new test::Behavior() );
+    object.add_behavior( yarrr::ObjectBehavior::Pointer( behavior ) );
+    AssertThat( &yarrr::component_of< test::Behavior >( object ), Equals( behavior ) );
+  }
+};
+
 Describe(an_object)
 {
 
