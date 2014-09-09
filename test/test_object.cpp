@@ -1,8 +1,11 @@
 #include "test_events.hpp"
 #include "test_behavior.hpp"
 #include <yarrr/object.hpp>
+#include <yarrr/object_creator.hpp>
 #include <yarrr/entity.hpp>
 #include <yarrr/entity_factory.hpp>
+#include <yarrr/inventory.hpp>
+#include <yarrr/canon.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <igloo/igloo_alt.h>
@@ -224,5 +227,44 @@ Describe( an_object_update )
 
   const size_t number_of_behaviors_to_add{ 5 };
   std::vector< const test::Behavior* > test_behaviors;
+};
+
+
+Describe_Only( ship_synchronization_procedure )
+{
+  void SetUp()
+  {
+    original_object = yarrr::create_ship();
+    original_inventory = &yarrr::component_of< yarrr::Inventory >( *original_object );
+
+    auto object_update( original_object->generate_update() );
+
+    synchronized_object = object_update->create_object();
+    synchronized_inventory = &yarrr::component_of< yarrr::Inventory >( *synchronized_object );
+
+    number_of_initial_items = original_inventory->items().size();
+  }
+
+  It( creates_synchronized_ship_with_the_same_items )
+  {
+    AssertThat( synchronized_inventory->items().size(), Equals( original_inventory->items().size() ) );
+  }
+
+  It( adds_new_behaviors_during_an_update_procedure )
+  {
+    original_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon() ) );
+    AssertThat( original_inventory->items().size(), Equals( number_of_initial_items + 1 ) );
+    auto object_update( original_object->generate_update() );
+    object_update->update_object( *synchronized_object );
+    AssertThat( synchronized_inventory->items().size(), Equals( number_of_initial_items + 1 ) );
+  }
+
+  size_t number_of_initial_items;
+
+  yarrr::Object::Pointer original_object;
+  yarrr::Inventory* original_inventory;
+
+  yarrr::Object::Pointer synchronized_object;
+  yarrr::Inventory* synchronized_inventory;
 };
 
