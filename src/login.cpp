@@ -6,7 +6,7 @@
 namespace
 {
   yarrr::AutoEntityRegister<yarrr::LoginRequest> register_login_request;
-  yarrr::AutoEntityRegister<yarrr::LoginResponse> register_login_response;
+  yarrr::AutoEntityRegister<yarrr::ObjectAssigned> register_object_assigned;
 }
 
 namespace yarrr
@@ -35,25 +35,25 @@ LoginRequest::do_deserialize( Deserializer& deserializer )
   m_login_id = deserializer.pop_front<std::string>();
 }
 
-LoginResponse::LoginResponse( const Object::Id& object_id )
+ObjectAssigned::ObjectAssigned( const Object::Id& object_id )
   : m_object_id( object_id )
 {
 }
 
 const Object::Id&
-LoginResponse::object_id() const
+ObjectAssigned::object_id() const
 {
   return m_object_id;
 }
 
 void
-LoginResponse::do_serialize( Serializer& serializer ) const
+ObjectAssigned::do_serialize( Serializer& serializer ) const
 {
   serializer.push_back( m_object_id );
 }
 
 void
-LoginResponse::do_deserialize( Deserializer& deserializer )
+ObjectAssigned::do_deserialize( Deserializer& deserializer )
 {
   m_object_id = deserializer.pop_front<Object::Id>();
 }

@@ -43,27 +43,27 @@ Describe(a_login_response)
 {
   It( is_registered_to_entity_factory )
   {
-    AssertThat( yarrr::EntityFactory::is_registered( yarrr::LoginResponse::ctci ), Equals( true ) );
+    AssertThat( yarrr::EntityFactory::is_registered( yarrr::ObjectAssigned::ctci ), Equals( true ) );
   }
 
   It( has_a_default_constructor )
   {
-    yarrr::LoginResponse login_response;
+    yarrr::ObjectAssigned login_response;
     (void)login_response;
   }
 
   It( can_be_constructed_with_the_id )
   {
-    yarrr::LoginResponse login_response( object_id );
+    yarrr::ObjectAssigned login_response( object_id );
     AssertThat( login_response.object_id(), Equals( object_id ) );
   }
 
   It( is_serializable_and_deserializable )
   {
-    yarrr::LoginResponse login_response( object_id );
+    yarrr::ObjectAssigned login_response( object_id );
     yarrr::Data data( login_response.serialize() );
 
-    yarrr::LoginResponse deserialized_request;
+    yarrr::ObjectAssigned deserialized_request;
     deserialized_request.deserialize( data );
 
     AssertThat( deserialized_request.object_id(), Equals( login_response.object_id() ) );

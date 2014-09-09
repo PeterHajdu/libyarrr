@@ -25,13 +25,13 @@ class LoginRequest : public Entity
     std::string m_login_id;
 };
 
-class LoginResponse : public Entity
+class ObjectAssigned : public Entity
 {
   public:
-    add_polymorphic_ctci( "login_response" );
+    add_polymorphic_ctci( "object_assigned" );
 
-    LoginResponse() = default;
-    LoginResponse( const Object::Id& object_id );
+    ObjectAssigned() = default;
+    ObjectAssigned( const Object::Id& object_id );
     const Object::Id& object_id() const;
   private:
     virtual void do_serialize( Serializer& serializer ) const override;
