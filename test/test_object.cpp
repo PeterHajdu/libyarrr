@@ -230,7 +230,7 @@ Describe( an_object_update )
 };
 
 
-Describe_Only( ship_synchronization_procedure )
+Describe( ship_synchronization_procedure )
 {
   void SetUp()
   {
