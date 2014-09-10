@@ -71,7 +71,7 @@ Describe( laser_creator )
 
   void SetUp()
   {
-    ships_physical_parameters.vangle = 100;
+    ships_physical_parameters.angular_velocity = 100;
     object = yarrr::create_laser( ships_physical_parameters );
 
     AssertThat( object->components.has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
@@ -90,7 +90,7 @@ Describe( laser_creator )
 
   It ( creates_objects_that_do_not_spin )
   {
-    AssertThat( laser_parameters.vangle, Equals( 0 ) );
+    AssertThat( laser_parameters.angular_velocity, Equals( 0 ) );
   }
 
   It ( creates_objects_that_move_with_a_different_velocity )

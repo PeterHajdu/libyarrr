@@ -26,8 +26,8 @@ namespace
     yarrr::PhysicalParameters parameters;
     parameters.coordinate = { 0, 0 };
     parameters.velocity = { 0, 0 };
-    parameters.angle = 0;
-    parameters.vangle = 0;
+    parameters.orientation = 0;
+    parameters.angular_velocity = 0;
     return parameters;
   }
 }
@@ -77,8 +77,8 @@ PhysicalBehavior::update( const ObjectBehavior& behavior )
   travel_in_time_to( physical_parameters.timestamp, network_parameters );
   physical_parameters.coordinate = ( network_parameters.coordinate + physical_parameters.coordinate ) * 0.5;
   physical_parameters.velocity = ( network_parameters.velocity + physical_parameters.velocity ) * 0.5;
-  physical_parameters.angle = ( network_parameters.angle + physical_parameters.angle ) * 0.5;
-  physical_parameters.vangle = ( network_parameters.vangle + physical_parameters.vangle ) * 0.5;
+  physical_parameters.orientation = ( network_parameters.orientation + physical_parameters.orientation ) * 0.5;
+  physical_parameters.angular_velocity = ( network_parameters.angular_velocity + physical_parameters.angular_velocity ) * 0.5;
   physical_parameters.integrity = network_parameters.integrity;
 }
 
@@ -90,8 +90,8 @@ PhysicalBehavior::serialize_behavior( yarrr::Serializer& serializer ) const
     .push_back( physical_parameters.coordinate.y )
     .push_back( physical_parameters.velocity.x )
     .push_back( physical_parameters.velocity.y )
-    .push_back( physical_parameters.angle )
-    .push_back( physical_parameters.vangle )
+    .push_back( physical_parameters.orientation )
+    .push_back( physical_parameters.angular_velocity )
     .push_back( physical_parameters.integrity )
     .push_back( physical_parameters.timestamp );
 }
@@ -104,8 +104,8 @@ PhysicalBehavior::deserialize_behavior( yarrr::Deserializer& deserializer )
   physical_parameters.coordinate.y = deserializer.pop_front<int64_t>();
   physical_parameters.velocity.x = deserializer.pop_front<int64_t>();
   physical_parameters.velocity.y = deserializer.pop_front<int64_t>();
-  physical_parameters.angle = deserializer.pop_front<int16_t>();
-  physical_parameters.vangle = deserializer.pop_front<int16_t>();
+  physical_parameters.orientation = deserializer.pop_front<int16_t>();
+  physical_parameters.angular_velocity = deserializer.pop_front<int16_t>();
   physical_parameters.integrity = deserializer.pop_front<int16_t>();
   physical_parameters.timestamp = deserializer.pop_front<the::time::Time>();
 }

@@ -45,7 +45,7 @@ ShipControl::thruster()
 void
 ShipControl::spin( int power )
 {
-  m_physical_parameters.vangle += power;
+  m_physical_parameters.angular_velocity += power;
 }
 
 }

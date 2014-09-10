@@ -95,7 +95,7 @@ create_laser( const PhysicalParameters& laser_parameters )
 {
   Object::Pointer laser( new Object() );
   std::unique_ptr< PhysicalBehavior > physical_behavior( new PhysicalBehavior( laser_parameters ) );
-  physical_behavior->physical_parameters.vangle = 0;
+  physical_behavior->physical_parameters.angular_velocity = 0;
   physical_behavior->physical_parameters.velocity += heading( laser_parameters, laser_speed );
   physical_behavior->physical_parameters.coordinate += heading( laser_parameters, 100 );
   laser->add_behavior( ObjectBehavior::Pointer( physical_behavior.release() ) );

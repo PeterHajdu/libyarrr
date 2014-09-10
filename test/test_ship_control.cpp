@@ -28,13 +28,13 @@ Describe(ship_control)
   It( can_spin_an_object_cw )
   {
     test_control.handle_command( cw_command );
-    AssertThat( physical_parameters.vangle, IsGreaterThan( initiali_state.vangle ) );
+    AssertThat( physical_parameters.angular_velocity, IsGreaterThan( initiali_state.angular_velocity ) );
   }
 
   It( can_spin_an_object_ccw )
   {
     test_control.handle_command( ccw_command );
-    AssertThat( physical_parameters.vangle, IsLessThan( initiali_state.vangle ) );
+    AssertThat( physical_parameters.angular_velocity, IsLessThan( initiali_state.angular_velocity ) );
   }
 
   It( travels_object_in_time_to_apply_command )

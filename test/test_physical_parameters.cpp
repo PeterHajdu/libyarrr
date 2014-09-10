@@ -11,10 +11,10 @@ namespace
     return
       l.coordinate == r.coordinate &&
       l.velocity == r.velocity &&
-      l.vangle == r.vangle &&
+      l.angular_velocity == r.angular_velocity &&
       l.timestamp == r.timestamp &&
       l.integrity == r.integrity &&
-      std::abs( l.angle - r.angle ) <= allowed_angle_delta;
+      std::abs( l.orientation - r.orientation ) <= allowed_angle_delta;
   }
 }
 
@@ -24,8 +24,8 @@ Describe(physical_parameters)
   {
     physical_parameters.coordinate = start_position;
     physical_parameters.velocity = start_velocity;
-    physical_parameters.angle = start_angle;
-    physical_parameters.vangle = -1000;
+    physical_parameters.orientation = start_angle;
+    physical_parameters.angular_velocity = -1000;
     physical_parameters.timestamp = now;
   }
 
@@ -47,7 +47,7 @@ Describe(physical_parameters)
   It(rotates)
   {
     yarrr::travel_in_time_to( future, physical_parameters );
-    AssertThat( physical_parameters.angle, !Equals( start_angle ) );
+    AssertThat( physical_parameters.orientation, !Equals( start_angle ) );
   }
 
   It(moves_more_during_a_longer_period)

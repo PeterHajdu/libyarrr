@@ -11,8 +11,8 @@ namespace yarrr
     public:
       Coordinate coordinate;
       Velocity velocity;
-      Angle angle;
-      Angle vangle;
+      Angle orientation;
+      Angle angular_velocity;
       the::time::Clock::Time timestamp;
       int16_t integrity;
   };

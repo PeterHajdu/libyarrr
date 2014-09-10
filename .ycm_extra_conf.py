@@ -64,7 +64,10 @@ flags = [
 '/System/Library/Frameworks/Python.framework/Headers',
 '-I',
 'include',
+'-I',
 'test/igloo',
+'-I',
+'~/deploy/usr/local/include',
 # This path will only work on OS X, but extra paths that don't exist are not
 # harmful
 '-isystem',
