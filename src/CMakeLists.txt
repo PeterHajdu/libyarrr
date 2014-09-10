@@ -21,6 +21,7 @@ set(SOURCE_FILES
   canon.cpp
   object_creator.cpp
   item.cpp
+  shape.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

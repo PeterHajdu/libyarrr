@@ -35,6 +35,7 @@ set(TEST_SOURCE_FILES
     test_canon.cpp
     test_object_creator.cpp
     test_item.cpp
+    test_shape.cpp
     )
 
 
