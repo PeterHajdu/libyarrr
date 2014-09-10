@@ -22,6 +22,7 @@ class Tile final
 };
 
 bool operator==( const Tile& l, const Tile& r );
+bool operator!=( const Tile& l, const Tile& r );
 
 class Shape
 {
@@ -33,6 +34,8 @@ class Shape
   private:
     TileContainer m_tiles;
 };
+
+bool operator==( const Shape& l, const Shape& r );
 
 }
 

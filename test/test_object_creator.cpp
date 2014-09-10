@@ -6,6 +6,7 @@
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/collider.hpp>
 #include <yarrr/destruction_handlers.hpp>
+#include <yarrr/shape_behavior.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
@@ -61,6 +62,16 @@ Describe( ship_creator )
   It ( creates_objects_with_loot_dropper )
   {
     AssertThat( object->components.has_component< yarrr::LootDropper >(), Equals( true ) );
+  }
+
+  It ( creates_objects_with_shape_behavior )
+  {
+    AssertThat( object->components.has_component< yarrr::ShapeBehavior >(), Equals( true ) );
+  }
+
+  It ( creates_objects_with_shape_graphics )
+  {
+    AssertThat( object->components.has_component< yarrr::ShapeGraphics >(), Equals( true ) );
   }
 
   yarrr::Object::Pointer object;

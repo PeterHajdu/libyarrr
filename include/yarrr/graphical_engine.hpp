@@ -5,6 +5,7 @@
 
 namespace yarrr
 {
+class Object;
 class PhysicalParameters;
 
 class GraphicalEngine;
@@ -47,6 +48,7 @@ class GraphicalEngine
   public:
     add_polymorphic_ctci( "yarrr_graphical_engine" );
     virtual void draw_particle( const PhysicalParameters&, uint64_t age ) = 0;
+    virtual void draw_object_with_shape( const Object& ) = 0;
     virtual void draw_ship( const PhysicalParameters& ) = 0;
     virtual void draw_laser( const PhysicalParameters& ) = 0;
     virtual void draw_loot( const PhysicalParameters& ) = 0;

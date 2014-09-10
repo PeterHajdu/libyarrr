@@ -36,6 +36,7 @@ set(TEST_SOURCE_FILES
     test_object_creator.cpp
     test_item.cpp
     test_shape.cpp
+    test_shape_behavior.cpp
     )
 
 

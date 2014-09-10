@@ -7,6 +7,7 @@
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/delete_object.hpp>
 #include <yarrr/collider.hpp>
+#include <yarrr/shape_behavior.hpp>
 #include <yarrr/destruction_handlers.hpp>
 #include <yarrr/engine.hpp>
 #include <yarrr/canon.hpp>
@@ -19,6 +20,7 @@ namespace
   yarrr::AutoEntityRegister< yarrr::PhysicalBehavior > auto_physical_behavior_register;
   yarrr::AutoEntityRegister< yarrr::ShipGraphics > auto_ship_graphics_register;
   yarrr::AutoEntityRegister< yarrr::LaserGraphics > auto_laser_graphics_register;
+  yarrr::AutoEntityRegister< yarrr::ShapeGraphics > auto_shape_graphics_register;
 
   yarrr::PhysicalParameters
   zero_parameters()
@@ -181,6 +183,7 @@ GraphicalBehavior::do_register_to( Object& owner )
   m_physical_behavior = &owner.components.component< yarrr::PhysicalBehavior >();
   owner.dispatcher.register_listener< FocusOnObject >( std::bind(
         &GraphicalBehavior::handle_focus_on_object, this, std::placeholders::_1 ) );
+  register_graphical_behavior_to( owner );
 }
 
 void
@@ -226,5 +229,28 @@ LaserGraphics::clone() const
   return Pointer( new LaserGraphics( id() ) );
 }
 
+ShapeGraphics::ShapeGraphics( const Id& id )
+  : GraphicalBehavior( id )
+{
+}
+
+void
+ShapeGraphics::draw() const
+{
+  assert( m_physical_behavior );
+  m_graphical_engine.draw_object_with_shape( *m_object );
+}
+
+void
+ShapeGraphics::register_graphical_behavior_to( Object& owner )
+{
+  assert( owner.components.has_component< ShapeBehavior >() );
+}
+
+ObjectBehavior::Pointer
+ShapeGraphics::clone() const
+{
+  return Pointer( new ShapeGraphics( id() ) );
+}
 }
 

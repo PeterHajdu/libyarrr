@@ -7,7 +7,7 @@
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/collider.hpp>
 #include <yarrr/destruction_handlers.hpp>
-
+#include <yarrr/shape_behavior.hpp>
 #include <yarrr/entity_factory.hpp>
 
 #include <random>
@@ -87,6 +87,8 @@ create_ship()
   ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer ) ) );
   ship->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 100 ) ) );
   ship->add_behavior( ObjectBehavior::Pointer( new RespawnWhenDestroyed() ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new ShapeBehavior() ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new ShapeGraphics() ) );
   return ship;
 }
 

@@ -1,4 +1,5 @@
 #include "test_services.hpp"
+#include "test_synchronizable_behavior.hpp"
 #include <yarrr/inventory.hpp>
 #include <yarrr/canon.hpp>
 #include <yarrr/test_graphical_engine.hpp>
@@ -12,6 +13,7 @@
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/delete_object.hpp>
 #include <yarrr/collider.hpp>
+#include <yarrr/shape_behavior.hpp>
 #include <yarrr/destruction_handlers.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
@@ -31,16 +33,7 @@ Describe( a_physical_behavior )
     physical_behavior->physical_parameters.velocity = { 100, 100 };
     physical_behavior->physical_parameters.coordinate = { 10, 3 };
     physical_behavior->register_to( *object );
-  }
-
-  It( clones_the_id )
-  {
-    AssertThat( physical_behavior->clone()->id(), Equals( physical_behavior->id() ) );
-  }
-
-  It( registers_itself_as_a_component )
-  {
-    AssertThat( &object->components.component<yarrr::PhysicalBehavior>(), Equals( physical_behavior.get() ) );
+    test::assert_that_it_is_a_synchronizable_behavior< yarrr::PhysicalBehavior >();
   }
 
   It( exposes_writable_physical_parameters )
@@ -71,11 +64,6 @@ Describe( a_physical_behavior )
     AssertThat( other_physical_behavior.physical_parameters, !Equals( physical_behavior->physical_parameters ) );
   }
 
-  It( is_registered_to_entity_factory )
-  {
-    AssertThat( yarrr::EntityFactory::is_registered( yarrr::PhysicalBehavior::ctci ), Equals( true ) );
-  }
-
   It( can_be_serialized_and_deserialized )
   {
     yarrr::Data serialized_physical_behavior( physical_behavior->serialize() );
@@ -103,8 +91,12 @@ Describe( graphical_behaviors )
   void SetUp()
   {
     object.reset( new yarrr::Object() );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShapeBehavior() ) );
 
     physical_behavior.register_to( *object );
+
+    shape_graphics.reset( new yarrr::ShapeGraphics() );
+    shape_graphics->register_to( *object );
 
     ship_graphics.reset( new yarrr::ShipGraphics() );
     ship_graphics->register_to( *object );
@@ -116,17 +108,11 @@ Describe( graphical_behaviors )
     graphical_engine->last_focused_to = physical_behavior.physical_parameters.coordinate + yarrr::Coordinate( 10, 10 );
   }
 
-  It( clones_the_id )
+  It( behaves_like_a_decent_synchronizable_behavior )
   {
-    AssertThat( laser_graphics->clone()->id(), Equals( laser_graphics->id() ) );
-    AssertThat( ship_graphics->clone()->id(), Equals( ship_graphics->id() ) );
-  }
-
-
-  It( is_registered_to_entity_factory )
-  {
-    AssertThat( yarrr::EntityFactory::is_registered( yarrr::ShipGraphics::ctci ), Equals( true ) );
-    AssertThat( yarrr::EntityFactory::is_registered( yarrr::LaserGraphics::ctci ), Equals( true ) );
+    test::assert_that_it_is_a_synchronizable_behavior< yarrr::ShapeGraphics >();
+    test::assert_that_it_is_a_synchronizable_behavior< yarrr::LaserGraphics>();
+    test::assert_that_it_is_a_synchronizable_behavior< yarrr::ShipGraphics>();
   }
 
   It( focuses_the_engine_to_the_object_if_it_receives_focus_on_object_event )
@@ -151,9 +137,17 @@ Describe( graphical_behaviors )
     AssertThat( graphical_engine->last_drawn_laser, Equals( physical_behavior.physical_parameters ) );
   }
 
+  It( draws_object_with_shape )
+  {
+    AssertThat( graphical_engine->last_drawn_object_with_shape, !Equals( object.get() ) );
+    shape_graphics->draw();
+    AssertThat( graphical_engine->last_drawn_object_with_shape, Equals( object.get() ) );
+  }
+
   test::GraphicalEngine* graphical_engine;
   yarrr::PhysicalBehavior physical_behavior;
 
+  std::unique_ptr< yarrr::ShapeGraphics > shape_graphics;
   std::unique_ptr< yarrr::ShipGraphics > ship_graphics;
   std::unique_ptr< yarrr::LaserGraphics > laser_graphics;
   yarrr::Object::Pointer object;

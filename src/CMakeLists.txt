@@ -22,6 +22,7 @@ set(SOURCE_FILES
   object_creator.cpp
   item.cpp
   shape.cpp
+  shape_behavior.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

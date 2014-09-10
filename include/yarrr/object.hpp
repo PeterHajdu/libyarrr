@@ -47,7 +47,7 @@ class ObjectBehavior : public Entity
     Object* m_object;
 
   private:
-    virtual void do_register_to( Object& ) = 0;
+    virtual void do_register_to( Object& ) {}
     virtual void do_serialize( Serializer& serializer ) const override final;
     virtual void do_deserialize( Deserializer& deserializer ) override final;
 

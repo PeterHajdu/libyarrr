@@ -8,6 +8,7 @@
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
+#include "test_synchronizable_behavior.hpp"
 #include "test_services.hpp"
 #include "test_item.hpp"
 
@@ -24,14 +25,9 @@ Describe( an_invenory )
     item.reset( new test::TestItem() );
   }
 
-  It( clones_the_id )
+  It( is_synchronizable )
   {
-    AssertThat( inventory->clone()->id(), Equals( inventory->id() ) );
-  }
-
-  It( registers_itsef_as_a_component )
-  {
-    AssertThat( object->components.has_component< yarrr::Inventory >(), Equals( true ) );
+    test::assert_that_it_is_a_synchronizable_behavior< yarrr::Inventory >();
   }
 
   It( lets_items_register_themselves )

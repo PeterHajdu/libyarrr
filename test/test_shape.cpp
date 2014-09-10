@@ -47,6 +47,37 @@ Describe(a_shape)
     AssertThat( shape->tiles().back(), Equals( *a_tile ) );
   }
 
+  Describe( shape_equality )
+  {
+    It( has_to_have_the_same_amount_of_tiles )
+    {
+      yarrr::Shape a;
+      yarrr::Shape b;
+
+      AssertThat( a, Equals( b ) );
+      a.add_tile( yarrr::Tile( { 0, 0 }, { 1, 1 } ) );
+
+      AssertThat( a, !Equals( b ) );
+    }
+
+    It( has_to_have_the_same_tiles )
+    {
+      yarrr::Shape a;
+      yarrr::Shape b;
+
+      a.add_tile( yarrr::Tile( { 0, 0 }, { 1, 1 } ) );
+      b.add_tile( yarrr::Tile( { 0, 0 }, { 1, 1 } ) );
+
+      AssertThat( a, Equals( b ) );
+
+      a.add_tile( yarrr::Tile( { 3, 3 }, { 4, 4 } ) );
+      b.add_tile( yarrr::Tile( { 5, 5 }, { 9, 9 } ) );
+
+      AssertThat( a, !Equals( b ) );
+    }
+
+  };
+
   std::unique_ptr< yarrr::Tile > a_tile;
   std::unique_ptr< yarrr::Shape > shape;
 };

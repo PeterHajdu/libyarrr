@@ -99,6 +99,20 @@ class GraphicalBehavior :
   private:
     void handle_focus_on_object( const FocusOnObject& );
     virtual void do_register_to( Object& ) override;
+    virtual void register_graphical_behavior_to( Object& ) {};
+};
+
+class ShapeGraphics : public GraphicalBehavior
+{
+  public:
+    add_polymorphic_ctci( "yarrr_shape_graphics" );
+    ShapeGraphics() = default;
+    ShapeGraphics( const Id& id );
+    virtual void draw() const;
+    Pointer clone() const;
+
+  private:
+    virtual void register_graphical_behavior_to( Object& ) override;
 };
 
 class ShipGraphics : public GraphicalBehavior

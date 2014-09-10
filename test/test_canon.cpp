@@ -1,4 +1,5 @@
 #include "test_services.hpp"
+#include "test_synchronizable_behavior.hpp"
 #include <yarrr/canon.hpp>
 #include <yarrr/inventory.hpp>
 #include <yarrr/object.hpp>
@@ -54,10 +55,9 @@ Describe( a_canon )
     AssertThat( canon.name(), Equals( "canon" ) );
   }
 
-  It( clones_the_id )
+  It( is_synchronizable )
   {
-    yarrr::Canon canon;
-    AssertThat( canon.clone()->id(), Equals( canon.id() ) );
+    test::assert_that_it_is_a_synchronizable_behavior< yarrr::Canon >();
   }
 
   It( creates_objects_only_for_fire_command )

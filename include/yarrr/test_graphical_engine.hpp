@@ -11,6 +11,12 @@ class GraphicalEngine : public yarrr::GraphicalEngine
 {
   public:
 
+    const yarrr::Object* last_drawn_object_with_shape{ nullptr };
+    virtual void draw_object_with_shape( const yarrr::Object& object ) override
+    {
+      last_drawn_object_with_shape = &object;
+    }
+
     yarrr::PhysicalParameters last_drawn_ship;
     virtual void draw_ship( const yarrr::PhysicalParameters& parameters ) override
     {
