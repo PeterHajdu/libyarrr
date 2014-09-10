@@ -33,5 +33,24 @@ namespace yarrr
     return huplons_to_metres_in_place( coordinate_in_huplons );
   }
 
+  inline int16_t hiplon_to_degrees( Angle hiplon )
+  {
+    return hiplon >> 2;
+  }
+
+  inline double hiplon_to_radians( Angle hiplon )
+  {
+    return hiplon_to_degrees( hiplon ) / 180.0 * 3.14;
+  }
+}
+
+constexpr int64_t operator "" _metres( unsigned long long int metre )
+{
+  return metre << 2;
+}
+
+constexpr int16_t operator "" _degrees( unsigned long long int deg )
+{
+  return deg << 2;
 }
 

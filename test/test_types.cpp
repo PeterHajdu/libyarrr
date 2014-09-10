@@ -25,3 +25,35 @@ Describe(a_coordinate)
   yarrr::Coordinate test_coordinate;
 };
 
+Describe( converter_literals )
+{
+
+  Describe( distance_literals )
+  {
+
+    It( converts_metres_to_huplons )
+    {
+      AssertThat( 10_metres, Equals( 40 ) );
+    }
+
+  };
+
+  Describe( angle_literals )
+  {
+
+    It( converts_to_and_from_degrees )
+    {
+      AssertThat( 10_degrees, Equals( 40 ) );
+      AssertThat( yarrr::hiplon_to_degrees( 40 ), Equals( 10 ) );
+    }
+
+
+    It( converts_to_radians )
+    {
+      AssertThat( yarrr::hiplon_to_radians( 40 ), EqualsWithDelta( 0.174532925, 0.0001 ) );
+    }
+
+  };
+
+};
+
