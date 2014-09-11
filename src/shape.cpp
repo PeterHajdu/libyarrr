@@ -25,8 +25,8 @@ yarrr::Coordinate
 Tile::calculate_center() const
 {
   return {
-    ( bottom_right.x + top_left.x + 1 ) * 0.5 * unit_length,
-    ( top_left.y + bottom_right.y + 1 ) * 0.5 * unit_length };
+    static_cast< int64_t >( ( bottom_right.x + top_left.x + 1 ) * 0.5 * unit_length ),
+    static_cast< int64_t >( ( top_left.y + bottom_right.y + 1 ) * 0.5 * unit_length ) };
 }
 
 void
@@ -136,8 +136,8 @@ rotate_with( Polygon& polygon, Angle angle )
   for ( auto& point : polygon )
   {
     Coordinate new_coordinate{
-      point.x * cos_angle - point.y * sin_angle,
-      point.x * sin_angle + point.y * cos_angle };
+      static_cast< int64_t >( point.x * cos_angle - point.y * sin_angle ),
+      static_cast< int64_t >( point.x * sin_angle + point.y * cos_angle ) };
     point = new_coordinate;
   }
 }
