@@ -27,7 +27,6 @@ class LootGraphics : public yarrr::GraphicalBehavior
 
     virtual void draw() const
     {
-      m_graphical_engine.draw_loot( m_physical_behavior->physical_parameters );
     }
 
     yarrr::ObjectBehavior::Pointer clone() const
