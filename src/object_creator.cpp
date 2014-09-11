@@ -82,14 +82,16 @@ create_ship()
   ship->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new LootDropper() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new Engine() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new ShipGraphics() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new Canon() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer ) ) );
   ship->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 100 ) ) );
   ship->add_behavior( ObjectBehavior::Pointer( new RespawnWhenDestroyed() ) );
 
   ShapeBehavior* shape( new ShapeBehavior() );
-  shape->shape.add_tile( Tile{ { 0, 0 }, { 1, 0 } } );
+  //todo: should some kind of meta magic
+  shape->shape.add_tile( Tile{ { -1, 0 }, { 2, 0 } } );
+  shape->shape.add_tile( Tile{ { 0, 1 }, { 0, 1 } } );
+  shape->shape.add_tile( Tile{ { 0, -1 }, { 0, -1 } } );
   ship->add_behavior( ObjectBehavior::Pointer( shape ) );
 
   ship->add_behavior( ObjectBehavior::Pointer( new ShapeGraphics() ) );

@@ -98,9 +98,6 @@ Describe( graphical_behaviors )
     shape_graphics.reset( new yarrr::ShapeGraphics() );
     shape_graphics->register_to( *object );
 
-    ship_graphics.reset( new yarrr::ShipGraphics() );
-    ship_graphics->register_to( *object );
-
     laser_graphics.reset( new yarrr::LaserGraphics() );
     laser_graphics->register_to( *object );
 
@@ -112,7 +109,6 @@ Describe( graphical_behaviors )
   {
     test::assert_that_it_is_a_synchronizable_behavior< yarrr::ShapeGraphics >();
     test::assert_that_it_is_a_synchronizable_behavior< yarrr::LaserGraphics>();
-    test::assert_that_it_is_a_synchronizable_behavior< yarrr::ShipGraphics>();
   }
 
   It( focuses_the_engine_to_the_object_if_it_receives_focus_on_object_event )
@@ -120,14 +116,6 @@ Describe( graphical_behaviors )
     AssertThat( graphical_engine->last_focused_to, !Equals( physical_behavior.physical_parameters.coordinate ) );
     object->dispatcher.dispatch( yarrr::FocusOnObject() );
     AssertThat( graphical_engine->last_focused_to, Equals( physical_behavior.physical_parameters.coordinate ) );
-  }
-
-
-  It( draws_a_ship_with_the_physical_parameters_of_the_object )
-  {
-    AssertThat( graphical_engine->last_drawn_ship, !Equals( physical_behavior.physical_parameters ) );
-    ship_graphics->draw();
-    AssertThat( graphical_engine->last_drawn_ship, Equals( physical_behavior.physical_parameters ) );
   }
 
   It( draws_a_laser_with_the_physical_parameters_of_the_object )
@@ -148,7 +136,6 @@ Describe( graphical_behaviors )
   yarrr::PhysicalBehavior physical_behavior;
 
   std::unique_ptr< yarrr::ShapeGraphics > shape_graphics;
-  std::unique_ptr< yarrr::ShipGraphics > ship_graphics;
   std::unique_ptr< yarrr::LaserGraphics > laser_graphics;
   yarrr::Object::Pointer object;
 };

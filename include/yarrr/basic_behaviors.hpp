@@ -115,16 +115,6 @@ class ShapeGraphics : public GraphicalBehavior
     virtual void register_graphical_behavior_to( Object& ) override;
 };
 
-class ShipGraphics : public GraphicalBehavior
-{
-  public:
-    add_polymorphic_ctci( "yarrr_ship_graphics" );
-    ShipGraphics() = default;
-    ShipGraphics( const Id& id );
-    virtual void draw() const;
-    Pointer clone() const;
-};
-
 class LaserGraphics : public GraphicalBehavior
 {
   public:

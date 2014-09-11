@@ -2,6 +2,7 @@
 
 #include <yarrr/graphical_engine.hpp>
 #include <yarrr/physical_parameters.hpp>
+#include <yarrr/basic_behaviors.hpp>
 #include <numeric>
 
 namespace test
@@ -17,21 +18,13 @@ class GraphicalEngine : public yarrr::GraphicalEngine
       last_drawn_object_with_shape = &object;
     }
 
-    yarrr::PhysicalParameters last_drawn_ship;
-    virtual void draw_ship( const yarrr::PhysicalParameters& parameters ) override
-    {
-      last_drawn_ship = parameters;
-    }
-
     yarrr::PhysicalParameters last_drawn_laser;
     virtual void draw_laser( const yarrr::PhysicalParameters& parameters ) override
     {
       last_drawn_laser = parameters;
     }
 
-
     virtual void draw_loot( const yarrr::PhysicalParameters& parameters ) override {}
-
 
     yarrr::PhysicalParameters last_drawn_particle;
     uint64_t age_of_last_drawn_particle;

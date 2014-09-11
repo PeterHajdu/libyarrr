@@ -18,7 +18,6 @@ namespace
 {
   yarrr::AutoEntityRegister< yarrr::Engine > auto_engine_register;
   yarrr::AutoEntityRegister< yarrr::PhysicalBehavior > auto_physical_behavior_register;
-  yarrr::AutoEntityRegister< yarrr::ShipGraphics > auto_ship_graphics_register;
   yarrr::AutoEntityRegister< yarrr::LaserGraphics > auto_laser_graphics_register;
   yarrr::AutoEntityRegister< yarrr::ShapeGraphics > auto_shape_graphics_register;
 
@@ -191,24 +190,6 @@ GraphicalBehavior::handle_focus_on_object( const FocusOnObject& )
 {
   assert( m_physical_behavior );
   m_graphical_engine.focus_to( m_physical_behavior->physical_parameters.coordinate );
-}
-
-ShipGraphics::ShipGraphics( const Id& id )
-  : GraphicalBehavior( id )
-{
-}
-
-void
-ShipGraphics::draw() const
-{
-  assert( m_physical_behavior );
-  m_graphical_engine.draw_ship( m_physical_behavior->physical_parameters );
-}
-
-ObjectBehavior::Pointer
-ShipGraphics::clone() const
-{
-  return Pointer( new ShipGraphics( id() ) );
 }
 
 LaserGraphics::LaserGraphics( const Id& id )

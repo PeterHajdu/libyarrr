@@ -9,7 +9,6 @@ class DummyGraphicalEngine : public yarrr::GraphicalEngine
   public:
     virtual void draw_particle( const PhysicalParameters&, uint64_t ) override {}
     virtual void draw_object_with_shape( const Object& ) override {}
-    virtual void draw_ship( const yarrr::PhysicalParameters& ) override {}
     virtual void draw_laser( const yarrr::PhysicalParameters& ) override {}
     virtual void draw_loot( const PhysicalParameters& ) override {}
     virtual void print_text( uint16_t, uint16_t, const std::string&, const yarrr::Colour& ) {}

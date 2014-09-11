@@ -29,11 +29,6 @@ Describe( ship_creator )
     AssertThat( object->components.has_component< yarrr::Engine >(), Equals( true ) );
   }
 
-  It ( creates_objects_with_ship_graphics )
-  {
-    AssertThat( object->components.has_component< yarrr::ShipGraphics >(), Equals( true ) );
-  }
-
   It ( creates_objects_with_a_canon )
   {
     AssertThat( object->components.has_component< yarrr::Canon >(), Equals( true ) );
