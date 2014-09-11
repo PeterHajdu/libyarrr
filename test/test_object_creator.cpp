@@ -167,6 +167,12 @@ Describe( loot_creator )
     AssertThat( object->components.has_component< yarrr::SelfDestructor >(), Equals( true ) );
   }
 
+  It ( creates_objects_with_shape_graphics_with_at_least_one_tile )
+  {
+    AssertThat( object->components.has_component< yarrr::ShapeGraphics >(), Equals( true ) );
+    AssertThat( yarrr::component_of< yarrr::ShapeBehavior >( *object ).shape.tiles().size(), !Equals( 0u ) );
+  }
+
   yarrr::PhysicalParameters loots_physical_parameters;
   yarrr::Canon canon;
   yarrr::Object::Pointer object;

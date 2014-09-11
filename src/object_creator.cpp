@@ -15,28 +15,6 @@
 namespace
 {
 
-class LootGraphics : public yarrr::GraphicalBehavior
-{
-  public:
-    add_polymorphic_ctci( "yarrr_loot_graphics" );
-    LootGraphics() = default;
-    LootGraphics( const yarrr::ObjectBehavior::Id& id )
-      : GraphicalBehavior( id )
-    {
-    }
-
-    virtual void draw() const
-    {
-    }
-
-    yarrr::ObjectBehavior::Pointer clone() const
-    {
-      return yarrr::ObjectBehavior::Pointer( new LootGraphics( id() ) );
-    }
-};
-
-yarrr::AutoEntityRegister< LootGraphics > auto_loot_graphics_register;
-
 const int laser_speed{ 1000 };
 
 std::random_device random_device;
@@ -62,12 +40,17 @@ create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& i
   loot->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
   loot->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior( new_physical_parameters ) ) );
   loot->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::loot_layer ) ) );
-  loot->add_behavior( ObjectBehavior::Pointer( new LootGraphics() ) );
   loot->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
   loot->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 30 ) ) );
   loot->add_behavior( ObjectBehavior::Pointer( new LootAttacher() ) );
   loot->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( loot->id, 36000000u ) ) );
   loot->add_behavior( item.clone() );
+
+  ShapeBehavior* shape( new ShapeBehavior() );
+  //todo: should this be the wreck?
+  shape->shape.add_tile( Tile{ { 0, 0 }, { 0, 0 } } );
+  loot->add_behavior( ObjectBehavior::Pointer( shape ) );
+  loot->add_behavior( ObjectBehavior::Pointer( new ShapeGraphics() ) );
 
   return loot;
 }
