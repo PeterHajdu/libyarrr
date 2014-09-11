@@ -26,7 +26,9 @@ ShapeBehavior::ShapeBehavior( const Id& id )
 ObjectBehavior::Pointer
 ShapeBehavior::clone() const
 {
-  return Pointer( new ShapeBehavior( id() ) );
+  ShapeBehavior* clone( new ShapeBehavior( id() ) );
+  clone->shape = shape;
+  return Pointer( clone );
 }
 
 void

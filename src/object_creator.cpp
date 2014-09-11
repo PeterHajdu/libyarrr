@@ -87,7 +87,11 @@ create_ship()
   ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer ) ) );
   ship->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 100 ) ) );
   ship->add_behavior( ObjectBehavior::Pointer( new RespawnWhenDestroyed() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new ShapeBehavior() ) );
+
+  ShapeBehavior* shape( new ShapeBehavior() );
+  shape->shape.add_tile( Tile{ { 0, 0 }, { 1, 0 } } );
+  ship->add_behavior( ObjectBehavior::Pointer( shape ) );
+
   ship->add_behavior( ObjectBehavior::Pointer( new ShapeGraphics() ) );
   return ship;
 }

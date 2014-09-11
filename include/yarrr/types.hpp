@@ -40,7 +40,7 @@ namespace yarrr
 
   inline double hiplon_to_radians( Angle hiplon )
   {
-    return hiplon_to_degrees( hiplon ) / 180.0 * 3.14;
+    return hiplon_to_degrees( hiplon ) / 180.0 * 3.14159265359;
   }
 }
 

@@ -21,6 +21,12 @@ Describe( a_shape_behavior )
     test::assert_that_it_is_a_synchronizable_behavior< yarrr::ShapeBehavior >();
   }
 
+  It( clones_the_same_shape )
+  {
+    yarrr::ObjectBehavior::Pointer clone( shape_behavior->clone() );
+    AssertThat( static_cast< const yarrr::ShapeBehavior& >( *clone ).shape, Equals( shape_behavior->shape ) );
+  }
+
   It( serializes_and_deserializes_the_same_shape )
   {
     const yarrr::Data serialized_data( shape_behavior->serialize() );

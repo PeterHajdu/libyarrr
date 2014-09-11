@@ -1,7 +1,6 @@
 #include <yarrr/particle.hpp>
 #include <thectci/service_registry.hpp>
 #include <cmath>
-#include <iostream>
 
 namespace
 {
