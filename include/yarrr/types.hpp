@@ -12,10 +12,9 @@ namespace yarrr
   typedef Vector<int64_t> Velocity;
   typedef int16_t Angle;
 
-  //one huplon is the quarter of one metre
   inline Coordinate& metres_to_huplons_in_place( Coordinate& coordinate_in_metres )
   {
-    return coordinate_in_metres<<=2;
+    return coordinate_in_metres<<=8;
   }
 
   inline Coordinate metres_to_huplons( Coordinate coordinate_in_metres )
@@ -23,15 +22,21 @@ namespace yarrr
     return metres_to_huplons_in_place( coordinate_in_metres );
   }
 
+  inline Coordinate::type huplons_to_metres( const Coordinate::type& huplons )
+  {
+    return huplons>>8;
+  }
+
   inline Coordinate& huplons_to_metres_in_place( Coordinate& coordinate_in_huplons )
   {
-    return coordinate_in_huplons>>=2;
+    return coordinate_in_huplons>>=8;
   }
 
   inline Coordinate huplons_to_metres( Coordinate coordinate_in_huplons )
   {
     return huplons_to_metres_in_place( coordinate_in_huplons );
   }
+
 
   inline int16_t hiplon_to_degrees( Angle hiplon )
   {
@@ -46,7 +51,7 @@ namespace yarrr
 
 constexpr int64_t operator "" _metres( unsigned long long int metre )
 {
-  return metre << 2;
+  return metre << 8;
 }
 
 constexpr int16_t operator "" _degrees( unsigned long long int deg )

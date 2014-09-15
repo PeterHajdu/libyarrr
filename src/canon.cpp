@@ -73,7 +73,7 @@ PhysicalParameters
 Canon::generate_physical_parameters() const
 {
   PhysicalParameters new_parameters( *m_physical_parameters );
-  const yarrr::Coordinate difference( perpendicular( heading( new_parameters, 50 ) ) );
+  const yarrr::Coordinate difference( perpendicular( heading( new_parameters, 5_metres ) ) );
   const int left_or_right( m_index % 2 ? -1 : 1 );
   new_parameters.coordinate += difference * m_index * left_or_right * 0.5;
   return new_parameters;

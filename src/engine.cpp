@@ -10,7 +10,7 @@
 
 namespace
 {
-  const size_t particle_speed_deviation{ 50 };
+  const size_t particle_speed_deviation{ 12_metres };
 }
 
 namespace yarrr
@@ -81,7 +81,7 @@ Engine::handle_command( const yarrr::Command& command )
 void
 Engine::handle_timer_update( const yarrr::TimerUpdate& update ) const
 {
-  const Coordinate parallel( heading( *m_physical_parameters, 70 ) );
+  const Coordinate parallel( heading( *m_physical_parameters, 15_metres ) );
 
   if ( m_thruster.is_active_at( update.timestamp ) )
   {

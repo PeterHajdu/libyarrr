@@ -15,7 +15,7 @@
 namespace
 {
 
-const int laser_speed{ 1000 };
+const int laser_speed{ 100_metres };
 
 std::random_device random_device;
 std::default_random_engine random_engine( random_device() );
@@ -87,7 +87,7 @@ create_laser( const PhysicalParameters& laser_parameters )
   std::unique_ptr< PhysicalBehavior > physical_behavior( new PhysicalBehavior( laser_parameters ) );
   physical_behavior->physical_parameters.angular_velocity = 0;
   physical_behavior->physical_parameters.velocity += heading( laser_parameters, laser_speed );
-  physical_behavior->physical_parameters.coordinate += heading( laser_parameters, 100 );
+  physical_behavior->physical_parameters.coordinate += heading( laser_parameters, 10_metres );
   laser->add_behavior( ObjectBehavior::Pointer( physical_behavior.release() ) );
   laser->add_behavior( ObjectBehavior::Pointer( new LaserGraphics() ) );
   laser->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::laser_layer ) ) );

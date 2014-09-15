@@ -64,7 +64,7 @@ Collider::is_collider_too_far( const Collider& other ) const
       m_physical_behavior->physical_parameters.coordinate -
       other.m_physical_behavior->physical_parameters.coordinate );
 
-  const Coordinate close_enough( 40, 40 );
+  const Coordinate close_enough( 5_metres, 5_metres );
   if ( length_square( coordinate_difference ) > length_square( close_enough ) )
   {
     return true;

@@ -7,8 +7,8 @@
 
 namespace
 {
-  const int back_engine_power{ 12 };
-  const int cw_engine_power{ 30 };
+  const int64_t back_engine_power{ 5_metres };
+  const int64_t cw_engine_power{ 8_degrees };
 }
 
 namespace yarrr
