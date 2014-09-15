@@ -38,7 +38,7 @@ bool operator==( const PhysicalParameters& l, const PhysicalParameters& r )
 void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParameters& physical_parameters )
 {
   const the::time::Difference delta( timestamp - physical_parameters.timestamp );
-  const float ratio( delta * 1.0 / the::time::Clock::ticks_per_second );
+  const float ratio( delta * 0.5 / the::time::Clock::ticks_per_second );
   physical_parameters.coordinate+=physical_parameters.velocity * ratio;
   physical_parameters.orientation+=physical_parameters.angular_velocity * ratio;
   physical_parameters.timestamp = timestamp;
@@ -46,11 +46,9 @@ void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParamet
 
 
 Coordinate
-heading( const PhysicalParameters& parameters, int multiplier )
+heading( const PhysicalParameters& parameters, int length )
 {
-  return Coordinate(
-      cos( (parameters.orientation >> 2) * 3.14 / 180.0 ) * multiplier,
-      sin( (parameters.orientation >> 2) * 3.14 / 180.0 ) * multiplier );
+  return vector_with< Coordinate::type >( parameters.orientation, length );
 }
 
 

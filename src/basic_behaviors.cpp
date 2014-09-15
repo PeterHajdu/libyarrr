@@ -9,14 +9,13 @@
 #include <yarrr/collider.hpp>
 #include <yarrr/shape_behavior.hpp>
 #include <yarrr/destruction_handlers.hpp>
-#include <yarrr/engine.hpp>
+#include <yarrr/thruster.hpp>
 #include <yarrr/canon.hpp>
 
 #include <thectci/service_registry.hpp>
 
 namespace
 {
-  yarrr::AutoEntityRegister< yarrr::Engine > auto_engine_register;
   yarrr::AutoEntityRegister< yarrr::PhysicalBehavior > auto_physical_behavior_register;
   yarrr::AutoEntityRegister< yarrr::LaserGraphics > auto_laser_graphics_register;
   yarrr::AutoEntityRegister< yarrr::ShapeGraphics > auto_shape_graphics_register;

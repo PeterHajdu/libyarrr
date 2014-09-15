@@ -3,7 +3,7 @@
 #include <yarrr/inventory.hpp>
 #include <yarrr/canon.hpp>
 #include <yarrr/basic_behaviors.hpp>
-#include <yarrr/engine.hpp>
+#include <yarrr/thruster.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/collider.hpp>
 #include <yarrr/destruction_handlers.hpp>
@@ -15,7 +15,7 @@
 namespace
 {
 
-const int laser_speed{ 100_metres };
+const int laser_speed{ 400_metres };
 
 std::random_device random_device;
 std::default_random_engine random_engine( random_device() );
@@ -62,12 +62,6 @@ create_ship()
   Object::Pointer ship( new Object() );
   ship->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new LootDropper() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new Engine() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new Canon() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer ) ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 100 ) ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new RespawnWhenDestroyed() ) );
 
   ShapeBehavior* shape( new ShapeBehavior() );
   //todo: should some kind of meta magic
@@ -75,6 +69,33 @@ create_ship()
   shape->shape.add_tile( Tile{ { 0, 1 }, { 0, 1 } } );
   shape->shape.add_tile( Tile{ { 0, -1 }, { 0, -1 } } );
   ship->add_behavior( ObjectBehavior::Pointer( shape ) );
+
+  const Coordinate main_thruster_relative_to_center_of_mass(
+      Coordinate{ -5_metres, Tile::unit_length / 2 } - shape->shape.center_of_mass() );
+
+  ship->add_behavior( ObjectBehavior::Pointer( new Thruster(
+          Command::main_thruster,
+          main_thruster_relative_to_center_of_mass,
+          180_degrees ) ) );
+
+  const Coordinate front_thrusters_relative_to_center_of_mass(
+      Coordinate{ 15_metres, Tile::unit_length / 2 } - shape->shape.center_of_mass() );
+
+  ship->add_behavior( ObjectBehavior::Pointer( new Thruster(
+          Command::port_thruster,
+          front_thrusters_relative_to_center_of_mass,
+          45_degrees ) ) );
+
+  ship->add_behavior( ObjectBehavior::Pointer( new Thruster(
+          Command::starboard_thruster,
+          front_thrusters_relative_to_center_of_mass,
+          -45_degrees ) ) );
+
+  ship->add_behavior( ObjectBehavior::Pointer( new Canon() ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer ) ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 100 ) ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new LootDropper() ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new RespawnWhenDestroyed() ) );
 
   ship->add_behavior( ObjectBehavior::Pointer( new ShapeGraphics() ) );
   return ship;

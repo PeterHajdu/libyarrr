@@ -26,6 +26,17 @@ class Tile final
     int calculate_mass() const;
 };
 
+Coordinate relative_to_absolute(
+    const Coordinate& relative_coordinate,
+    const Coordinate& center_of_mass_relative,
+    const Coordinate& center_of_object_absolute,
+    const Angle& orientation_of_object );
+
+Coordinate center_of_mass_relative_to_absolute(
+    const Coordinate& relative_to_center_of_mass_coordinate,
+    const Coordinate& center_of_object_absolute,
+    const Angle& orientation_of_object );
+
 Polygon shape_coordinate_polygon_from( const Tile& );
 
 void transform_coordinates_to_new_origo( Polygon&, const Coordinate& new_origo );
@@ -49,14 +60,17 @@ class Shape
     void add_tile( const Tile& );
     const TileContainer& tiles() const;
 
+    int mass() const;
     const Coordinate& center_of_mass() const;
+
     Shape& operator=( const Shape& other );
 
   private:
-    void calculate_center_of_mass();
+    void calculate_center_of_mass_and_mass();
 
     TileContainer m_tiles;
     Coordinate m_center_of_mass;
+    int m_mass;
 };
 
 bool operator==( const Shape& l, const Shape& r );

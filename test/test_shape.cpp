@@ -115,6 +115,37 @@ Describe(a_polygon)
   }
 };
 
+Describe(relative_coordinate)
+{
+  It( can_be_transformed_to_absolute_coordinate )
+  {
+    const yarrr::Coordinate absolute_coordinate(
+        yarrr::relative_to_absolute(
+          relative_coordinate,
+          center_of_mass_relative,
+          center_of_object_absolute,
+          orientation_of_object ) );
+
+    AssertThat( absolute_coordinate, Equals( yarrr::Coordinate( 100_metres, 105_metres ) ) );
+  }
+
+  It( can_be_transformed_to_absolute_coordinate_from_center_of_mass_relative_coordinate )
+  {
+    const yarrr::Coordinate absolute_coordinate(
+        yarrr::center_of_mass_relative_to_absolute(
+          relative_coordinate,
+          center_of_object_absolute,
+          orientation_of_object ) );
+
+    AssertThat( absolute_coordinate, Equals( yarrr::Coordinate( 100_metres, 110_metres ) ) );
+  }
+
+  const yarrr::Coordinate relative_coordinate{ -10_metres, 0 };
+  const yarrr::Coordinate center_of_mass_relative{ -5_metres, 0 };
+  const yarrr::Coordinate center_of_object_absolute{ 100_metres, 100_metres };
+  const yarrr::Angle orientation_of_object{ -90_degrees };
+};
+
 Describe(a_shape)
 {
   void SetUp()
@@ -143,6 +174,29 @@ Describe(a_shape)
     AssertThat( new_shape, Equals( *shape ) );
   }
 
+  Describe( mass_calculation )
+  {
+    void SetUp()
+    {
+      shape.reset( new yarrr::Shape() );
+      shape->add_tile( a_tile );
+    }
+
+    It( is_the_mass_of_the_tile_in_case_of_single_tile_shape )
+    {
+      AssertThat( shape->mass(), Equals( a_tile.mass ) );
+    }
+
+    It( is_the_sum_mass_of_all_tiles_in_case_of_a_multi_tile_shape )
+    {
+      shape->add_tile( another_tile );
+      AssertThat( shape->mass(), Equals( a_tile.mass + another_tile.mass ) );
+    }
+
+    const yarrr::Tile a_tile{ { 1, 4 }, { 3, 1 } };
+    const yarrr::Tile another_tile{ { 1, 1 }, { 2, 0 } };
+    std::unique_ptr< yarrr::Shape > shape;
+  };
 
   Describe( shape_equality )
   {

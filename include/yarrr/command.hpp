@@ -14,9 +14,9 @@ class Command : public Entity
     typedef uint32_t Type;
     enum : Type
     {
-      thruster = 1,
-      cw = 2,
-      ccw = 3,
+      main_thruster = 1,
+      port_thruster = 2,
+      starboard_thruster = 3,
       fire = 4
     };
 

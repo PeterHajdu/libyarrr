@@ -24,13 +24,13 @@ ShipControl::handle_command( const Command& command )
   yarrr::travel_in_time_to( command.timestamp(), m_physical_parameters );
   switch( command.type() )
   {
-    case Command::thruster :
+    case Command::main_thruster :
       thruster();
       break;
-    case Command::cw :
+    case Command::port_thruster :
       spin( cw_engine_power );
       break;
-    case Command::ccw :
+    case Command::starboard_thruster :
       spin( -cw_engine_power );
       break;
   }

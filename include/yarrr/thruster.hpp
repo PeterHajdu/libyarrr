@@ -2,17 +2,17 @@
 
 #include <yarrr/particle.hpp>
 #include <yarrr/object.hpp>
+#include <yarrr/command.hpp>
 #include <thectci/id.hpp>
 
 namespace yarrr
 {
 
-class Command;
-class ShipControl;
 class PhysicalParameters;
 class TimerUpdate;
 class Serializer;
 class Deserializer;
+class Shape;
 
 class Jet
 {
@@ -33,14 +33,19 @@ class Jet
     the::time::Time m_active_until;
 };
 
-class Engine : public ObjectBehavior
+class Thruster : public ObjectBehavior
 {
   public:
-    add_polymorphic_ctci( "yarrr_engine" );
+    add_polymorphic_ctci( "yarrr_thruster" );
 
-    Engine();
-    Engine( const Engine& );
-    virtual ~Engine();
+    Thruster();
+    Thruster(
+        Command::Type activation_command,
+        const Coordinate& relative_coordinate,
+        Angle direction );
+
+    Thruster( const Thruster& );
+    virtual ~Thruster();
 
 
     virtual Pointer clone() const override;
@@ -51,16 +56,19 @@ class Engine : public ObjectBehavior
     virtual void serialize_behavior( Serializer& serializer ) const;
     virtual void deserialize_behavior( Deserializer& deserializer );
 
+    void apply_forces();
     void handle_command( const yarrr::Command& );
     void handle_timer_update( const yarrr::TimerUpdate& ) const;
 
-    std::unique_ptr< ShipControl > m_ship_control;
     PhysicalParameters* m_physical_parameters;
+    Shape* m_shape;
     const ParticleSource m_particle_source;
 
-    Jet m_thruster;
-    Jet m_cw_jet;
-    Jet m_ccw_jet;
+    Jet m_jet;
+    Command::Type m_activation_command;
+    Coordinate m_relative_coordinate;
+    Coordinate m_normalized_relative_coordinate;
+    Angle m_direction;
 };
 
 }

@@ -1,14 +1,21 @@
 #include <igloo/igloo_alt.h>
 #include <yarrr/vector.hpp>
+#include <yarrr/types.hpp>
 
 #include <sstream>
 
 using namespace igloo;
 
-typedef yarrr::Vector<int> Vector;
+typedef yarrr::Vector<int64_t> Vector;
 
 Describe(a_vector)
 {
+  It(can_be_created_with_angle_and_length)
+  {
+    const Vector created( yarrr::vector_with<int64_t>( 90_degrees, 100 ) );
+    AssertThat( created, Equals( Vector{ 0, 100 } ) );
+  }
+
   It(has_a_constructor)
   {
     const Vector vector_with_constructor( 1, 2 );
@@ -85,6 +92,29 @@ Describe(a_vector)
   It(has_length_operation)
   {
     AssertThat( yarrr::length_of( a ), Equals( 100 ) );
+  }
+
+  It(can_be_rotated)
+  {
+    Vector v{ 100, 0 };
+    yarrr::rotate( v, 90_degrees );
+    AssertThat( v, Equals( Vector{ 0, 100 } ) );
+  }
+
+  It(has_dot_product)
+  {
+    AssertThat( yarrr::dot_product( a, b ), Equals( 100 * 200 + 10 * 20 ) );
+  }
+
+  It(has_cross_product)
+  {
+    AssertThat( yarrr::z_of_cross_product( a, b ), Equals( 100 * 20 - 10 * 200 ) );
+  }
+
+  It(can_be_normalized)
+  {
+    AssertThat( yarrr::normalize( Vector{ 1234, 0 } ), Equals( Vector{ 1_metres, 0 } ) );
+    AssertThat( yarrr::normalize( Vector{ 0, 123453 } ), Equals( Vector{ 0, 1_metres } ) );
   }
 
   const Vector a{ 100, 10 };

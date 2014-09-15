@@ -2,7 +2,7 @@
 #include <yarrr/inventory.hpp>
 #include <yarrr/canon.hpp>
 #include <yarrr/basic_behaviors.hpp>
-#include <yarrr/engine.hpp>
+#include <yarrr/thruster.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/collider.hpp>
 #include <yarrr/destruction_handlers.hpp>
@@ -24,9 +24,9 @@ Describe( ship_creator )
     AssertThat( object->components.has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
   }
 
-  It ( creates_objects_with_an_engine )
+  It ( creates_objects_with_a_thruster )
   {
-    AssertThat( object->components.has_component< yarrr::Engine >(), Equals( true ) );
+    AssertThat( object->components.has_component< yarrr::Thruster >(), Equals( true ) );
   }
 
   It ( creates_objects_with_a_canon )

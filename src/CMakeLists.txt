@@ -5,7 +5,6 @@ set(SOURCE_FILES
   entity.cpp
   command.cpp
   chat_message.cpp
-  ship_control.cpp
   entity_factory.cpp
   delete_object.cpp
   object.cpp
@@ -15,7 +14,7 @@ set(SOURCE_FILES
   collider.cpp
   destruction_handlers.cpp
   particle.cpp
-  engine.cpp
+  thruster.cpp
   clock_sync_catcher.cpp
   inventory.cpp
   canon.cpp

@@ -13,7 +13,6 @@ set(TEST_SOURCE_FILES
     test_entity.cpp
     test_command.cpp
     test_chat_message.cpp
-    test_ship_control.cpp
     test_entity_factory.cpp
     test_callback.cpp
     test_types.cpp
@@ -21,7 +20,7 @@ set(TEST_SOURCE_FILES
     test_object.cpp
     test_connection_wrapper.cpp
     test_basic_behaviors.cpp
-    test_engine.cpp
+    test_thruster.cpp
     test_graphical_engine.cpp
     test_object_container.cpp
     test_engine_dispatcher.cpp
@@ -37,6 +36,7 @@ set(TEST_SOURCE_FILES
     test_item.cpp
     test_shape.cpp
     test_shape_behavior.cpp
+    test_remote_object.cpp
     )
 
 

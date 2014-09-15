@@ -1,5 +1,6 @@
 #include "test_events.hpp"
 #include "test_behavior.hpp"
+#include "test_remote_object.hpp"
 #include <yarrr/object.hpp>
 #include <yarrr/object_creator.hpp>
 #include <yarrr/entity.hpp>
@@ -237,9 +238,7 @@ Describe( ship_synchronization_procedure )
     original_object = yarrr::create_ship();
     original_inventory = &yarrr::component_of< yarrr::Inventory >( *original_object );
 
-    auto object_update( original_object->generate_update() );
-
-    synchronized_object = object_update->create_object();
+    synchronized_object = test::create_remote_object_from( *original_object );
     synchronized_inventory = &yarrr::component_of< yarrr::Inventory >( *synchronized_object );
 
     number_of_initial_items = original_inventory->items().size();

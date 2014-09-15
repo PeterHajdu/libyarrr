@@ -5,7 +5,6 @@
 #include <yarrr/test_graphical_engine.hpp>
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
-#include <yarrr/engine.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/command.hpp>
 #include <yarrr/object_container.hpp>

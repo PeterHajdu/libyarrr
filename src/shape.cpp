@@ -33,7 +33,7 @@ void
 Shape::add_tile( const Tile& tile )
 {
   m_tiles.emplace_back( tile );
-  calculate_center_of_mass();
+  calculate_center_of_mass_and_mass();
 }
 
 bool
@@ -53,7 +53,14 @@ operator!=( const Tile& l, const Tile& r )
 
 Shape::Shape()
   : m_center_of_mass{ 0, 0 }
+  , m_mass{ 0 }
 {
+}
+
+int
+Shape::mass() const
+{
+  return m_mass;
 }
 
 const Shape::TileContainer&
@@ -92,15 +99,17 @@ Shape::center_of_mass() const
 
 
 void
-Shape::calculate_center_of_mass()
+Shape::calculate_center_of_mass_and_mass()
 {
-  size_t running_mass{ 0 };
+  int running_mass{ 0 };
   for ( const auto& tile : m_tiles )
   {
-    const size_t new_mass{ running_mass + tile.mass };
+    const int new_mass{ running_mass + tile.mass };
     m_center_of_mass = ( m_center_of_mass * running_mass + tile.center * tile.mass ) * ( 1.0 / new_mass );
     running_mass = new_mass;
   }
+
+  m_mass = running_mass;
 }
 
 Polygon
@@ -130,15 +139,9 @@ transform_coordinates_to_new_origo( Polygon& polygon , const Coordinate& origo )
 void
 rotate_with( Polygon& polygon, Angle angle )
 {
-  const double angle_in_rad( hiplon_to_radians( angle ) );
-  const double cos_angle( cos( angle_in_rad ) );
-  const double sin_angle( sin( angle_in_rad ) );
   for ( auto& point : polygon )
   {
-    Coordinate new_coordinate{
-      static_cast< int64_t >( point.x * cos_angle - point.y * sin_angle ),
-      static_cast< int64_t >( point.x * sin_angle + point.y * cos_angle ) };
-    point = new_coordinate;
+    rotate( point, angle );
   }
 }
 
@@ -164,6 +167,31 @@ Shape::operator=( const Shape& other )
     add_tile( tile );
   }
   return *this;
+}
+
+Coordinate
+relative_to_absolute(
+    const Coordinate& relative_coordinate,
+    const Coordinate& center_of_mass_relative,
+    const Coordinate& center_of_object_absolute,
+    const Angle& orientation_of_object )
+{
+  return center_of_mass_relative_to_absolute(
+      relative_coordinate - center_of_mass_relative,
+      center_of_object_absolute,
+      orientation_of_object );
+}
+
+Coordinate
+center_of_mass_relative_to_absolute(
+    const Coordinate& relative_to_center_of_mass_coordinate,
+    const Coordinate& center_of_object_absolute,
+    const Angle& orientation_of_object )
+{
+  Coordinate absolute_coordinate( relative_to_center_of_mass_coordinate );
+  rotate( absolute_coordinate, orientation_of_object );
+  absolute_coordinate += center_of_object_absolute;
+  return absolute_coordinate;
 }
 
 }

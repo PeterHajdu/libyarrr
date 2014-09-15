@@ -62,7 +62,7 @@ Describe( a_canon )
 
   It( creates_objects_only_for_fire_command )
   {
-    object->dispatcher.dispatch( yarrr::Command( yarrr::Command::cw, 0 ) );
+    object->dispatcher.dispatch( yarrr::Command( yarrr::Command::main_thruster, 0 ) );
     AssertThat( was_canon_fired, Equals( false ) );
   }
 
