@@ -15,7 +15,7 @@
 namespace
 {
 
-const int laser_speed{ 400_metres };
+const int laser_speed{ 200_metres };
 
 std::random_device random_device;
 std::default_random_engine random_engine( random_device() );

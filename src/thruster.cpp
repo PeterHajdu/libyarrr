@@ -12,7 +12,7 @@
 
 namespace
 {
-  const size_t particle_speed_deviation{ 12_metres };
+  const size_t particle_speed_deviation{ 6_metres };
   yarrr::AutoEntityRegister< yarrr::Thruster > auto_thruster_register;
 
   const yarrr::Coordinate
@@ -152,7 +152,7 @@ Thruster::handle_timer_update( const yarrr::TimerUpdate& update ) const
       m_physical_parameters->timestamp,
       thruster_coordinate,
       //todo: calculate velocity of a given point ( add velocity from rotation... )
-      m_physical_parameters->velocity + vector_with<int64_t>( direction, 100_metres ) );
+      m_physical_parameters->velocity + vector_with<int64_t>( direction, 25_metres ) );
 }
 
 void
