@@ -19,11 +19,17 @@ const int laser_speed{ 400_metres };
 
 std::random_device random_device;
 std::default_random_engine random_engine( random_device() );
-std::uniform_int_distribution<int> distribution{ -75_metres, 75_metres };
+std::uniform_int_distribution<int> velocity_distribution{ -75_metres, 75_metres };
+std::uniform_int_distribution<int> angular_velocity_distribution{ -500_degrees, +500_degrees };
 
-void add_random_velocity_to( yarrr::PhysicalParameters& physical_parameters )
+void add_random_parameters( yarrr::PhysicalParameters& physical_parameters )
 {
-  physical_parameters.velocity += yarrr::Coordinate( distribution( random_engine ), distribution( random_engine ) );
+  physical_parameters.velocity += yarrr::Coordinate(
+      velocity_distribution( random_engine ),
+      velocity_distribution( random_engine ) );
+
+  physical_parameters.angular_velocity +=
+    angular_velocity_distribution( random_engine );
 }
 
 }
@@ -35,7 +41,7 @@ namespace yarrr
 Object::Pointer
 create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& item )
 {
-  add_random_velocity_to( new_physical_parameters );
+  add_random_parameters( new_physical_parameters );
   Object::Pointer loot( new Object() );
   loot->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
   loot->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior( new_physical_parameters ) ) );
@@ -85,12 +91,12 @@ create_ship()
   ship->add_behavior( ObjectBehavior::Pointer( new Thruster(
           Command::port_thruster,
           front_thrusters_relative_to_center_of_mass,
-          45_degrees ) ) );
+          90_degrees ) ) );
 
   ship->add_behavior( ObjectBehavior::Pointer( new Thruster(
           Command::starboard_thruster,
           front_thrusters_relative_to_center_of_mass,
-          -45_degrees ) ) );
+          -90_degrees ) ) );
 
   ship->add_behavior( ObjectBehavior::Pointer( new Canon() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer ) ) );
