@@ -3,8 +3,10 @@
 #include "test_synchronizable_behavior.hpp"
 #include "test_remote_object.hpp"
 #include <yarrr/object.hpp>
+#include <yarrr/item.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/shape_behavior.hpp>
+#include <yarrr/inventory.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/command.hpp>
 #include <yarrr/entity_factory.hpp>
@@ -27,6 +29,7 @@ Describe( a_thruster )
     yarrr::Object::Pointer object( new yarrr::Object() );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior.release() ) );
     object->add_behavior( yarrr::ShapeBehavior::Pointer( new yarrr::ShapeBehavior() ) );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
     shape = &yarrr::component_of< yarrr::ShapeBehavior>( *object ).shape;
     return object;
   }
@@ -58,6 +61,12 @@ Describe( a_thruster )
   void activate_thruster_on( yarrr::Object& object )
   {
     object.dispatcher.dispatch( yarrr::Command( activation_command, 0 ) );
+  }
+
+  It( is_an_item )
+  {
+    yarrr::Item& thruster_as_item( static_cast< yarrr::Item& >( *thruster ) );
+    (void) thruster_as_item;
   }
 
   It( is_synchronizable )

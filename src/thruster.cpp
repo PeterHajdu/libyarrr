@@ -24,13 +24,14 @@ namespace
         yarrr::normalize( original );
   }
 
+  const char * thruster_name = "thruster";
 }
 
 namespace yarrr
 {
 
 Thruster::Thruster()
-  : ObjectBehavior( synchronize )
+  : Item( thruster_name )
   , m_physical_parameters( nullptr )
   , m_shape( nullptr )
   , m_particle_source( particle_speed_deviation )
@@ -42,7 +43,7 @@ Thruster::Thruster(
     Command::Type activation_command,
     const Coordinate& relative_coordinate,
     Angle direction )
-  : ObjectBehavior( synchronize )
+  : Item( thruster_name )
   , m_physical_parameters( nullptr )
   , m_shape( nullptr )
   , m_particle_source( particle_speed_deviation )
@@ -54,7 +55,7 @@ Thruster::Thruster(
 }
 
 Thruster::Thruster( const Thruster& other )
-  : ObjectBehavior( synchronize, other.m_id )
+  : Item( other.m_id, thruster_name )
   , m_physical_parameters( nullptr )
   , m_shape( nullptr )
   , m_particle_source( particle_speed_deviation )
@@ -71,7 +72,7 @@ Thruster::~Thruster()
 }
 
 void
-Thruster::do_register_to( Object& owner )
+Thruster::register_item_to( Object& owner )
 {
   m_shape = &owner.components.component< ShapeBehavior >().shape;
   m_physical_parameters = &owner.components.component< PhysicalBehavior >().physical_parameters;
@@ -79,7 +80,6 @@ Thruster::do_register_to( Object& owner )
       std::bind( &Thruster::handle_command, this, std::placeholders::_1 ) );
   owner.dispatcher.register_listener< TimerUpdate  >(
       std::bind( &Thruster::handle_timer_update, this, std::placeholders::_1 ) );
-
   m_normalized_relative_coordinate = normalize_relative_coordinate( m_relative_coordinate );
 }
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <yarrr/particle.hpp>
-#include <yarrr/object.hpp>
+#include <yarrr/item.hpp>
 #include <yarrr/command.hpp>
 #include <thectci/id.hpp>
 
@@ -33,7 +33,7 @@ class Jet
     the::time::Time m_active_until;
 };
 
-class Thruster : public ObjectBehavior
+class Thruster : public Item
 {
   public:
     add_polymorphic_ctci( "yarrr_thruster" );
@@ -52,7 +52,7 @@ class Thruster : public ObjectBehavior
     virtual void update( const ObjectBehavior& ) override;
 
   private:
-    virtual void do_register_to( Object& ) override;
+    virtual void register_item_to( Object& ) override;
     virtual void serialize_behavior( Serializer& serializer ) const;
     virtual void deserialize_behavior( Deserializer& deserializer );
 

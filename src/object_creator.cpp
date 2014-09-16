@@ -19,7 +19,7 @@ const int laser_speed{ 400_metres };
 
 std::random_device random_device;
 std::default_random_engine random_engine( random_device() );
-std::uniform_int_distribution<int> distribution{ -300, 300 };
+std::uniform_int_distribution<int> distribution{ -75_metres, 75_metres };
 
 void add_random_velocity_to( yarrr::PhysicalParameters& physical_parameters )
 {
@@ -44,13 +44,14 @@ create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& i
   loot->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 30 ) ) );
   loot->add_behavior( ObjectBehavior::Pointer( new LootAttacher() ) );
   loot->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( loot->id, 36000000u ) ) );
-  loot->add_behavior( item.clone() );
 
   ShapeBehavior* shape( new ShapeBehavior() );
   //todo: should this be the wreck?
   shape->shape.add_tile( Tile{ { 0, 0 }, { 0, 0 } } );
   loot->add_behavior( ObjectBehavior::Pointer( shape ) );
   loot->add_behavior( ObjectBehavior::Pointer( new ShapeGraphics() ) );
+
+  loot->add_behavior( item.clone() );
 
   return loot;
 }
