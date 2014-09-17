@@ -70,19 +70,9 @@ ShapeBehavior::deserialize_behavior( Deserializer& deserializer )
 Tile
 ShapeBehavior::deserialize_tile( Deserializer& deserializer ) const
 {
-  int16_t x;
-  int16_t y;
-  x = deserializer.pop_front< int16_t >();
-  y = deserializer.pop_front< int16_t >();
-
-  const Tile::Coordinate top_left( x, y );
-
-  x = deserializer.pop_front< int16_t >();
-  y = deserializer.pop_front< int16_t >();
-
-  const Tile::Coordinate bottom_right( x, y );
-
-  return Tile{ top_left, bottom_right };
+  return Tile{
+    deserialize_coordinate( deserializer ),
+    deserialize_coordinate( deserializer ) };
 }
 
 Tile::Coordinate
