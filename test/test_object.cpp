@@ -309,5 +309,30 @@ Describe( behavior_synchronization )
         } );
   }
 
+  Describe( object_in_synchronization_situation )
+  {
+
+    It( should_be_able_to_force_full_synchronization )
+    {
+      yarrr::Object object;
+      test::NthSynchronizedBehavior* behavior( new test::NthSynchronizedBehavior( 2 ) );
+      object.add_behavior( yarrr::ObjectBehavior::Pointer( behavior ) );
+      AssertThat( behavior->should_synchronize(), Equals( true ) );
+      object.force_full_synchronization();
+      AssertThat( behavior->should_synchronize(), Equals( true ) );
+    }
+
+    It( should_force_full_synchronization_if_a_new_behavior_is_added )
+    {
+      yarrr::Object object;
+      test::NthSynchronizedBehavior* behavior( new test::NthSynchronizedBehavior( 2 ) );
+      object.add_behavior( yarrr::ObjectBehavior::Pointer( behavior ) );
+      AssertThat( behavior->should_synchronize(), Equals( true ) );
+      object.add_behavior( yarrr::ObjectBehavior::Pointer( new test::NthSynchronizedBehavior( 2 ) ) );
+      AssertThat( behavior->should_synchronize(), Equals( true ) );
+    }
+
+  };
+
 };
 

@@ -91,6 +91,7 @@ class Object final
 
     void add_behavior( ObjectBehavior::Pointer&& behavior );
     void update_behavior( ObjectBehavior::Pointer&& behavior );
+    void force_full_synchronization();
 
     std::unique_ptr< ObjectUpdate > generate_update() const;
 

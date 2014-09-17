@@ -18,12 +18,12 @@ namespace yarrr
 {
 
 Inventory::Inventory()
-  : ObjectBehavior( always_synchronize() )
+  : ObjectBehavior( rarely_synchronize() )
 {
 }
 
 Inventory::Inventory( const Id& id )
-  : ObjectBehavior( always_synchronize(), id )
+  : ObjectBehavior( rarely_synchronize(), id )
 {
 }
 

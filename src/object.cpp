@@ -114,6 +114,7 @@ Object::add_behavior( ObjectBehavior::Pointer&& behavior )
 {
   behavior->register_to( *this );
   m_behaviors.emplace_back( std::move( behavior ) );
+  force_full_synchronization();
 }
 
 
@@ -137,6 +138,14 @@ Object::update_behavior( ObjectBehavior::Pointer&& updater_behavior )
   (*found_behavior)->update( *updater_behavior );
 }
 
+void
+Object::force_full_synchronization()
+{
+  for ( auto& behavior : m_behaviors )
+  {
+    behavior->force_synchronization();
+  }
+}
 
 ObjectUpdate::Pointer
 Object::generate_update() const
