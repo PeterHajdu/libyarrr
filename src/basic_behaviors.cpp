@@ -36,19 +36,19 @@ namespace yarrr
 {
 
 PhysicalBehavior::PhysicalBehavior()
-  : ObjectBehavior( synchronize )
+  : ObjectBehavior( always_synchronize() )
   , physical_parameters( zero_parameters() )
 {
 }
 
 PhysicalBehavior::PhysicalBehavior( const PhysicalParameters& physical_parameters )
-  : ObjectBehavior( synchronize )
+  : ObjectBehavior( always_synchronize() )
   , physical_parameters( physical_parameters )
 {
 }
 
 PhysicalBehavior::PhysicalBehavior( const PhysicalParameters& physical_parameters, const Id& id )
-  : ObjectBehavior( synchronize, id )
+  : ObjectBehavior( always_synchronize(), id )
   , physical_parameters( physical_parameters )
 {
 }
@@ -120,7 +120,7 @@ PhysicalBehavior::clone() const
 SelfDestructor::SelfDestructor(
     Object::Id object_id,
     const the::time::Time& lifespan )
-: ObjectBehavior( do_not_synchronize )
+: ObjectBehavior( do_not_synchronize() )
 , m_lifespan( lifespan )
 , m_object_id( object_id )
 , m_time_to_die( 0u )
@@ -162,14 +162,14 @@ SelfDestructor::clone() const
 
 
 GraphicalBehavior::GraphicalBehavior()
-  : ObjectBehavior( synchronize )
+  : ObjectBehavior( rarely_synchronize() )
   , yarrr::GraphicalObject( the::ctci::service< yarrr::GraphicalEngine >() )
   , m_physical_behavior( nullptr )
 {
 }
 
 GraphicalBehavior::GraphicalBehavior( const Id& id )
-  : ObjectBehavior( synchronize, id )
+  : ObjectBehavior( rarely_synchronize(), id )
   , yarrr::GraphicalObject( the::ctci::service< yarrr::GraphicalEngine >() )
   , m_physical_behavior( nullptr )
 {

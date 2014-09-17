@@ -14,7 +14,7 @@ namespace
     yarrr::BehaviorContainer cloned_container;
     for( const auto& behavior : behaviors )
     {
-      if ( !behavior->should_synchronize )
+      if ( !behavior->should_synchronize() )
       {
         continue;
       }
@@ -36,17 +36,19 @@ namespace
 namespace yarrr
 {
 
-ObjectBehavior::ObjectBehavior( ShouldSynchronize should_synchronize )
-  : should_synchronize( should_synchronize )
-  , m_id( generate_next_behavior_id() )
+ObjectBehavior::ObjectBehavior( int synchronization_period )
+  : m_id( generate_next_behavior_id() )
   , m_object( nullptr )
+  , m_synchronization_period( synchronization_period )
+  , m_synchronization_index( 0 )
 {
 }
 
-ObjectBehavior::ObjectBehavior( ShouldSynchronize should_synchronize, const Id& id )
-  : should_synchronize( should_synchronize )
-  , m_id( id )
+ObjectBehavior::ObjectBehavior( int synchronization_period, const Id& id )
+  : m_id( id )
   , m_object( nullptr )
+  , m_synchronization_period( synchronization_period )
+  , m_synchronization_index( 0 )
 {
 }
 
@@ -76,6 +78,25 @@ ObjectBehavior::do_deserialize( Deserializer& deserializer )
 {
   m_id = deserializer.pop_front< Id >();
   deserialize_behavior( deserializer );
+}
+
+void
+ObjectBehavior::force_synchronization()
+{
+  m_synchronization_index = 0;
+}
+
+bool
+ObjectBehavior::should_synchronize()
+{
+  if ( m_synchronization_period == do_not_synchronize() )
+  {
+    return false;
+  }
+
+  const bool should_synchronize( 0 == m_synchronization_index % m_synchronization_period );
+  ++m_synchronization_index;
+  return should_synchronize;
 }
 
 Object::Object()

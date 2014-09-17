@@ -8,8 +8,8 @@ namespace yarrr
 class Item : public ObjectBehavior
 {
   public:
-    Item( const std::string& name );
-    Item( const Id& id, const std::string& name );
+    Item( int synchronization_period, const std::string& name );
+    Item( int synchronization_period, const Id& id, const std::string& name );
     virtual ~Item() = default;
     const std::string& name() const;
 

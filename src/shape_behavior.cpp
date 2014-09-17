@@ -13,12 +13,12 @@ namespace yarrr
 {
 
 ShapeBehavior::ShapeBehavior()
-  : ObjectBehavior( synchronize )
+  : ObjectBehavior( rarely_synchronize() )
 {
 }
 
 ShapeBehavior::ShapeBehavior( const Id& id )
-  : ObjectBehavior( synchronize, id )
+  : ObjectBehavior( rarely_synchronize() , id )
 {
 }
 

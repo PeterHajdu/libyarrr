@@ -9,6 +9,7 @@
 #include <yarrr/canon.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
+#include <thetime/timer.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
@@ -206,6 +207,7 @@ Describe( an_object_update )
     object_update->update_object( *object );
     for ( const auto& behavior : test_behaviors )
     {
+      AssertThat( behavior->was_updated(), Equals( true ) );
       AssertThat( behavior->updated_with->id(), Equals( behavior->id() ) );
     }
   }
@@ -265,5 +267,47 @@ Describe( ship_synchronization_procedure )
 
   yarrr::Object::Pointer synchronized_object;
   yarrr::Inventory* synchronized_inventory;
+};
+
+
+Describe( behavior_synchronization )
+{
+  It( should_always_synchronize_behaviors_marked_so )
+  {
+    typedef test::Behavior AlwaysSynchronizingBehavior;
+    AlwaysSynchronizingBehavior behavior;
+    10_times( [ &behavior ]() {
+        AssertThat( behavior.should_synchronize(), Equals( true ) ); } );
+  }
+
+  It( should_never_synchronize_behaviors_marked_so )
+  {
+    test::NonSynchronizableBehavior behavior;
+    10_times( [ &behavior ]() {
+        AssertThat( behavior.should_synchronize(), Equals( false ) ); } );
+  }
+
+  It( should_synchronize_every_nth_of_a_periodically_synchronized_behavior )
+  {
+    test::NthSynchronizedBehavior behavior( 2 );
+    10_times( [ &behavior ]() {
+        AssertThat( behavior.should_synchronize(), Equals( true ) );
+        AssertThat( behavior.should_synchronize(), Equals( false ) );
+        } );
+  }
+
+  It( should_synchronize_when_forced )
+  {
+    test::NthSynchronizedBehavior behavior( 2 );
+
+    AssertThat( behavior.should_synchronize(), Equals( true ) );
+    behavior.force_synchronization();
+
+    10_times( [ &behavior ]() {
+        AssertThat( behavior.should_synchronize(), Equals( true ) );
+        AssertThat( behavior.should_synchronize(), Equals( false ) );
+        } );
+  }
+
 };
 

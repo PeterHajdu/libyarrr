@@ -15,6 +15,26 @@ namespace yarrr
 
 class Object;
 
+constexpr inline int synchronize_nth( int i )
+{
+  return i;
+}
+
+constexpr inline int rarely_synchronize()
+{
+  return 10;
+}
+
+constexpr inline int always_synchronize()
+{
+  return 1;
+}
+
+constexpr inline int do_not_synchronize()
+{
+  return 0;
+}
+
 class ObjectBehavior : public Entity
 {
   public:
@@ -23,24 +43,20 @@ class ObjectBehavior : public Entity
 
     typedef uint64_t Id;
 
-    enum ShouldSynchronize : bool
-    {
-      synchronize = true,
-      do_not_synchronize = false
-    };
-
-    ObjectBehavior( ShouldSynchronize );
-    ObjectBehavior( ShouldSynchronize, const Id& id );
+    ObjectBehavior( int synchronization_period );
+    ObjectBehavior( int synchronization_period, const Id& id );
 
     const Id& id() const;
 
-    const ShouldSynchronize should_synchronize;
     void register_to( Object& );
 
     virtual ~ObjectBehavior() = default;
     virtual Pointer clone() const = 0;
 
     virtual void update( const ObjectBehavior& ) {}
+
+    void force_synchronization();
+    bool should_synchronize();
 
   protected:
     Id m_id;
@@ -53,6 +69,9 @@ class ObjectBehavior : public Entity
 
     virtual void serialize_behavior( Serializer& serializer ) const {};
     virtual void deserialize_behavior( Deserializer& deserializer ) {};
+
+    const int m_synchronization_period;
+    int m_synchronization_index;
 };
 
 typedef std::vector< ObjectBehavior::Pointer > BehaviorContainer;

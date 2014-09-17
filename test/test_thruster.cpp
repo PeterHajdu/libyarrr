@@ -188,7 +188,7 @@ Describe( a_thruster )
 
   It( serializes_and_deserializes_jet_states )
   {
-    object->dispatcher.dispatch( yarrr::Command( activation_command, 0 ) );
+    activate_thruster_on( *object );
     yarrr::Data serialized_thruster( thruster->clone()->serialize() );
     yarrr::Thruster deserialized_thruster;
     deserialized_thruster.deserialize( serialized_thruster );
@@ -198,6 +198,14 @@ Describe( a_thruster )
     thruster->update( deserialized_thruster );
     another_object->dispatcher.dispatch( yarrr::TimerUpdate( 0 ) );
     AssertThat( particle_factory->was_particle_created, Equals( true ) );
+  }
+
+  It( synchronizes_only_rarely_and_if_something_happens )
+  {
+    AssertThat( thruster->should_synchronize(), Equals( true ) );
+    AssertThat( thruster->should_synchronize(), Equals( false ) );
+    activate_thruster_on( *object );
+    AssertThat( thruster->should_synchronize(), Equals( true ) );
   }
 
   test::ParticleFactory* particle_factory;

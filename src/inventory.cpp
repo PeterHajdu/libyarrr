@@ -18,12 +18,12 @@ namespace yarrr
 {
 
 Inventory::Inventory()
-  : ObjectBehavior( synchronize )
+  : ObjectBehavior(  rarely_synchronize() )
 {
 }
 
 Inventory::Inventory( const Id& id )
-  : ObjectBehavior( synchronize, id )
+  : ObjectBehavior( rarely_synchronize(), id )
 {
 }
 
@@ -51,7 +51,7 @@ Inventory::items() const
 }
 
 LootDropper::LootDropper()
-  : ObjectBehavior( do_not_synchronize )
+  : ObjectBehavior( do_not_synchronize() )
   , m_owner_parameters( nullptr )
   , m_inventory( nullptr )
 {
@@ -83,7 +83,7 @@ LootDropper::clone() const
 }
 
 LootAttacher::LootAttacher()
-  : ObjectBehavior( do_not_synchronize )
+  : ObjectBehavior( do_not_synchronize() )
   , m_inventory( nullptr )
 {
 }

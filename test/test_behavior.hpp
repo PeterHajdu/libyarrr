@@ -11,14 +11,14 @@ class Behavior : public yarrr::ObjectBehavior
   public:
     add_polymorphic_ctci( "yarrr_another_test_behavior" );
     Behavior( std::function< void() > call_when_deleted = [](){} )
-      : ObjectBehavior( synchronize )
+      : ObjectBehavior( yarrr::always_synchronize() )
       , some_data( id() + 1 )
       , m_call_when_deleted( call_when_deleted )
     {
     }
 
     Behavior( Id id )
-      : ObjectBehavior( synchronize, id )
+      : ObjectBehavior( yarrr::always_synchronize(), id )
       , some_data( id + 1 )
       , m_call_when_deleted( [](){} )
     {
@@ -90,7 +90,7 @@ class NonSynchronizableBehavior : public yarrr::ObjectBehavior
   public:
     add_polymorphic_ctci( "yarrr_nonsynchronizable_behavior" );
     NonSynchronizableBehavior()
-      : ObjectBehavior( do_not_synchronize )
+      : ObjectBehavior( yarrr::do_not_synchronize() )
     {
     }
 
@@ -106,6 +106,21 @@ class NonSynchronizableBehavior : public yarrr::ObjectBehavior
     {
     }
 
+};
+
+class NthSynchronizedBehavior : public yarrr::ObjectBehavior
+{
+  public:
+    add_polymorphic_ctci( "yarrr_nth_synchronized_behavior" );
+    NthSynchronizedBehavior( int n )
+      : ObjectBehavior( n )
+    {
+    }
+
+    virtual yarrr::ObjectBehavior::Pointer clone() const
+    {
+      return Pointer{ nullptr };
+    }
 };
 
 }

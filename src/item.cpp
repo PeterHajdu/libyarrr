@@ -4,14 +4,14 @@
 namespace yarrr
 {
 
-Item::Item( const std::string& name )
-  : ObjectBehavior( synchronize )
+Item::Item( int synchronization_period, const std::string& name )
+  : ObjectBehavior( synchronization_period )
   , m_name( name )
 {
 }
 
-Item::Item( const Id& id, const std::string& name )
-  : ObjectBehavior( synchronize, id )
+Item::Item( int synchronization_period, const Id& id, const std::string& name )
+  : ObjectBehavior( synchronization_period, id )
   , m_name( name )
 {
 }

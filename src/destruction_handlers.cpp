@@ -10,7 +10,7 @@ namespace yarrr
 {
 
 DeleteWhenDestroyed::DeleteWhenDestroyed()
-  : ObjectBehavior( do_not_synchronize )
+  : ObjectBehavior( do_not_synchronize() )
 {
 }
 
@@ -36,7 +36,7 @@ DeleteWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
 
 
 RespawnWhenDestroyed::RespawnWhenDestroyed()
-  : ObjectBehavior( do_not_synchronize )
+  : ObjectBehavior( do_not_synchronize() )
 {
 }
 

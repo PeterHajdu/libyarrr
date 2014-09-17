@@ -9,12 +9,12 @@ class TestItem : public yarrr::Item
     add_polymorphic_ctci( "yarrr_test_item" );
 
     TestItem()
-      : Item( "test item name" )
+      : Item( yarrr::always_synchronize(), "test item name" )
     {
     }
 
     TestItem( const Id& id )
-      : Item( id, "test item name" )
+      : Item( yarrr::always_synchronize(), id, "test item name" )
     {
     }
 

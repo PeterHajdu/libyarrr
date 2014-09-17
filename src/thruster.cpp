@@ -31,7 +31,7 @@ namespace yarrr
 {
 
 Thruster::Thruster()
-  : Item( thruster_name )
+  : Item( rarely_synchronize(), thruster_name )
   , m_physical_parameters( nullptr )
   , m_shape( nullptr )
   , m_particle_source( particle_speed_deviation )
@@ -43,7 +43,7 @@ Thruster::Thruster(
     Command::Type activation_command,
     const Coordinate& relative_coordinate,
     Angle direction )
-  : Item( thruster_name )
+  : Item( rarely_synchronize(), thruster_name )
   , m_physical_parameters( nullptr )
   , m_shape( nullptr )
   , m_particle_source( particle_speed_deviation )
@@ -55,7 +55,7 @@ Thruster::Thruster(
 }
 
 Thruster::Thruster( const Thruster& other )
-  : Item( other.m_id, thruster_name )
+  : Item( rarely_synchronize(), other.m_id, thruster_name )
   , m_physical_parameters( nullptr )
   , m_shape( nullptr )
   , m_particle_source( particle_speed_deviation )
@@ -109,6 +109,7 @@ Thruster::handle_command( const yarrr::Command& command )
 
   m_jet.activate( command.timestamp() );
   apply_forces();
+  force_synchronization();
 }
 
 
