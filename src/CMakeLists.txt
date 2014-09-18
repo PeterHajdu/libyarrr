@@ -8,6 +8,8 @@ set(SOURCE_FILES
   entity_factory.cpp
   delete_object.cpp
   object.cpp
+  object_update.cpp
+  object_behavior.cpp
   object_container.cpp
   basic_behaviors.cpp
   graphical_engine.cpp

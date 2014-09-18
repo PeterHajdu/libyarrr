@@ -1,6 +1,7 @@
 #pragma once
 
 #include <yarrr/object.hpp>
+#include <yarrr/object_update.hpp>
 #include <thectci/dispatcher.hpp>
 
 namespace yarrr

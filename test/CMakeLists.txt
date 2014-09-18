@@ -18,6 +18,8 @@ set(TEST_SOURCE_FILES
     test_types.cpp
     test_delete_object.cpp
     test_object.cpp
+    test_object_update.cpp
+    test_object_behavior.cpp
     test_connection_wrapper.cpp
     test_basic_behaviors.cpp
     test_thruster.cpp

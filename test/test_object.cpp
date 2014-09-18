@@ -2,6 +2,7 @@
 #include "test_behavior.hpp"
 #include "test_remote_object.hpp"
 #include <yarrr/object.hpp>
+#include <yarrr/object_update.hpp>
 #include <yarrr/object_creator.hpp>
 #include <yarrr/entity.hpp>
 #include <yarrr/entity_factory.hpp>
@@ -38,20 +39,25 @@ Describe(an_object)
   void SetUp()
   {
     object.reset( new yarrr::Object() );
-    test_behavior = new test::Behavior();
-    object->add_behavior( yarrr::ObjectBehavior::Pointer( test_behavior ) );
+    rarely_synchronized_behavior = new test::Behavior( yarrr::synchronize_nth( 200 ) );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( rarely_synchronized_behavior ) );
+
+    always_synchronized_behavior = new test::Behavior( yarrr::always_synchronize() );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( always_synchronized_behavior ) );
+
+    not_existing_behavior_id = rarely_synchronized_behavior->id() - 1;
   }
 
   It( registers_behavior )
   {
-    AssertThat( test_behavior->was_registered, Equals( true ) );
+    AssertThat( rarely_synchronized_behavior->was_registered, Equals( true ) );
   }
 
   It( dispatches_events_to_registered_listeners )
   {
     test::Event test_event;
     object->dispatcher.dispatch( test_event );
-    AssertThat( test_behavior->dispatched_event, Equals( &test_event ) );
+    AssertThat( rarely_synchronized_behavior->dispatched_event, Equals( &test_event ) );
   }
 
   It( is_identified_by_its_pointer_if_default_constructed )
@@ -68,170 +74,61 @@ Describe(an_object)
 
   It( can_update_a_behavior )
   {
-    test::Behavior* update_behavior( new test::Behavior( test_behavior->id() ) );
+    test::Behavior* update_behavior( new test::Behavior( rarely_synchronized_behavior->id() ) );
     object->update_behavior( yarrr::ObjectBehavior::Pointer( update_behavior ) );
-    AssertThat( test_behavior->was_updated(), Equals( true ) );
-    AssertThat( test_behavior->updated_with, Equals( update_behavior ) );
+    AssertThat( rarely_synchronized_behavior->was_updated(), Equals( true ) );
+    AssertThat( rarely_synchronized_behavior->updated_with, Equals( update_behavior ) );
   }
 
   It( updates_only_behavior_with_matching_id )
   {
-    const yarrr::ObjectBehavior::Id not_existing_id( test_behavior->id() + 1 );
-    test::Behavior* update_behavior( new test::Behavior( not_existing_id ) );
+    test::Behavior* update_behavior( new test::Behavior( not_existing_behavior_id ) );
     object->update_behavior( yarrr::ObjectBehavior::Pointer( update_behavior ) );
-    AssertThat( test_behavior->was_updated(), Equals( false ) );
+    AssertThat( rarely_synchronized_behavior->was_updated(), Equals( false ) );
   }
 
   It( adds_updating_behavior_if_id_is_unknown )
   {
-    const yarrr::ObjectBehavior::Id not_existing_id( test_behavior->id() + 1 );
-    test::Behavior* new_behavior( new test::Behavior( not_existing_id ) );
+    test::Behavior* new_behavior( new test::Behavior( not_existing_behavior_id ) );
     object->update_behavior( yarrr::ObjectBehavior::Pointer( new_behavior ) );
     AssertThat( new_behavior->was_registered, Equals( true ) );
   }
 
-  yarrr::Object::Pointer object;
-  test::Behavior* test_behavior;
-};
-
-Describe( an_object_behavior )
-{
-  void SetUp()
+  It( generates_object_initializer_as_first_update )
   {
-    object.reset( new yarrr::Object() );
-    test_behavior = new test::Behavior();
-    behavior.reset( test_behavior );
-    behavior->register_to( *object );
-    serialized_data = behavior->serialize();
-    deserialized_behavior.reset( new test::Behavior() );
-    deserialized_behavior->deserialize( serialized_data );
+    yarrr::ObjectUpdate::Pointer update( object->generate_update() );
+    AssertThat( update->polymorphic_ctci(), Equals( yarrr::ObjectInitializer::ctci ) );
   }
 
-  It( registers_child_objects )
+  It( puts_all_behaviors_in_an_object_initializer )
   {
-    AssertThat( test_behavior->was_registered, Equals( true ) );
+    yarrr::ObjectUpdate::Pointer update( object->generate_update() );
+    AssertThat( rarely_synchronized_behavior->was_cloned, Equals( true ) );
+    AssertThat( always_synchronized_behavior->was_cloned, Equals( true ) );
   }
 
-  It( registers_child_as_a_component )
+  It( generates_object_updater_as_second_update )
   {
-    AssertThat( object->components.has_component< test::Behavior >(), Equals( true ) );
-  }
-
-  It( has_an_id )
-  {
-    AssertThat( behavior->id(), IsGreaterThan( 0u ) );
-  }
-
-  It( serializes_and_deserializes_the_same_id )
-  {
-    AssertThat( deserialized_behavior->id(), Equals( behavior->id() ) );
-  }
-
-  It( calls_child_class_serializer_and_deserializer )
-  {
-    AssertThat( deserialized_behavior->some_data, Equals( test_behavior->some_data ) );
-  }
-
-  yarrr::Data serialized_data;
-  yarrr::Object::Pointer object;
-  yarrr::ObjectBehavior::Pointer behavior;
-  test::Behavior* test_behavior;
-
-  std::unique_ptr< test::Behavior > deserialized_behavior;
-};
-
-Describe( an_object_update )
-{
-
-  void serialize_and_deserialize()
-  {
-    yarrr::Data serialized_update( object_update->serialize() );
-    deserialized_entity = yarrr::EntityFactory::create( serialized_update );
-    deserialized_update = static_cast< const yarrr::ObjectUpdate* >( deserialized_entity.get() );
-    recreated_object = deserialized_update->create_object();
-  }
-
-  void add_test_behavior()
-  {
-    test::Behavior* new_behavior( new test::Behavior() );
-    test_behaviors.push_back( new_behavior );
-    object->add_behavior( yarrr::ObjectBehavior::Pointer( new_behavior ) );
-  }
-
-  void SetUp()
-  {
-    assert( yarrr::EntityFactory::is_registered( test::Behavior::ctci ) );
-    object.reset( new yarrr::Object() );
-
-    for ( size_t i( 0 ); i < number_of_behaviors_to_add; ++i )
-    {
-      add_test_behavior();
-    }
-
-    test_entity = object->generate_update();
-    object_update = static_cast< yarrr::ObjectUpdate* >( test_entity.get() );
-    serialize_and_deserialize();
-  }
-
-  It( has_the_same_id_as_the_object )
-  {
-    AssertThat( object_update->id(), Equals( object->id ) );
-  }
-
-  It( is_registered_to_entity_factory )
-  {
-    AssertThat( yarrr::EntityFactory::is_registered( yarrr::ObjectUpdate::ctci ), Equals( true ) );
-  }
-
-  It( serializes_and_deserializes_the_id )
-  {
-    AssertThat( deserialized_update->id(), Equals( object->id ) );
-  }
-
-  It( can_create_new_objects_with_the_same_id )
-  {
-    AssertThat( recreated_object->id, Equals( object->id ) );
-  }
-
-  It( can_create_new_objects_with_the_same_behaviors )
-  {
-    test::Behavior* behavior_spy( new test::Behavior() );
-    recreated_object->add_behavior( yarrr::ObjectBehavior::Pointer( behavior_spy ) );
-    AssertThat(
-        behavior_spy->number_of_test_behavior_registrations,
-        Equals( number_of_behaviors_to_add + 1u ) );
-  }
-
-  It( updates_objects_by_updating_the_contained_behaviors )
-  {
-    object_update->update_object( *object );
-    for ( const auto& behavior : test_behaviors )
-    {
-      AssertThat( behavior->was_updated(), Equals( true ) );
-      AssertThat( behavior->updated_with->id(), Equals( behavior->id() ) );
-    }
-  }
-
-  It( should_not_update_non_synchronizable_behaviors )
-  {
-    test::NonSynchronizableBehavior* nonsynchronizable_behavior(
-        new test::NonSynchronizableBehavior() );
-    object->add_behavior( yarrr::ObjectBehavior::Pointer( nonsynchronizable_behavior ) );
     object->generate_update();
-    AssertThat( nonsynchronizable_behavior->was_cloned, Equals( false ) );
+    yarrr::ObjectUpdate::Pointer update( object->generate_update() );
+    AssertThat( update->polymorphic_ctci(), Equals( yarrr::BasicObjectUpdate::ctci ) );
   }
 
-  yarrr::Object::Pointer recreated_object;
-  yarrr::Entity::Pointer test_entity;
-  yarrr::Entity::Pointer deserialized_entity;
-  const yarrr::ObjectUpdate* deserialized_update;
-  const yarrr::ObjectUpdate* object_update;
+  It( puts_only_behaviors_needing_synchronization_to_the_update )
+  {
+    object->generate_update();
+    rarely_synchronized_behavior->was_cloned = false;
+    always_synchronized_behavior->was_cloned = false;
+    yarrr::ObjectUpdate::Pointer update( object->generate_update() );
+    AssertThat( rarely_synchronized_behavior->was_cloned, Equals( false ) );
+    AssertThat( always_synchronized_behavior->was_cloned, Equals( true ) );
+  }
+
   yarrr::Object::Pointer object;
-
-  const size_t number_of_behaviors_to_add{ 5 };
-  std::vector< const test::Behavior* > test_behaviors;
+  test::Behavior* rarely_synchronized_behavior;
+  test::Behavior* always_synchronized_behavior;
+  yarrr::ObjectBehavior::Id not_existing_behavior_id;
 };
-
 
 Describe( ship_synchronization_procedure )
 {
@@ -269,70 +166,4 @@ Describe( ship_synchronization_procedure )
   yarrr::Inventory* synchronized_inventory;
 };
 
-
-Describe( behavior_synchronization )
-{
-  It( should_always_synchronize_behaviors_marked_so )
-  {
-    typedef test::Behavior AlwaysSynchronizingBehavior;
-    AlwaysSynchronizingBehavior behavior;
-    10_times( [ &behavior ]() {
-        AssertThat( behavior.should_synchronize(), Equals( true ) ); } );
-  }
-
-  It( should_never_synchronize_behaviors_marked_so )
-  {
-    test::NonSynchronizableBehavior behavior;
-    10_times( [ &behavior ]() {
-        AssertThat( behavior.should_synchronize(), Equals( false ) ); } );
-  }
-
-  It( should_synchronize_every_nth_of_a_periodically_synchronized_behavior )
-  {
-    test::NthSynchronizedBehavior behavior( 2 );
-    10_times( [ &behavior ]() {
-        AssertThat( behavior.should_synchronize(), Equals( true ) );
-        AssertThat( behavior.should_synchronize(), Equals( false ) );
-        } );
-  }
-
-  It( should_synchronize_when_forced )
-  {
-    test::NthSynchronizedBehavior behavior( 2 );
-
-    AssertThat( behavior.should_synchronize(), Equals( true ) );
-    behavior.force_synchronization();
-
-    10_times( [ &behavior ]() {
-        AssertThat( behavior.should_synchronize(), Equals( true ) );
-        AssertThat( behavior.should_synchronize(), Equals( false ) );
-        } );
-  }
-
-  Describe( object_in_synchronization_situation )
-  {
-
-    It( should_be_able_to_force_full_synchronization )
-    {
-      yarrr::Object object;
-      test::NthSynchronizedBehavior* behavior( new test::NthSynchronizedBehavior( 2 ) );
-      object.add_behavior( yarrr::ObjectBehavior::Pointer( behavior ) );
-      AssertThat( behavior->should_synchronize(), Equals( true ) );
-      object.force_full_synchronization();
-      AssertThat( behavior->should_synchronize(), Equals( true ) );
-    }
-
-    It( should_force_full_synchronization_if_a_new_behavior_is_added )
-    {
-      yarrr::Object object;
-      test::NthSynchronizedBehavior* behavior( new test::NthSynchronizedBehavior( 2 ) );
-      object.add_behavior( yarrr::ObjectBehavior::Pointer( behavior ) );
-      AssertThat( behavior->should_synchronize(), Equals( true ) );
-      object.add_behavior( yarrr::ObjectBehavior::Pointer( new test::NthSynchronizedBehavior( 2 ) ) );
-      AssertThat( behavior->should_synchronize(), Equals( true ) );
-    }
-
-  };
-
-};
 

@@ -23,6 +23,7 @@ Describe(an_object_container)
 
     test::Behavior* new_behavior(
           new test::Behavior(
+            yarrr::always_synchronize(),
             [ this, id ]()
             {
               deleted_objects.push_back( id );
@@ -116,7 +117,7 @@ Describe(an_object_container)
 
   It( creates_an_object_for_an_object_update_with_new_id )
   {
-    const yarrr::ObjectUpdate dummy_object_update( invalid_id, yarrr::BehaviorContainer() );
+    const yarrr::BasicObjectUpdate dummy_object_update( invalid_id, yarrr::BehaviorContainer() );
     container->handle_object_update( dummy_object_update );
     AssertThat( container->has_object_with_id( invalid_id ), Equals( true ) );
   }

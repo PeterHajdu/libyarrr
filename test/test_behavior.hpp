@@ -10,8 +10,8 @@ class Behavior : public yarrr::ObjectBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_another_test_behavior" );
-    Behavior( std::function< void() > call_when_deleted = [](){} )
-      : ObjectBehavior( yarrr::always_synchronize() )
+    Behavior( int synchronization_period = yarrr::always_synchronize(), std::function< void() > call_when_deleted = [](){} )
+      : ObjectBehavior( synchronization_period )
       , some_data( id() + 1 )
       , m_call_when_deleted( call_when_deleted )
     {
@@ -38,8 +38,10 @@ class Behavior : public yarrr::ObjectBehavior
       m_call_when_deleted();
     }
 
+    mutable bool was_cloned{ false };
     virtual yarrr::ObjectBehavior::Pointer clone() const override
     {
+      was_cloned=true;
       return yarrr::ObjectBehavior::Pointer( new Behavior( id() ) );
     }
 

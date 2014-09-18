@@ -109,7 +109,7 @@ Thruster::handle_command( const yarrr::Command& command )
 
   m_jet.activate( command.timestamp() );
   apply_forces();
-  m_object->force_full_synchronization();
+  force_synchronization();
 }
 
 
