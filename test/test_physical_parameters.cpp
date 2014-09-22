@@ -5,6 +5,17 @@ using namespace igloo;
 
 namespace
 {
+  bool is_normal_angle( const yarrr::Angle& angle )
+  {
+    const bool is_normal_angle( angle > -360_degrees && angle < 360_degrees );
+    if ( !is_normal_angle )
+    {
+      std::cout << "angle: " << angle << std::endl;
+    }
+
+    return is_normal_angle;
+  }
+
   bool are_almost_the_same( const yarrr::PhysicalParameters& l, const yarrr::PhysicalParameters& r )
   {
     const ssize_t allowed_angle_delta( 1 );
@@ -48,6 +59,20 @@ Describe(physical_parameters)
   {
     yarrr::travel_in_time_to( future, physical_parameters );
     AssertThat( physical_parameters.orientation, !Equals( start_angle ) );
+  }
+
+  It(normalizes_orientation)
+  {
+    physical_parameters.orientation = 359_degrees;
+    physical_parameters.angular_velocity = 100_degrees;
+    yarrr::travel_in_time_to( future, physical_parameters );
+    AssertThat( is_normal_angle( physical_parameters.orientation ), Equals( true ) );
+
+    physical_parameters.timestamp = now;
+    physical_parameters.orientation = -359_degrees;
+    physical_parameters.angular_velocity = -100_degrees;
+    yarrr::travel_in_time_to( future, physical_parameters );
+    AssertThat( is_normal_angle( physical_parameters.orientation ), Equals( true ) );
   }
 
   It(moves_more_during_a_longer_period)

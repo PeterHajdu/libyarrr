@@ -3,22 +3,37 @@
 #include <sstream>
 #include <cmath>
 
+namespace
+{
+
+void
+normalize_orientation( yarrr::Angle& angle )
+{
+  angle %= 360_degrees;
+}
+
+}
+
 namespace yarrr
 {
 
 std::ostream& operator<<( std::ostream& output, const PhysicalParameters& physical_parameters )
 {
-  output << "physical_parameters "
-    << physical_parameters.coordinate.x << " "
-    << physical_parameters.coordinate.y << " "
-    << physical_parameters.velocity.x << " "
-    << physical_parameters.velocity.y << " "
-    << physical_parameters.orientation << " "
-    << physical_parameters.angular_velocity << " "
-    << physical_parameters.timestamp << " "
-    << physical_parameters.integrity << " "
-    << "\n";
-
+  output << "physical_parameters:\n"
+    << "  coordinate: "
+    << physical_parameters.coordinate.x << ", "
+    << physical_parameters.coordinate.y << "\n"
+    << "  velocity: "
+    << physical_parameters.velocity.x << ", "
+    << physical_parameters.velocity.y << "\n"
+    << "  orientation: "
+    << physical_parameters.orientation << "\n"
+    << "  angular velocity: "
+    << physical_parameters.angular_velocity << "\n"
+    << "  timestamp: "
+    << physical_parameters.timestamp << "\n"
+    << "  integrity: "
+    << physical_parameters.integrity << std::endl;
   return output;
 }
 
@@ -42,6 +57,8 @@ void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParamet
   physical_parameters.coordinate+=physical_parameters.velocity * ratio;
   physical_parameters.orientation+=physical_parameters.angular_velocity * ratio;
   physical_parameters.timestamp = timestamp;
+
+  normalize_orientation( physical_parameters.orientation );
 }
 
 
