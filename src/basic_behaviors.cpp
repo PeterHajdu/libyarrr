@@ -73,13 +73,9 @@ PhysicalBehavior::update( const ObjectBehavior& behavior )
 {
   const PhysicalBehavior& update( static_cast< const PhysicalBehavior& >( behavior ) );
   PhysicalParameters network_parameters( update.physical_parameters );
-  //todo: move to physical parameters to a function with a ratio parameter
   travel_in_time_to( physical_parameters.timestamp, network_parameters );
-  physical_parameters.coordinate = ( network_parameters.coordinate + physical_parameters.coordinate ) * 0.5;
-  physical_parameters.velocity = ( network_parameters.velocity + physical_parameters.velocity ) * 0.5;
-  physical_parameters.orientation = ( network_parameters.orientation + physical_parameters.orientation ) * 0.5;
-  physical_parameters.angular_velocity = ( network_parameters.angular_velocity + physical_parameters.angular_velocity ) * 0.5;
   physical_parameters.integrity = network_parameters.integrity;
+  physical_parameters = weight_arithmetic_mean( physical_parameters, network_parameters, 0.9 );
 }
 
 void

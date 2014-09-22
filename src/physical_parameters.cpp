@@ -51,6 +51,21 @@ heading( const PhysicalParameters& parameters, int length )
   return vector_with< Coordinate::type >( parameters.orientation, length );
 }
 
+PhysicalParameters
+weight_arithmetic_mean(
+    const PhysicalParameters& l,
+    const PhysicalParameters& r,
+    double ratio )
+{
+  PhysicalParameters average( l );
+
+  average.coordinate = l.coordinate * ratio + r.coordinate * ( 1 - ratio );
+  average.velocity = l.velocity * ratio + r.velocity * ( 1 - ratio );
+  average.orientation = l.orientation * ratio + r.orientation * ( 1 - ratio );
+  average.angular_velocity = l.angular_velocity * ratio + r.angular_velocity * ( 1 - ratio );
+
+  return average;
+}
 
 }
 

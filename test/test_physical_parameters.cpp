@@ -25,7 +25,7 @@ Describe(physical_parameters)
     physical_parameters.coordinate = start_position;
     physical_parameters.velocity = start_velocity;
     physical_parameters.orientation = start_angle;
-    physical_parameters.angular_velocity = -1000;
+    physical_parameters.angular_velocity = start_angular_velocity;
     physical_parameters.timestamp = now;
   }
 
@@ -67,10 +67,44 @@ Describe(physical_parameters)
     AssertThat( physical_parameters.timestamp, Equals( future ) );
   }
 
+  It_Only(can_be_averaged_with_weight)
+  {
+    yarrr::PhysicalParameters another_physical_parameters;
+    another_physical_parameters.coordinate = { 1000, 2000 };
+    another_physical_parameters.velocity = { 1000, 2000 };
+    another_physical_parameters.orientation = 10;
+    another_physical_parameters.angular_velocity = 10;
+
+    yarrr::PhysicalParameters average( yarrr::weight_arithmetic_mean(
+        physical_parameters,
+        another_physical_parameters,
+        0.9 ) );
+
+    AssertThat(
+        yarrr::length_of( average.coordinate - start_position ), IsLessThan(
+        yarrr::length_of( average.coordinate - another_physical_parameters.coordinate ) ) );
+
+    AssertThat(
+        yarrr::length_of( average.velocity - start_velocity ), IsLessThan(
+        yarrr::length_of( average.velocity - another_physical_parameters.velocity ) ) );
+
+    AssertThat(
+        std::abs( average.orientation - start_angle ), IsLessThan(
+        std::abs( average.orientation - another_physical_parameters.orientation ) ) );
+
+    AssertThat(
+        std::abs( average.angular_velocity - start_angular_velocity ), IsLessThan(
+        std::abs( average.angular_velocity - another_physical_parameters.angular_velocity ) ) );
+
+    AssertThat( average.timestamp, Equals( physical_parameters.timestamp ) );
+    AssertThat( average.integrity, Equals( physical_parameters.integrity ) );
+  }
+
   yarrr::PhysicalParameters physical_parameters;
   const yarrr::Coordinate start_position{ 101, 102 };
   const yarrr::Velocity start_velocity{ 103, 104 };
   const yarrr::Angle start_angle{ 106 };
+  const yarrr::Angle start_angular_velocity{ -1100 };
   const the::time::Clock::Time future{ 500000u };
   const the::time::Clock::Time now{ 10000u };
   const the::time::Clock::Time past{ 5000u };

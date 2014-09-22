@@ -22,5 +22,10 @@ namespace yarrr
   bool operator==( const PhysicalParameters& l, const PhysicalParameters& r );
   void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParameters& );
   Coordinate heading( const PhysicalParameters&, int multiplier );
+
+  PhysicalParameters weight_arithmetic_mean(
+      const PhysicalParameters&,
+      const PhysicalParameters&,
+      double ratio );
 }
 
