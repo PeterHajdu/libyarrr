@@ -17,6 +17,11 @@ constexpr int16_t operator "" _degrees( unsigned long long int deg )
 
 namespace yarrr
 {
+  constexpr double pi()
+  {
+    return 3.14159265359;
+  }
+
   typedef std::vector<char> Data;
 
   typedef Vector<int64_t> Coordinate;
@@ -48,6 +53,10 @@ namespace yarrr
     return huplons_to_metres_in_place( coordinate_in_huplons );
   }
 
+  inline int16_t degree_to_hiplons( int16_t degree )
+  {
+    return degree << 2;
+  }
 
   inline int16_t hiplon_to_degrees( Angle hiplon )
   {
@@ -56,7 +65,12 @@ namespace yarrr
 
   inline double hiplon_to_radians( Angle hiplon )
   {
-    return hiplon_to_degrees( hiplon ) / 180.0 * 3.14159265359;
+    return hiplon_to_degrees( hiplon ) / 180.0 * pi();
+  }
+
+  inline int16_t radian_to_hiplons( double radian )
+  {
+    return degree_to_hiplons( radian / pi() * 180 );
   }
 
   template <typename T>

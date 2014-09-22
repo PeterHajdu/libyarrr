@@ -62,6 +62,11 @@ Describe( converters )
       AssertThat( yarrr::hiplon_to_radians( 40 ), EqualsWithDelta( 0.174532925, 0.0001 ) );
     }
 
+    It( converts_from_radians )
+    {
+      AssertThat( yarrr::radian_to_hiplons( yarrr::pi() ), EqualsWithDelta( 180_degrees, 1 ) );
+    }
+
   };
 
 };
