@@ -78,7 +78,7 @@ weight_arithmetic_mean(
 
   average.coordinate = l.coordinate * ratio + r.coordinate * ( 1 - ratio );
   average.velocity = l.velocity * ratio + r.velocity * ( 1 - ratio );
-  average.angular_velocity = l.angular_velocity * ratio + r.angular_velocity * ( 1 - ratio );
+  average.angular_velocity = ( l.angular_velocity + r.angular_velocity ) * 0.5;
 
   average.orientation = radian_to_hiplons( std::atan2(
       std::sin( hiplon_to_radians( l.orientation ) ) * ratio + std::sin( hiplon_to_radians( r.orientation ) ) * ( 1 - ratio ),

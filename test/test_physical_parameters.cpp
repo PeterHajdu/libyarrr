@@ -117,8 +117,9 @@ Describe(physical_parameters)
         std::abs( average.orientation - start_angle ), IsLessThan(
         std::abs( average.orientation - another_physical_parameters.orientation ) ) );
 
+    //angular velocity is an exception
     AssertThat(
-        std::abs( average.angular_velocity - start_angular_velocity ), IsLessThan(
+        std::abs( average.angular_velocity - start_angular_velocity ), Equals(
         std::abs( average.angular_velocity - another_physical_parameters.angular_velocity ) ) );
 
     AssertThat( average.timestamp, Equals( physical_parameters.timestamp ) );
