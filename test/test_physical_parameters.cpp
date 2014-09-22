@@ -67,7 +67,7 @@ Describe(physical_parameters)
     AssertThat( physical_parameters.timestamp, Equals( future ) );
   }
 
-  It_Only(can_be_averaged_with_weight)
+  It(can_be_averaged_with_weight)
   {
     yarrr::PhysicalParameters another_physical_parameters;
     another_physical_parameters.coordinate = { 1000, 2000 };
