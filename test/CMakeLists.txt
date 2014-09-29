@@ -39,6 +39,7 @@ set(TEST_SOURCE_FILES
     test_shape.cpp
     test_shape_behavior.cpp
     test_remote_object.cpp
+    test_resources.cpp
     )
 
 
