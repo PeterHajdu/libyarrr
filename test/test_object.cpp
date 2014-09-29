@@ -33,6 +33,17 @@ Describe(the_component_of)
   }
 };
 
+Describe(the_has_component)
+{
+  It( checks_if_an_object_has_a_component )
+  {
+    yarrr::Object object;
+    AssertThat( yarrr::has_component< test::Behavior >( object ), Equals( false ) );
+    object.add_behavior( yarrr::ObjectBehavior::Pointer( new test::Behavior() ) );
+    AssertThat( yarrr::has_component< test::Behavior >( object ), Equals( true ) );
+  }
+};
+
 Describe(an_object)
 {
 

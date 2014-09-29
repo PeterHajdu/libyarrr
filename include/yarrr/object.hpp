@@ -38,6 +38,11 @@ class Object final
     mutable int m_object_update_index;
 };
 
+template < typename Component >
+bool has_component( const Object& object )
+{
+  return object.components.has_component< Component >();
+}
 
 template < typename Component >
 Component& component_of( const Object& object )
