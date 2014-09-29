@@ -97,5 +97,16 @@ Object::generate_update() const
   return update;
 }
 
+Object::Pointer
+Object::clone() const
+{
+  Object::Pointer clone( new Object() );
+  for ( const auto& behavior : m_behaviors )
+  {
+    clone->add_behavior( behavior->clone() );
+  }
+  return clone;
+}
+
 }
 

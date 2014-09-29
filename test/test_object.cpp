@@ -135,6 +135,25 @@ Describe(an_object)
     AssertThat( always_synchronized_behavior->was_cloned, Equals( true ) );
   }
 
+  It( can_be_cloned )
+  {
+    yarrr::Object::Pointer object_clone( object->clone() );
+  }
+
+  It( does_not_share_the_id_with_the_clone )
+  {
+    yarrr::Object::Pointer object_clone( object->clone() );
+    AssertThat( object_clone->id, !Equals( object->id ) );
+  }
+
+  It( clones_behaviors_when_cloned )
+  {
+    yarrr::Object::Pointer object_clone( object->clone() );
+    AssertThat( rarely_synchronized_behavior->was_cloned, Equals( true ) );
+    AssertThat( always_synchronized_behavior->was_cloned, Equals( true ) );
+    AssertThat( yarrr::has_component< test::Behavior >( *object_clone ), Equals( true ) );
+  }
+
   yarrr::Object::Pointer object;
   test::Behavior* rarely_synchronized_behavior;
   test::Behavior* always_synchronized_behavior;

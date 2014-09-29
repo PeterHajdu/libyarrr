@@ -24,6 +24,8 @@ class Object final
     the::ctci::Dispatcher dispatcher;
     the::ctci::ComponentRegistry components;
 
+    Pointer clone() const;
+
     void add_behavior( ObjectBehavior::Pointer&& behavior );
     void update_behavior( ObjectBehavior::Pointer&& behavior );
 
