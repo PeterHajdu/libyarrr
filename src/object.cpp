@@ -49,6 +49,11 @@ Object::add_behavior( ObjectBehavior::Pointer&& behavior )
   m_behaviors.emplace_back( std::move( behavior ) );
 }
 
+void
+Object::add_behavior( ObjectBehavior* behavior )
+{
+  add_behavior( ObjectBehavior::Pointer( behavior ) );
+}
 
 void
 Object::update_behavior( ObjectBehavior::Pointer&& updater_behavior )

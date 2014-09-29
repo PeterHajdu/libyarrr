@@ -27,6 +27,7 @@ class Object final
     Pointer clone() const;
 
     void add_behavior( ObjectBehavior::Pointer&& behavior );
+    void add_behavior( ObjectBehavior* behavior );
     void update_behavior( ObjectBehavior::Pointer&& behavior );
 
     std::unique_ptr< ObjectUpdate > generate_update() const;

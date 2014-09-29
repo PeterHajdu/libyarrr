@@ -64,6 +64,15 @@ Describe(an_object)
     AssertThat( rarely_synchronized_behavior->was_registered, Equals( true ) );
   }
 
+  It( can_add_behaviors_from_pure_pointers )
+  {
+    yarrr::Object another_object;
+    test::Behavior* another_behavior( new test::Behavior() );
+    another_object.add_behavior( another_behavior );
+    AssertThat( yarrr::has_component< test::Behavior >( another_object ), Equals( true ) );
+    AssertThat( &yarrr::component_of< test::Behavior >( another_object ), Equals( another_behavior ) );
+  }
+
   It( dispatches_events_to_registered_listeners )
   {
     test::Event test_event;
