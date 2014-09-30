@@ -50,9 +50,9 @@ Object::add_behavior( ObjectBehavior::Pointer&& behavior )
 }
 
 void
-Object::add_behavior_with_reference( ObjectBehavior& behavior )
+Object::add_behavior_clone( ObjectBehavior& behavior )
 {
-  add_behavior( ObjectBehavior::Pointer( &behavior ) );
+  add_behavior( behavior.clone() );
 }
 
 void
