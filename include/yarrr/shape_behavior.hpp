@@ -14,6 +14,7 @@ class ShapeBehavior : public ObjectBehavior
   public:
     add_polymorphic_ctci( "yarrr_shape_vehavior" );
     ShapeBehavior();
+    ShapeBehavior( const Shape& );
     ShapeBehavior( const Id& id );
     virtual Pointer clone() const override;
 

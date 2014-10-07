@@ -17,6 +17,12 @@ ShapeBehavior::ShapeBehavior()
 {
 }
 
+ShapeBehavior::ShapeBehavior( const Shape& shape )
+  : ObjectBehavior( rarely_synchronize() )
+  , shape( shape )
+{
+}
+
 ShapeBehavior::ShapeBehavior( const Id& id )
   : ObjectBehavior( rarely_synchronize() , id )
 {

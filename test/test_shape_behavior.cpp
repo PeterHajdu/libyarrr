@@ -9,11 +9,17 @@ using namespace igloo;
 Describe( a_shape_behavior )
 {
 
+  yarrr::Shape create_shape()
+  {
+    yarrr::Shape a_shape;
+    a_shape.add_tile( a_tile );
+    a_shape.add_tile( another_tile );
+    return a_shape;
+  }
+
   void SetUp()
   {
-    shape_behavior.reset( new yarrr::ShapeBehavior() );
-    shape_behavior->shape.add_tile( a_tile );
-    shape_behavior->shape.add_tile( another_tile );
+    shape_behavior.reset( new yarrr::ShapeBehavior( create_shape() ) );
   }
 
   It( is_synchronizable )
