@@ -12,7 +12,8 @@ class Canon : public Item
   public:
     add_polymorphic_ctci( "yarrr_canon" );
     Canon();
-    Canon( const Id& id );
+    Canon( const Tile::Coordinate coordinate );
+    Canon( const Id& id, const Tile::Coordinate coordinate );
 
     virtual Pointer clone() const override;
 

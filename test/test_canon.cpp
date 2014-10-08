@@ -20,7 +20,7 @@ Describe( a_canon )
 
   void add_canon()
   {
-    canons.push_back( new yarrr::Canon() );
+    canons.push_back( new yarrr::Canon( { 0, 0 } ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( canons.back() ) );
   }
 
