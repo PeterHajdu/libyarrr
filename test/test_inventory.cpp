@@ -5,6 +5,7 @@
 #include <yarrr/object.hpp>
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/destruction_handlers.hpp>
+#include <yarrr/shape_behavior.hpp>
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
@@ -58,6 +59,7 @@ Describe( a_loot_dropper )
     std::unique_ptr< yarrr::PhysicalBehavior > physical_behavior( new yarrr::PhysicalBehavior() );
     physical_parameters = &physical_behavior->physical_parameters;
     physical_parameters->coordinate = far_from_the_origo;
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShapeBehavior() ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( physical_behavior.release() ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::LootDropper() ) );
@@ -132,6 +134,7 @@ Describe( a_loot_attacher )
   {
     yarrr::Object::Pointer object( new yarrr::Object() );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShapeBehavior() ) );
     return object;
   }
 

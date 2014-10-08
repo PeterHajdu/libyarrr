@@ -14,11 +14,14 @@ class Item : public ObjectBehavior
     virtual ~Item() = default;
     const std::string& name() const;
 
-    const Tile::Coordinate tile_coordinate;
+    const Tile::Coordinate& tile_coordinate() const;
+    const Coordinate relative_coordinate() const;
   private:
     virtual void do_register_to( Object& ) override final;
     virtual void register_item_to( Object& ) {};
 
+    Tile::Coordinate m_tile_coordinate;
+    Shape* m_shape;
     const std::string m_name;
 };
 

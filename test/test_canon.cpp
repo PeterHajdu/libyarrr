@@ -6,6 +6,7 @@
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/command.hpp>
+#include <yarrr/shape_behavior.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <thectci/service_registry.hpp>
@@ -29,6 +30,7 @@ Describe( a_canon )
 
     object.reset( new yarrr::Object() );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
+    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShapeBehavior() ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
     inventory = &object->components.component< yarrr::Inventory >();
 
