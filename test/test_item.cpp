@@ -26,7 +26,7 @@ Describe( an_item )
     object->add_behavior( yarrr::ObjectBehavior::Pointer( shape_behavior ) );
     shape->add_tile( yarrr::Tile( { 0, 1 }, { 1, 0 } ) );
 
-    item = new test::TestItem( tile_coordinate );
+    item = new test::TestItem( tile_coordinate, serialized_member_value );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( item ) );
   }
 
@@ -48,6 +48,22 @@ Describe( an_item )
     AssertThat( item->relative_coordinate(), Equals( relative_to_center_of_mass_coordinate ) );
   }
 
+  It( serializes_and_deserializes_tile_coordinate )
+  {
+    const auto serialized_item( item->serialize() );
+    test::TestItem deserialized_item;
+    deserialized_item.deserialize( serialized_item );
+    AssertThat( deserialized_item.tile_coordinate(), Equals( item->tile_coordinate() ) );
+  }
+
+  It( calls_serialize_and_deserialize_item_when_serializing )
+  {
+    const auto serialized_item( item->serialize() );
+    test::TestItem deserialized_item;
+    deserialized_item.deserialize( serialized_item );
+    AssertThat( deserialized_item.serialized_member, Equals( serialized_member_value ) );
+  }
+
   It( is_an_object_behavior )
   {
     yarrr::ObjectBehavior& item_as_behavior( static_cast< yarrr::ObjectBehavior& >( *item ) );
@@ -65,6 +81,7 @@ Describe( an_item )
     AssertThat( &inventory->items().back().get(), Equals( item ) );
   }
 
+  const int serialized_member_value{ 10 };
   yarrr::Object::Pointer object;
   yarrr::Inventory* inventory;
   yarrr::Item* item;

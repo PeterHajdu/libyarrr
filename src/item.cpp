@@ -1,6 +1,7 @@
 #include <yarrr/item.hpp>
 #include <yarrr/inventory.hpp>
 #include <yarrr/shape_behavior.hpp>
+#include <yarrr/bitmagic.hpp>
 
 namespace yarrr
 {
@@ -55,6 +56,21 @@ Item::name() const
   return m_name;
 }
 
+void
+Item::serialize_behavior( Serializer& serializer ) const
+{
+  serializer.push_back( m_tile_coordinate.x );
+  serializer.push_back( m_tile_coordinate.y );
+  serialize_item( serializer );
+}
+
+void
+Item::deserialize_behavior( Deserializer& deserializer )
+{
+  m_tile_coordinate.x = deserializer.pop_front< Tile::Coordinate::type >();
+  m_tile_coordinate.y = deserializer.pop_front< Tile::Coordinate::type >();
+  deserialize_item( deserializer );
+}
 
 }
 

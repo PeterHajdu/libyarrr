@@ -53,8 +53,8 @@ class Thruster : public Item
 
   private:
     virtual void register_item_to( Object& ) override;
-    virtual void serialize_behavior( Serializer& serializer ) const;
-    virtual void deserialize_behavior( Deserializer& deserializer );
+    virtual void serialize_item( Serializer& serializer ) const override final;
+    virtual void deserialize_item( Deserializer& deserializer ) override final;
 
     void apply_forces();
     void handle_command( const yarrr::Command& );

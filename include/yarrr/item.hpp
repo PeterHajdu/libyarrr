@@ -5,6 +5,8 @@
 
 namespace yarrr
 {
+class Serializer;
+class Deserializer;
 
 class Item : public ObjectBehavior
 {
@@ -19,6 +21,11 @@ class Item : public ObjectBehavior
   private:
     virtual void do_register_to( Object& ) override final;
     virtual void register_item_to( Object& ) {};
+    virtual void serialize_behavior( Serializer& serializer ) const override final;
+    virtual void deserialize_behavior( Deserializer& deserializer ) override final;
+
+    virtual void serialize_item( Serializer& serializer ) const {};
+    virtual void deserialize_item( Deserializer& deserializer ) {};
 
     Tile::Coordinate m_tile_coordinate;
     Shape* m_shape;

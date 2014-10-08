@@ -157,7 +157,7 @@ Thruster::handle_timer_update( const yarrr::TimerUpdate& update ) const
 }
 
 void
-Thruster::serialize_behavior( Serializer& serializer ) const
+Thruster::serialize_item( Serializer& serializer ) const
 {
   m_jet.serialize( serializer );
   serializer.push_back( m_activation_command );
@@ -167,7 +167,7 @@ Thruster::serialize_behavior( Serializer& serializer ) const
 }
 
 void
-Thruster::deserialize_behavior( Deserializer& deserializer )
+Thruster::deserialize_item( Deserializer& deserializer )
 {
   m_jet.deserialize( deserializer );
   m_activation_command = deserializer.pop_front< Command::Type >();
