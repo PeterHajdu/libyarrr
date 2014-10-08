@@ -31,8 +31,8 @@ const Coordinate
 Item::relative_coordinate() const
 {
   return Coordinate{
-      ( 0.5 + m_tile_coordinate.x ) * yarrr::Tile::unit_length,
-      ( 0.5 + m_tile_coordinate.y ) * yarrr::Tile::unit_length } -
+      static_cast< int64_t >( ( 0.5 + m_tile_coordinate.x ) * yarrr::Tile::unit_length ),
+      static_cast< int64_t >( ( 0.5 + m_tile_coordinate.y ) * yarrr::Tile::unit_length ) } -
       m_shape->center_of_mass();
 }
 
