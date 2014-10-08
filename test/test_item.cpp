@@ -38,8 +38,8 @@ Describe( an_item )
   It( calculates_relative_to_center_of_mass_coordinate )
   {
     const yarrr::Coordinate relative_coordinate{
-        ( 0.5 + tile_coordinate.x ) * yarrr::Tile::unit_length,
-        ( 0.5 + tile_coordinate.y ) * yarrr::Tile::unit_length };
+        static_cast< int64_t >( ( 0.5 + tile_coordinate.x ) * yarrr::Tile::unit_length ),
+        static_cast< int64_t >( ( 0.5 + tile_coordinate.y ) * yarrr::Tile::unit_length ) };
 
     const yarrr::Coordinate relative_to_center_of_mass_coordinate{
         relative_coordinate -
