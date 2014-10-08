@@ -18,7 +18,7 @@ namespace yarrr
 {
 
 Canon::Canon()
-: Item( rarely_synchronize(), canon_name )
+: Item( rarely_synchronize(), canon_name, { 0, 0 } )
 , m_physical_parameters( nullptr )
 , m_index( 0 )
 , m_number_of_canons( 1 )
@@ -26,7 +26,7 @@ Canon::Canon()
 }
 
 Canon::Canon( const Id& id )
-: Item( rarely_synchronize(), id, canon_name )
+: Item( rarely_synchronize(), id, canon_name, { 0, 0 } )
 , m_physical_parameters( nullptr )
 , m_index( 0 )
 , m_number_of_canons( 1 )

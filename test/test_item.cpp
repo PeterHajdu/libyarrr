@@ -1,6 +1,8 @@
 #include <yarrr/item.hpp>
 #include <yarrr/inventory.hpp>
 #include <yarrr/object.hpp>
+#include <yarrr/shape.hpp>
+#include <yarrr/shape_behavior.hpp>
 
 #include <igloo/igloo_alt.h>
 
@@ -19,8 +21,13 @@ Describe( an_item )
     inventory = new yarrr::Inventory();
     object->add_behavior( yarrr::ObjectBehavior::Pointer( inventory ) );
 
-    item = new test::TestItem();
+    item = new test::TestItem( tile_coordinate );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( item ) );
+  }
+
+  It( has_tile_coordinates )
+  {
+    AssertThat( item->tile_coordinate, Equals( tile_coordinate ) );
   }
 
   It( is_an_object_behavior )
@@ -43,5 +50,6 @@ Describe( an_item )
   yarrr::Object::Pointer object;
   yarrr::Inventory* inventory;
   yarrr::Item* item;
+  yarrr::Tile::Coordinate tile_coordinate;
 };
 

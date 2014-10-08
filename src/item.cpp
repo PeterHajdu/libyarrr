@@ -4,14 +4,16 @@
 namespace yarrr
 {
 
-Item::Item( int synchronization_period, const std::string& name )
+Item::Item( int synchronization_period, const std::string& name, const Tile::Coordinate& tile_coordinate )
   : ObjectBehavior( synchronization_period )
+  , tile_coordinate( tile_coordinate )
   , m_name( name )
 {
 }
 
-Item::Item( int synchronization_period, const Id& id, const std::string& name )
+Item::Item( int synchronization_period, const Id& id, const std::string& name, const Tile::Coordinate& tile_coordinate )
   : ObjectBehavior( synchronization_period, id )
+  , tile_coordinate( tile_coordinate )
   , m_name( name )
 {
 }
