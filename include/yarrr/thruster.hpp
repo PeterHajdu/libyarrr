@@ -41,7 +41,7 @@ class Thruster : public Item
     Thruster();
     Thruster(
         Command::Type activation_command,
-        const Coordinate& relative_coordinate,
+        const Tile::Coordinate& coordinate,
         Angle direction );
 
     Thruster( const Thruster& );
@@ -66,7 +66,6 @@ class Thruster : public Item
 
     Jet m_jet;
     Command::Type m_activation_command;
-    Coordinate m_relative_coordinate;
     Coordinate m_normalized_relative_coordinate;
     Angle m_direction;
 };

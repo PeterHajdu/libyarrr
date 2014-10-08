@@ -31,6 +31,7 @@ Describe( a_thruster )
     object->add_behavior( yarrr::ShapeBehavior::Pointer( new yarrr::ShapeBehavior() ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
     shape = &yarrr::component_of< yarrr::ShapeBehavior>( *object ).shape;
+    shape->add_tile( yarrr::Tile( { 0, 0 }, { 0, 0 } ) );
     return object;
   }
 
@@ -91,7 +92,7 @@ Describe( a_thruster )
     auto object( create_object_without_thruster() );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Thruster(
             activation_command,
-            yarrr::Coordinate( -10_metres, 0 ),
+            { -10, 0 },
             180_degrees ) ) );
     activate_thruster_on( *object );
 
@@ -104,7 +105,7 @@ Describe( a_thruster )
     auto object( create_object_without_thruster() );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Thruster(
             activation_command,
-            yarrr::Coordinate( -10_metres, 0 ),
+            { -10_metres, 0 },
             180_degrees ) ) );
 
     activate_thruster_on( *object );
@@ -125,7 +126,7 @@ Describe( a_thruster )
     auto object( create_object_without_thruster() );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Thruster(
             activation_command,
-            yarrr::Coordinate( -10_metres, 0 ),
+            { -10_metres, 0 },
             90_degrees ) ) );
     activate_thruster_on( *object );
 
@@ -139,7 +140,7 @@ Describe( a_thruster )
     auto object( create_object_without_thruster() );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Thruster(
             activation_command,
-            yarrr::Coordinate( -10_metres, 0 ),
+            { -10_metres, 0 },
             90_degrees ) ) );
     activate_thruster_on( *object );
     const auto angular_velocity_difference(
@@ -217,7 +218,7 @@ Describe( a_thruster )
   const yarrr::Command::Type activation_command{ yarrr::Command::starboard_thruster };
   const yarrr::Command::Type non_activation_command{ yarrr::Command::port_thruster };
 
-  const yarrr::Coordinate place_to_center_of_mass{ 0, 0 };
+  const yarrr::Tile::Coordinate place_to_center_of_mass{ 0, 0 };
   const yarrr::Angle face_right{ 0 };
 };
 
