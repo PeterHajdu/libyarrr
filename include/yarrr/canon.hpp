@@ -5,7 +5,7 @@
 namespace yarrr
 {
 
-class Command;
+class ShipControl;
 class PhysicalParameters;
 class Canon : public Item
 {
@@ -20,7 +20,7 @@ class Canon : public Item
   private:
     virtual void register_item_to( Object& ) override;
     int generate_next_index();
-    void handle_command( const Command& ) const;
+    void handle_command( const ShipControl& ) const;
     PhysicalParameters generate_physical_parameters() const;
 
     PhysicalParameters* m_physical_parameters;

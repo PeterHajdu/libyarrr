@@ -8,7 +8,7 @@
 namespace yarrr
 {
 
-class Command : public Entity
+class ShipControl : public Entity
 {
   public:
     typedef uint32_t Type;
@@ -20,10 +20,10 @@ class Command : public Entity
       fire = 4
     };
 
-    add_polymorphic_ctci( "command" );
+    add_polymorphic_ctci( "yarrr_ship_control" );
 
-    Command() = default;
-    Command( Type type, the::time::Time timestamp );
+    ShipControl() = default;
+    ShipControl( Type type, the::time::Time timestamp );
     Type type() const;
     const the::time::Time& timestamp() const;
 

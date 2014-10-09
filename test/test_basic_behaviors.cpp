@@ -6,7 +6,7 @@
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/physical_parameters.hpp>
-#include <yarrr/command.hpp>
+#include <yarrr/ship_control.hpp>
 #include <yarrr/object_container.hpp>
 #include <yarrr/dummy_graphical_engine.hpp>
 #include <yarrr/entity_factory.hpp>

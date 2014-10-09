@@ -1,51 +1,50 @@
 #include <yarrr/ship_control.hpp>
-#include <yarrr/types.hpp>
-#include <yarrr/physical_parameters.hpp>
-#include <yarrr/command.hpp>
-#include <cmath>
-#include <cstdint>
+#include <yarrr/bitmagic.hpp>
+#include <yarrr/entity_factory.hpp>
 
 namespace
 {
-  const int64_t back_engine_power{ 5_metres };
-  const int64_t cw_engine_power{ 8_degrees };
+  yarrr::AutoEntityRegister<yarrr::ShipControl> register_shipcontrol;
 }
 
 namespace yarrr
 {
-ShipControl::ShipControl( PhysicalParameters& physical_parameters )
-  : m_physical_parameters( physical_parameters )
+
+
+ShipControl::ShipControl( Type type, the::time::Time timestamp )
+  : m_type( type )
+  , m_timestamp( timestamp )
 {
 }
 
-void
-ShipControl::handle_command( const Command& command )
+
+ShipControl::Type
+ShipControl::type() const
 {
-  yarrr::travel_in_time_to( command.timestamp(), m_physical_parameters );
-  switch( command.type() )
-  {
-    case Command::main_thruster :
-      thruster();
-      break;
-    case Command::port_thruster :
-      spin( cw_engine_power );
-      break;
-    case Command::starboard_thruster :
-      spin( -cw_engine_power );
-      break;
-  }
+  return m_type;
 }
 
-void
-ShipControl::thruster()
+
+const the::time::Time&
+ShipControl::timestamp() const
 {
-  m_physical_parameters.velocity += heading( m_physical_parameters, back_engine_power );
+  return m_timestamp;
 }
 
+
 void
-ShipControl::spin( int power )
+ShipControl::do_serialize( Serializer& serializer ) const
 {
-  m_physical_parameters.angular_velocity += power;
+  serializer.push_back( m_type );
+  serializer.push_back( m_timestamp );
+}
+
+
+void
+ShipControl::do_deserialize( Deserializer& deserializer )
+{
+  m_type = deserializer.pop_front<Type>();
+  m_timestamp = deserializer.pop_front<the::time::Time>();
 }
 
 }

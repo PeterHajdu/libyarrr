@@ -11,7 +11,7 @@ set(TEST_SOURCE_FILES
     test_bitmagic.cpp
     test_login.cpp
     test_entity.cpp
-    test_command.cpp
+    test_ship_control.cpp
     test_chat_message.cpp
     test_entity_factory.cpp
     test_callback.cpp

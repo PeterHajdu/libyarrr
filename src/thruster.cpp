@@ -1,7 +1,7 @@
 #include <yarrr/thruster.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/shape_behavior.hpp>
-#include <yarrr/command.hpp>
+#include <yarrr/ship_control.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/particle.hpp>
 #include <yarrr/bitmagic.hpp>
@@ -35,12 +35,12 @@ Thruster::Thruster()
   , m_physical_parameters( nullptr )
   , m_shape( nullptr )
   , m_particle_source( particle_speed_deviation )
-  , m_activation_command( Command::main_thruster )
+  , m_activation_command( ShipControl::main_thruster )
 {
 }
 
 Thruster::Thruster(
-    Command::Type activation_command,
+    ShipControl::Type activation_command,
     const Tile::Coordinate& coordinate,
     Angle direction )
   : Item( rarely_synchronize(), thruster_name, coordinate )
@@ -74,7 +74,7 @@ Thruster::register_item_to( Object& owner )
 {
   m_shape = &owner.components.component< ShapeBehavior >().shape;
   m_physical_parameters = &owner.components.component< PhysicalBehavior >().physical_parameters;
-  owner.dispatcher.register_listener< Command  >(
+  owner.dispatcher.register_listener< ShipControl  >(
       std::bind( &Thruster::handle_command, this, std::placeholders::_1 ) );
   owner.dispatcher.register_listener< TimerUpdate  >(
       std::bind( &Thruster::handle_timer_update, this, std::placeholders::_1 ) );
@@ -98,7 +98,7 @@ Thruster::update( const ObjectBehavior& other )
 
 
 void
-Thruster::handle_command( const yarrr::Command& command )
+Thruster::handle_command( const yarrr::ShipControl& command )
 {
   if ( command.type() != m_activation_command )
   {
@@ -166,7 +166,7 @@ void
 Thruster::deserialize_item( Deserializer& deserializer )
 {
   m_jet.deserialize( deserializer );
-  m_activation_command = deserializer.pop_front< Command::Type >();
+  m_activation_command = deserializer.pop_front< ShipControl::Type >();
   m_direction = deserializer.pop_front< Angle >();
 }
 

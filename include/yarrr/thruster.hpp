@@ -2,7 +2,7 @@
 
 #include <yarrr/particle.hpp>
 #include <yarrr/item.hpp>
-#include <yarrr/command.hpp>
+#include <yarrr/ship_control.hpp>
 #include <thectci/id.hpp>
 
 namespace yarrr
@@ -40,7 +40,7 @@ class Thruster : public Item
 
     Thruster();
     Thruster(
-        Command::Type activation_command,
+        ShipControl::Type activation_command,
         const Tile::Coordinate& coordinate,
         Angle direction );
 
@@ -57,7 +57,7 @@ class Thruster : public Item
     virtual void deserialize_item( Deserializer& deserializer ) override final;
 
     void apply_forces();
-    void handle_command( const yarrr::Command& );
+    void handle_command( const yarrr::ShipControl& );
     void handle_timer_update( const yarrr::TimerUpdate& ) const;
 
     PhysicalParameters* m_physical_parameters;
@@ -65,7 +65,7 @@ class Thruster : public Item
     const ParticleSource m_particle_source;
 
     Jet m_jet;
-    Command::Type m_activation_command;
+    ShipControl::Type m_activation_command;
     Coordinate m_normalized_relative_coordinate;
     Angle m_direction;
 };

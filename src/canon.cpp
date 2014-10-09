@@ -1,5 +1,5 @@
 #include <yarrr/canon.hpp>
-#include <yarrr/command.hpp>
+#include <yarrr/ship_control.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/inventory.hpp>
 #include <yarrr/object_creator.hpp>
@@ -44,7 +44,7 @@ Canon::Canon( const Id& id, const Tile::Coordinate coordinate )
 void
 Canon::register_item_to( Object& owner )
 {
-  owner.dispatcher.register_listener< yarrr::Command  >(
+  owner.dispatcher.register_listener< yarrr::ShipControl  >(
       std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
   m_physical_parameters = &owner.components.component< yarrr::PhysicalBehavior >().physical_parameters;
 
@@ -63,9 +63,9 @@ Canon::generate_next_index()
 
 
 void
-Canon::handle_command( const Command& command ) const
+Canon::handle_command( const ShipControl& command ) const
 {
-  if ( command.type() != Command::fire )
+  if ( command.type() != ShipControl::fire )
   {
     return;
   }

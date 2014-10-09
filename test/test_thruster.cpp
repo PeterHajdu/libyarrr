@@ -8,7 +8,7 @@
 #include <yarrr/shape_behavior.hpp>
 #include <yarrr/inventory.hpp>
 #include <yarrr/physical_parameters.hpp>
-#include <yarrr/command.hpp>
+#include <yarrr/ship_control.hpp>
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/particle.hpp>
 #include <yarrr/bitmagic.hpp>
@@ -61,7 +61,7 @@ Describe( a_thruster )
 
   void activate_thruster_on( yarrr::Object& object )
   {
-    object.dispatcher.dispatch( yarrr::Command( activation_command, 0 ) );
+    object.dispatcher.dispatch( yarrr::ShipControl( activation_command, 0 ) );
   }
 
   It( is_an_item )
@@ -83,7 +83,7 @@ Describe( a_thruster )
 
   It( does_not_update_local_physical_state_if_it_is_not_the_activation_command )
   {
-    object->dispatcher.dispatch( yarrr::Command( non_activation_command, 0 ) );
+    object->dispatcher.dispatch( yarrr::ShipControl( non_activation_command, 0 ) );
     AssertThat( old_physical_parameters, Equals( *physical_parameters ) );
   }
 
@@ -215,8 +215,8 @@ Describe( a_thruster )
   yarrr::Shape* shape;
   yarrr::Thruster* thruster;
   yarrr::Object::Pointer object;
-  const yarrr::Command::Type activation_command{ yarrr::Command::starboard_thruster };
-  const yarrr::Command::Type non_activation_command{ yarrr::Command::port_thruster };
+  const yarrr::ShipControl::Type activation_command{ yarrr::ShipControl::starboard_thruster };
+  const yarrr::ShipControl::Type non_activation_command{ yarrr::ShipControl::port_thruster };
 
   const yarrr::Tile::Coordinate place_to_center_of_mass{ 0, 0 };
   const yarrr::Angle face_right{ 0 };

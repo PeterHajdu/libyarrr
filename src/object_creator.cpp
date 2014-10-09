@@ -77,17 +77,17 @@ create_ship()
   ship->add_behavior( ObjectBehavior::Pointer( shape ) );
 
   ship->add_behavior( ObjectBehavior::Pointer( new Thruster(
-          Command::main_thruster,
+          ShipControl::main_thruster,
           { -1, 0 },
           180_degrees ) ) );
 
   ship->add_behavior( ObjectBehavior::Pointer( new Thruster(
-          Command::port_thruster,
+          ShipControl::port_thruster,
           { 2, 0 },
           90_degrees ) ) );
 
   ship->add_behavior( ObjectBehavior::Pointer( new Thruster(
-          Command::starboard_thruster,
+          ShipControl::starboard_thruster,
           { 2, 0 },
           -90_degrees ) ) );
 

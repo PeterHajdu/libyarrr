@@ -5,7 +5,7 @@
 #include <yarrr/object.hpp>
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
-#include <yarrr/command.hpp>
+#include <yarrr/ship_control.hpp>
 #include <yarrr/shape_behavior.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
@@ -64,13 +64,13 @@ Describe( a_canon )
 
   It( creates_objects_only_for_fire_command )
   {
-    object->dispatcher.dispatch( yarrr::Command( yarrr::Command::main_thruster, 0 ) );
+    object->dispatcher.dispatch( yarrr::ShipControl( yarrr::ShipControl::main_thruster, 0 ) );
     AssertThat( was_canon_fired, Equals( false ) );
   }
 
   It( creates_new_objects_when_canon_is_fired )
   {
-    object->dispatcher.dispatch( yarrr::Command( yarrr::Command::fire, 0 ) );
+    object->dispatcher.dispatch( yarrr::ShipControl( yarrr::ShipControl::fire, 0 ) );
     AssertThat( was_canon_fired, Equals( true ) );
   }
 
@@ -89,7 +89,7 @@ Describe( a_canon )
   It( places_canons_apart )
   {
     add_canon();
-    object->dispatcher.dispatch( yarrr::Command( yarrr::Command::fire, 0 ) );
+    object->dispatcher.dispatch( yarrr::ShipControl( yarrr::ShipControl::fire, 0 ) );
     AssertThat( bullets, HasLength( 2u ) );
     const yarrr::Coordinate canon_coordinate_difference(
         bullets[ 0 ].coordinate - bullets[ 1 ].coordinate );

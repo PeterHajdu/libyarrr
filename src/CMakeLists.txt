@@ -3,7 +3,7 @@ set(SOURCE_FILES
   physical_parameters.cpp
   login.cpp
   entity.cpp
-  command.cpp
+  ship_control.cpp
   chat_message.cpp
   entity_factory.cpp
   delete_object.cpp
