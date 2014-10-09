@@ -124,7 +124,8 @@ Thruster::apply_forces()
 
   auto pushing_force(
       m_normalized_relative_coordinate *
-      ( dot_product( m_normalized_relative_coordinate, relative_force_vector ) / mass_and_engine_power_ratio ) );
+      ( double( dot_product( m_normalized_relative_coordinate, relative_force_vector ) ) /
+      mass_and_engine_power_ratio ) );
 
   rotate( pushing_force, m_physical_parameters->orientation );
 
