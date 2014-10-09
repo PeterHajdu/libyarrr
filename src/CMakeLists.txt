@@ -25,6 +25,7 @@ set(SOURCE_FILES
   shape.cpp
   shape_behavior.cpp
   resources.cpp
+  command.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

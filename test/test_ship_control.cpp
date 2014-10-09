@@ -5,7 +5,7 @@
 
 using namespace igloo;
 
-Describe(a_command)
+Describe(a_ship_control)
 {
   It( is_registered_to_entity_factory )
   {
