@@ -11,10 +11,11 @@ namespace log
 
 enum : int
 {
-  error = 100,
-  warning = 50,
-  info = 0,
-  debug = -50
+  error = 200,
+  warning = 150,
+  info = 100,
+  debug = 50,
+  trace = 0
 };
 
 }
