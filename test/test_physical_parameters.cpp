@@ -110,14 +110,15 @@ Describe(physical_parameters)
         yarrr::length_of( average.coordinate - another_physical_parameters.coordinate ) ) );
 
     AssertThat(
-        yarrr::length_of( average.velocity - start_velocity ), IsLessThan(
-        yarrr::length_of( average.velocity - another_physical_parameters.velocity ) ) );
-
-    AssertThat(
         std::abs( average.orientation - start_angle ), IsLessThan(
         std::abs( average.orientation - another_physical_parameters.orientation ) ) );
 
-    //angular velocity is an exception
+    //velocities are exceptions
+    AssertThat(
+        yarrr::length_of( average.velocity - start_velocity ), Equals(
+        yarrr::length_of( average.velocity - another_physical_parameters.velocity ) ) );
+
+
     AssertThat(
         std::abs( average.angular_velocity - start_angular_velocity ), Equals(
         std::abs( average.angular_velocity - another_physical_parameters.angular_velocity ) ) );
