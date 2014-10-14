@@ -4,6 +4,7 @@
 #include <yarrr/delete_object.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/basic_behaviors.hpp>
+#include <yarrr/log.hpp>
 #include <thectci/service_registry.hpp>
 
 namespace yarrr
@@ -31,6 +32,7 @@ DeleteWhenDestroyed::clone() const
 void
 DeleteWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
 {
+  thelog( yarrr::log::debug )( "Delete when destroyed deletes object", m_object->id );
   the::ctci::service< EngineDispatcher >().dispatch( DeleteObject( m_object->id ) );
 }
 

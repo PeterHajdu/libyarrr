@@ -11,6 +11,7 @@
 #include <yarrr/destruction_handlers.hpp>
 #include <yarrr/thruster.hpp>
 #include <yarrr/canon.hpp>
+#include <yarrr/log.hpp>
 
 #include <thectci/service_registry.hpp>
 
@@ -146,6 +147,7 @@ SelfDestructor::handle_timer_update( const TimerUpdate& timer_update )
     return;
   }
 
+  thelog( yarrr::log::debug )( "Self destructor deletes object", m_object_id );
   the::ctci::service< yarrr::EngineDispatcher >().dispatch( DeleteObject( m_object_id ) );
 }
 
