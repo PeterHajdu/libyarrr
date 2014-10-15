@@ -2,6 +2,7 @@
 #include <yarrr/inventory.hpp>
 #include <yarrr/shape_behavior.hpp>
 #include <yarrr/bitmagic.hpp>
+#include <yarrr/log.hpp>
 
 namespace yarrr
 {
@@ -40,6 +41,7 @@ Item::relative_coordinate() const
 void
 Item::do_register_to( Object& owner )
 {
+  thelog( yarrr::log::debug )( "Registering item", name() );
   assert( owner.components.has_component< Inventory >() );
   owner.components.component< Inventory >().register_item( *this );
 
