@@ -45,6 +45,13 @@ Describe( an_invenory )
     AssertThat( &items.back().get(), Equals( item.get() ) );
   }
 
+  It( should_force_synchronization_if_an_item_is_added )
+  {
+    AssertThat( inventory->should_synchronize(), Equals( true ) );
+    inventory->register_item( *item );
+    AssertThat( inventory->should_synchronize(), Equals( true ) );
+  }
+
   yarrr::Object::Pointer object;
   std::unique_ptr< yarrr::Inventory > inventory;
   std::unique_ptr< test::TestItem > item;

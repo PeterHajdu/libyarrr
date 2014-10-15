@@ -42,6 +42,7 @@ void
 Inventory::register_item( Item& item )
 {
   m_items.emplace_back( item );
+  force_synchronization();
 }
 
 const Inventory::ItemContainer&
