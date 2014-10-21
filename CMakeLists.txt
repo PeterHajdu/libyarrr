@@ -25,6 +25,10 @@ if(UNIX)
     endif(enable_libc++)
 endif(UNIX)
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  set(LIBS dl ${LIBS})
+endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+
 include_directories(include)
 include_directories(thirdparty/sol)
 include_directories(thirdparty/igloo)
@@ -37,7 +41,6 @@ add_definitions(-std=c++11
                 -g
                 -fPIC
                 )
-
 
 if(sanitize)
     message("--> Sanitize: ${sanitize}")
