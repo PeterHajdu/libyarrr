@@ -28,7 +28,6 @@ void register_object_factory( const std::string& name, sol::function factory )
   thelog( yarrr::log::info )( "Registered lua factory method for object type:", name );
 }
 
-the::ctci::AutoServiceRegister< yarrr::ObjectFactory, yarrr::ObjectFactory > auto_object_factory_register;
 yarrr::AutoLuaRegister function_register(
     []( yarrr::Lua& lua )
     {
