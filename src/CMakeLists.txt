@@ -26,6 +26,9 @@ set(SOURCE_FILES
   shape_behavior.cpp
   resources.cpp
   command.cpp
+  object_factory.cpp
+  lua_engine.cpp
+  lua_setup.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

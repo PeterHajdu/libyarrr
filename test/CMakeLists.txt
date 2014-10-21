@@ -1,7 +1,6 @@
 
 # required for igloo:
 add_definitions(-Wno-deprecated-declarations)
-include_directories(igloo)
 
 set(TEST_SOURCE_FILES
     test_runner.cpp
@@ -41,13 +40,16 @@ set(TEST_SOURCE_FILES
     test_shape_behavior.cpp
     test_remote_object.cpp
     test_resources.cpp
+    test_lua_engine.cpp
+    test_lua_setup.cpp
+    test_object_factory.cpp
     )
 
 
 add_executable(test_runner EXCLUDE_FROM_ALL ${TEST_SOURCE_FILES})
 
 
-target_link_libraries(test_runner yarrr thelog theconf thectci ${LIBS})
+target_link_libraries(test_runner yarrr thelog theconf thectci lua ${LIBS})
 
 get_target_property(TEST_RUNNER_BIN test_runner LOCATION) # for running
 
