@@ -19,6 +19,6 @@ def run( command )
 end
 
 watch( '.*pp' ) do | filename |
-  run( "compile" ) && run( "unittest" ) && run( "deploy" )
+  run( "compile" ) && run( "unittest" ) && run( "local_deploy" )
 end
 
