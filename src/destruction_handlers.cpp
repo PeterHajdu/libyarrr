@@ -32,8 +32,8 @@ DeleteWhenDestroyed::clone() const
 void
 DeleteWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
 {
-  thelog( yarrr::log::debug )( "Delete when destroyed deletes object", m_object->id );
-  the::ctci::service< EngineDispatcher >().dispatch( DeleteObject( m_object->id ) );
+  thelog( yarrr::log::debug )( "Delete when destroyed deletes object", m_object->id() );
+  the::ctci::service< EngineDispatcher >().dispatch( DeleteObject( m_object->id() ) );
 }
 
 
@@ -60,7 +60,7 @@ RespawnWhenDestroyed::clone() const
 void
 RespawnWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
 {
-  the::ctci::service< EngineDispatcher >().dispatch( PlayerKilled( m_object->id ) );
+  the::ctci::service< EngineDispatcher >().dispatch( PlayerKilled( m_object->id() ) );
 }
 
 

@@ -80,16 +80,10 @@ Describe(an_object)
     AssertThat( rarely_synchronized_behavior->dispatched_event, Equals( &test_event ) );
   }
 
-  It( is_identified_by_its_pointer_if_default_constructed )
-  {
-    yarrr::Object one_object;
-    AssertThat( one_object.id, Equals( yarrr::Object::Id( &one_object ) ) );
-  }
-
   It( can_be_constructed_with_a_specific_id )
   {
     yarrr::Object one_object( 123u );
-    AssertThat( one_object.id, Equals( 123u ) );
+    AssertThat( one_object.id(), Equals( 123u ) );
   }
 
   It( can_update_a_behavior )
@@ -149,10 +143,10 @@ Describe(an_object)
     yarrr::Object::Pointer object_clone( object->clone() );
   }
 
-  It( does_not_share_the_id_with_the_clone )
+  It( clones_object_id )
   {
     yarrr::Object::Pointer object_clone( object->clone() );
-    AssertThat( object_clone->id, !Equals( object->id ) );
+    AssertThat( object_clone->id(), Equals( object->id() ) );
   }
 
   It( clones_behaviors_when_cloned )

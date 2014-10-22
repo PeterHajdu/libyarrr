@@ -172,7 +172,7 @@ Describe( object_container_collision_checks )
     for ( size_t i( 0 ); i < n; ++i )
     {
       yarrr::Object::Pointer laser( create_test_laser( i, physical_parameters ) );
-      created_objects.push_back( laser->id );
+      created_objects.push_back( laser->id() );
       container->add_object( std::move( laser ) );
     }
   }

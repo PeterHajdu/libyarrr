@@ -49,7 +49,7 @@ create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& i
   loot->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
   loot->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 30 ) ) );
   loot->add_behavior( ObjectBehavior::Pointer( new LootAttacher() ) );
-  loot->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( loot->id, 36000000u ) ) );
+  loot->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( loot->id(), 36000000u ) ) );
 
   ShapeBehavior* shape( new ShapeBehavior() );
   //todo: should this be the wreck?
@@ -114,7 +114,7 @@ create_laser( const PhysicalParameters& laser_parameters )
   laser->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::laser_layer ) ) );
   laser->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 10 ) ) );
   laser->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
-  laser->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( laser->id, 3000000u ) ) );
+  laser->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( laser->id(), 3000000u ) ) );
 
   return laser;
 }

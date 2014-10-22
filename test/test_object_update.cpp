@@ -40,7 +40,7 @@ Describe( an_object_initializer )
 
   It( has_the_same_id_as_the_object )
   {
-    AssertThat( object_update->id(), Equals( object->id ) );
+    AssertThat( object_update->id(), Equals( object->id() ) );
   }
 
   It( is_registered_to_entity_factory )
@@ -51,12 +51,12 @@ Describe( an_object_initializer )
 
   It( serializes_and_deserializes_the_id )
   {
-    AssertThat( deserialized_update->id(), Equals( object->id ) );
+    AssertThat( deserialized_update->id(), Equals( object->id() ) );
   }
 
   It( can_create_new_objects_with_the_same_id )
   {
-    AssertThat( recreated_object->id, Equals( object->id ) );
+    AssertThat( recreated_object->id(), Equals( object->id() ) );
   }
 
   It( can_create_new_objects_with_the_same_behaviors )

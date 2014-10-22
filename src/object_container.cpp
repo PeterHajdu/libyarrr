@@ -24,9 +24,9 @@ void
 ObjectContainer::add_object( Object::Pointer&& object )
 {
   assert( object );
-  assert( !has_object_with_id( object->id ) );
+  assert( !has_object_with_id( object->id() ) );
   register_dispatcher( object->dispatcher );
-  m_objects.emplace( object->id, std::move( object ) );
+  m_objects.emplace( object->id(), std::move( object ) );
 }
 
 

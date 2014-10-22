@@ -48,7 +48,7 @@ Describe( delete_when_destroyed )
   {
     object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
     AssertThat( was_object_deleted, Equals( true ) );
-    AssertThat( deleted_object_id, Equals( object->id ) );
+    AssertThat( deleted_object_id, Equals( object->id() ) );
   }
 
   bool was_object_deleted;
@@ -99,7 +99,7 @@ Describe( respawn_when_destroyed )
 
   It( should_send_the_object_id_in_the_player_killed_event )
   {
-    AssertThat( destroyed_object_id, Equals( object->id ) );
+    AssertThat( destroyed_object_id, Equals( object->id() ) );
   }
 
   bool was_player_killed;

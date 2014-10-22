@@ -1,23 +1,12 @@
 #include <yarrr/object_factory.hpp>
 #include <yarrr/lua_engine.hpp>
+#include <yarrr/basic_behaviors.hpp>
 #include <yarrr/object.hpp>
+#include <yarrr/object_update.hpp>
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
-
-namespace
-{
-
-bool factory_method_was_called{ false };
-yarrr::Object temporary_global_object;
-yarrr::Object* dogfood()
-{
-  factory_method_was_called = true;
-  return &temporary_global_object;
-}
-
-}
 
 Describe( an_object_factory )
 {
@@ -29,7 +18,7 @@ Describe( an_object_factory )
         [ this ]()
         {
           yarrr::Object::Pointer object( new yarrr::Object() );
-          created_object_id = object->id;
+          created_object_id = object->id();
           return object;
         } );
   }
@@ -46,7 +35,7 @@ Describe( an_object_factory )
   It( creates_an_object_by_key )
   {
     yarrr::Object::Pointer object( object_factory->create_a( key ) );
-    AssertThat( object->id, Equals( created_object_id ) );
+    AssertThat( object->id(), Equals( created_object_id ) );
   }
 
   It( calls_the_correct_creator_in_case_of_multiple_keys )
@@ -78,10 +67,17 @@ Describe( an_object_factory )
 
   It( exports_factory_registration_to_the_lua_world )
   {
-    yarrr::Lua::state().set_function( "dogfood", dogfood );
-    yarrr::Lua::state().script( "register_object_factory( \"dogfood\", dogfood )" );
-    the::ctci::service< yarrr::ObjectFactory >().create_a( "dogfood" );
-    AssertThat( factory_method_was_called, Equals( true ) );
+    sol::state& lua( yarrr::Lua::state() );
+    lua.new_userdata< yarrr::Object >( "Object", "add_behavior", &yarrr::Object::add_behavior_clone );
+    lua.new_userdata< yarrr::PhysicalBehavior >( "PhysicalBehavior" );
+
+    yarrr::Lua::state().script(
+        "function dogfood( new_object )\n"
+        "  new_object:add_behavior( PhysicalBehavior.new() )\n"
+        "end\n"
+        "register_object_factory( \"dogfood\", dogfood )\n" );
+
+    yarrr::Object::Pointer new_object( the::ctci::service< yarrr::ObjectFactory >().create_a( "dogfood" ) );
   }
 
   yarrr::Object::Id created_object_id;

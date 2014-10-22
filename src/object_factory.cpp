@@ -16,8 +16,10 @@ void register_object_factory( const std::string& name, sol::function factory )
         thelog( yarrr::log::info )( "Calling lua factory method:", name );
         try
         {
-          const auto an_object( factory.call<yarrr::Object*>() );
-          return an_object->clone();
+          auto new_object( yarrr::Object::create() );
+          thelog( yarrr::log::debug )( "Sending object to lua factory method:", new_object.get(), new_object->id() );
+          factory.call( *new_object );
+          return std::move( new_object );
         }
         catch( std::exception& e )
         {

@@ -2,6 +2,7 @@
 #include <yarrr/object_update.hpp>
 #include <yarrr/object_behavior.hpp>
 #include <yarrr/bitmagic.hpp>
+#include <yarrr/log.hpp>
 
 #include <algorithm>
 
@@ -22,6 +23,15 @@ namespace
     }
     return cloned_container;
   }
+
+  yarrr::Object::Id last_object_id( 0 );
+
+  //todo: add hash table to avoid id duplication
+  yarrr::Object::Id
+  generate_next_id()
+  {
+    return last_object_id++;
+  }
 }
 
 namespace yarrr
@@ -31,15 +41,27 @@ const int Object::object_initialization_period = 50;
 
 
 Object::Object()
-  : id( Id( this ) )
+  : m_id( generate_next_id() )
   , m_object_update_index( 0 )
 {
 }
 
 Object::Object( const Id& id )
-  : id( id )
+  : m_id( id )
   , m_object_update_index( 0 )
 {
+}
+
+Object::Pointer
+Object::create()
+{
+  return Pointer( new Object() );
+}
+
+Object::Id
+Object::id() const
+{
+  return m_id;
 }
 
 void
@@ -52,6 +74,7 @@ Object::add_behavior( ObjectBehavior::Pointer&& behavior )
 void
 Object::add_behavior_clone( ObjectBehavior& behavior )
 {
+  thelog( yarrr::log::debug )( "Adding behavior clone to:", this, id(), "behavior:", &behavior );
   add_behavior( behavior.clone() );
 }
 
@@ -91,11 +114,11 @@ Object::generate_update() const
   if ( m_object_update_index % object_initialization_period == 0 )
   {
     force_full_synchronization();
-    update.reset( new ObjectInitializer( id, clone_behaviors_for_synchronization( m_behaviors ) ) );
+    update.reset( new ObjectInitializer( id(), clone_behaviors_for_synchronization( m_behaviors ) ) );
   }
   else
   {
-    update.reset( new BasicObjectUpdate( id, clone_behaviors_for_synchronization( m_behaviors ) ) );
+    update.reset( new BasicObjectUpdate( id(), clone_behaviors_for_synchronization( m_behaviors ) ) );
   }
 
   ++m_object_update_index;
@@ -105,7 +128,7 @@ Object::generate_update() const
 Object::Pointer
 Object::clone() const
 {
-  Object::Pointer clone( new Object() );
+  Object::Pointer clone( new Object( id() ) );
   for ( const auto& behavior : m_behaviors )
   {
     clone->add_behavior( behavior->clone() );

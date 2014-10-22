@@ -20,11 +20,17 @@ class Object final
 
     Object();
     Object( const Id& id );
-    const Id id;
+    Object( const Object& ) = delete;
+    Object& operator=( const Object& ) = delete;
+
+    static Pointer create();
+
     the::ctci::Dispatcher dispatcher;
     the::ctci::ComponentRegistry components;
 
     Pointer clone() const;
+
+    Id id() const;
 
     void add_behavior( ObjectBehavior::Pointer&& behavior );
     void add_behavior_clone( ObjectBehavior& behavior );
@@ -37,6 +43,7 @@ class Object final
     void force_full_synchronization() const;
 
     BehaviorContainer m_behaviors;
+    const Id m_id;
 
     static const int object_initialization_period;
     mutable int m_object_update_index;
