@@ -79,7 +79,7 @@ export_yarrr_stuff()
   lua[ "port_thruster" ] = int( yarrr::ShipControl::port_thruster );
   lua[ "starboard_thruster" ] = int( yarrr::ShipControl::starboard_thruster );
   lua.new_userdata< yarrr::Thruster, int, yarrr::Tile::Coordinate, yarrr::Angle >( "Thruster" );
-  lua.new_userdata< yarrr::Canon, yarrr::Tile::Coordinate >( "Canon" );
+  lua.new_userdata< yarrr::Canon, yarrr::Tile::Coordinate, yarrr::Angle >( "Canon" );
 
 }
 

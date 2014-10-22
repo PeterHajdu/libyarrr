@@ -30,5 +30,5 @@ Thruster.new( main_thruster, Coordinate.new( 0, 0 ), 180 )
 assert( port_thruster )
 assert( starboard_thruster )
 
-Canon.new( TileCoordinate.new( 0, 0 ) )
+Canon.new( TileCoordinate.new( 0, 0 ), 0 )
 

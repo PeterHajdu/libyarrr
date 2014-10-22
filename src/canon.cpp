@@ -5,11 +5,13 @@
 #include <yarrr/object_creator.hpp>
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/engine_dispatcher.hpp>
+#include <yarrr/lua_engine.hpp>
+#include <yarrr/bitmagic.hpp>
+
 #include <thectci/service_registry.hpp>
 
 namespace
 {
-
   const char * canon_name = "canon";
   yarrr::AutoEntityRegister< yarrr::Canon > auto_canon_register;
 }
@@ -20,45 +22,30 @@ namespace yarrr
 Canon::Canon()
 : Item( rarely_synchronize(), canon_name, { 0, 0 } )
 , m_physical_parameters( nullptr )
-, m_index( 0 )
-, m_number_of_canons( 1 )
+, m_orientation( 0 )
 {
 }
 
-Canon::Canon( const Tile::Coordinate coordinate )
+Canon::Canon( const Tile::Coordinate coordinate, Angle orientation )
 : Item( rarely_synchronize(), canon_name, coordinate )
 , m_physical_parameters( nullptr )
-, m_index( 0 )
-, m_number_of_canons( 1 )
+, m_orientation( orientation )
 {
 }
 
-Canon::Canon( const Id& id, const Tile::Coordinate coordinate )
+Canon::Canon( const Id& id, const Tile::Coordinate coordinate, Angle orientation )
 : Item( rarely_synchronize(), id, canon_name, coordinate )
 , m_physical_parameters( nullptr )
-, m_index( 0 )
-, m_number_of_canons( 1 )
+, m_orientation( orientation )
 {
 }
 
 void
 Canon::register_item_to( Object& owner )
 {
-  owner.dispatcher.register_listener< yarrr::ShipControl  >(
+  owner.dispatcher.register_listener< yarrr::ShipControl >(
       std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
   m_physical_parameters = &owner.components.component< yarrr::PhysicalBehavior >().physical_parameters;
-
-  if ( owner.components.has_component< Canon >() )
-  {
-    m_index = owner.components.component< Canon >().generate_next_index();
-  }
-}
-
-
-int
-Canon::generate_next_index()
-{
-  return m_number_of_canons++;
 }
 
 
@@ -82,11 +69,7 @@ Canon::generate_physical_parameters() const
 {
   PhysicalParameters new_parameters( *m_physical_parameters );
   new_parameters.coordinate += relative_coordinate();
-
-  const yarrr::Coordinate difference( perpendicular( heading( new_parameters, 5_metres ) ) );
-
-  const int left_or_right( m_index % 2 ? -1 : 1 );
-  new_parameters.coordinate += difference * m_index * left_or_right * 0.5;
+  new_parameters.orientation += m_orientation;
   return new_parameters;
 }
 
@@ -94,7 +77,25 @@ Canon::generate_physical_parameters() const
 ObjectBehavior::Pointer
 Canon::clone() const
 {
-  return Pointer( new Canon( id(), tile_coordinate() ) );
+  return Pointer( new Canon( id(), tile_coordinate(), m_orientation ) );
+}
+
+Angle
+Canon::orientation() const
+{
+  return m_orientation;
+}
+
+void
+Canon::serialize_item( Serializer& serializer ) const
+{
+  serializer.push_back( m_orientation );
+}
+
+void
+Canon::deserialize_item( Deserializer& deserializer )
+{
+  m_orientation = deserializer.pop_front< Angle >();
 }
 
 }

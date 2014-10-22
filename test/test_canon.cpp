@@ -20,7 +20,7 @@ Describe( a_canon )
 
   void add_canon()
   {
-    canons.push_back( new yarrr::Canon( { 0, 0 } ) );
+    canons.push_back( new yarrr::Canon( { 0, 0 }, canon_orientation ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( canons.back() ) );
   }
 
@@ -32,7 +32,9 @@ Describe( a_canon )
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShapeBehavior() ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Inventory() ) );
-    inventory = &object->components.component< yarrr::Inventory >();
+
+    inventory = &yarrr::component_of< yarrr::Inventory >( *object );
+    yarrr::component_of< yarrr::PhysicalBehavior >( *object ).physical_parameters.orientation = ship_orientation;
 
     add_canon();
 
@@ -86,20 +88,30 @@ Describe( a_canon )
     AssertThat( inventory->items(), HasLength( 2u ) );
   }
 
-  It( places_canons_apart )
+  It( shoots_in_the_direction_of_the_canon )
   {
-    add_canon();
     object->dispatcher.dispatch( yarrr::ShipControl( yarrr::ShipControl::fire, 0 ) );
-    AssertThat( bullets, HasLength( 2u ) );
-    const yarrr::Coordinate canon_coordinate_difference(
-        bullets[ 0 ].coordinate - bullets[ 1 ].coordinate );
+    const yarrr::PhysicalParameters& bullet_parameters( bullets.back() );
 
-    AssertThat( canon_coordinate_difference, !Equals( zero ) );
+    AssertThat( bullet_parameters.orientation, Equals( canon_orientation + ship_orientation ) );
+  }
+
+  It( serializes_and_deserializes_orientation )
+  {
+    yarrr::Canon& original_canon( *canons.back() );
+    const yarrr::Data serialized_canon( original_canon.clone()->serialize() );
+
+    yarrr::Canon deserialized_canon;
+    deserialized_canon.deserialize( serialized_canon );
+    AssertThat( deserialized_canon.orientation(), Equals( canon_orientation ) );
   }
 
   bool was_canon_fired;
 
   yarrr::Inventory* inventory;
+
+  const yarrr::Angle canon_orientation{ 10_degrees };
+  const yarrr::Angle ship_orientation{ 100_degrees };
 
   yarrr::Object::Pointer object;
   std::vector< yarrr::Canon* > canons;

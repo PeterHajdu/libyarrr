@@ -12,20 +12,23 @@ class Canon : public Item
   public:
     add_polymorphic_ctci( "yarrr_canon" );
     Canon();
-    Canon( const Tile::Coordinate coordinate );
-    Canon( const Id& id, const Tile::Coordinate coordinate );
+    Canon( const Tile::Coordinate coordinate, Angle orientation );
+    Canon( const Id& id, const Tile::Coordinate coordinate, Angle orientation );
 
     virtual Pointer clone() const override;
 
+    Angle orientation() const;
+
   private:
+    virtual void serialize_item( Serializer& serializer ) const override final;
+    virtual void deserialize_item( Deserializer& deserializer ) override final;
+
     virtual void register_item_to( Object& ) override;
-    int generate_next_index();
     void handle_command( const ShipControl& ) const;
     PhysicalParameters generate_physical_parameters() const;
 
     PhysicalParameters* m_physical_parameters;
-    int m_index;
-    int m_number_of_canons;
+    Angle m_orientation;
 };
 
 }
