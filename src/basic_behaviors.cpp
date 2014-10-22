@@ -212,10 +212,15 @@ ShapeGraphics::ShapeGraphics( const Id& id )
 {
 }
 
+//todo: show/hide on graphical objects might be a better solution
 void
 ShapeGraphics::draw() const
 {
-  assert( m_physical_behavior );
+  if ( !m_physical_behavior )
+  {
+    return;
+  }
+
   m_graphical_engine.draw_object_with_shape( *m_object );
 }
 

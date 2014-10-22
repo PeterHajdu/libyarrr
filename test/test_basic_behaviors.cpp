@@ -104,6 +104,12 @@ Describe( graphical_behaviors )
     graphical_engine->last_focused_to = physical_behavior.physical_parameters.coordinate + yarrr::Coordinate( 10, 10 );
   }
 
+  It( handles_draw_even_without_registration )
+  {
+    shape_graphics.reset( new yarrr::ShapeGraphics() );
+    shape_graphics->draw();
+  }
+
   It( behaves_like_a_decent_synchronizable_behavior )
   {
     test::assert_that_it_is_a_synchronizable_behavior< yarrr::ShapeGraphics >();
