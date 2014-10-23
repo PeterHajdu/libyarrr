@@ -32,7 +32,6 @@ ObjectUpdate::id() const
 void
 ObjectUpdate::do_serialize( Serializer& serializer ) const
 {
-  thelog( yarrr::log::debug )( "Serializing update. id:", id(), "number of behaviors:", m_behaviors.size() );
   serializer.push_back( m_id );
   for ( const auto& behavior : m_behaviors )
   {
@@ -52,13 +51,11 @@ ObjectUpdate::do_deserialize( Deserializer& deserializer )
           static_cast< ObjectBehavior* >( new_entity.release() ) ) );
   }
 
-  thelog( yarrr::log::debug )( "Deserialized update. id:", id(), "number of behaviors:", m_behaviors.size() );
 }
 
 void
 ObjectUpdate::update_object( Object& object ) const
 {
-  thelog( yarrr::log::debug )( "Update object from update. id:", id(), "number of behaviors:", m_behaviors.size() );
   for ( const auto& behavior : m_behaviors )
   {
     object.update_behavior( behavior->clone() );
@@ -68,7 +65,6 @@ ObjectUpdate::update_object( Object& object ) const
 Object::Pointer
 ObjectUpdate::create_object() const
 {
-  thelog( yarrr::log::debug )( "Create object from update. id:", id(), "number of behaviors:", m_behaviors.size() );
   Object::Pointer recreated_object( new Object( m_id ) );
   for ( const auto& behavior : m_behaviors )
   {
