@@ -11,9 +11,23 @@ Describe(a_tile)
   {
     It( has_constructor_with_top_left_and_bottom_right_coordinate_parameters )
     {
+      yarrr::Tile tile( { 1, 8 }, { 5, 2 } );
+      AssertThat( tile.top_left, Equals( yarrr::Tile::Coordinate{ 1, 8 } ) );
+      AssertThat( tile.bottom_right, Equals( yarrr::Tile::Coordinate{ 5, 2 } ) );
+    }
+
+    It( fixes_mixed_up_x_coordinate )
+    {
+      yarrr::Tile tile( { 5, 8 }, { 1, 2 } );
+      AssertThat( tile.top_left, Equals( yarrr::Tile::Coordinate{ 1, 8 } ) );
+      AssertThat( tile.bottom_right, Equals( yarrr::Tile::Coordinate{ 5, 2 } ) );
+    }
+
+    It( fixes_mixed_up_y_coordinate )
+    {
       yarrr::Tile tile( { 1, 2 }, { 5, 8 } );
-      AssertThat( tile.top_left, Equals( yarrr::Tile::Coordinate{ 1, 2 } ) );
-      AssertThat( tile.bottom_right, Equals( yarrr::Tile::Coordinate{ 5, 8 } ) );
+      AssertThat( tile.top_left, Equals( yarrr::Tile::Coordinate{ 1, 8 } ) );
+      AssertThat( tile.bottom_right, Equals( yarrr::Tile::Coordinate{ 5, 2 } ) );
     }
   };
 
@@ -92,6 +106,19 @@ Describe(a_tile)
     }
   };
 
+  Describe( contains_point_functionality )
+  {
+    It( can_tell_if_it_contains_a_point )
+    {
+      AssertThat( tile.does_contain( coordinate_outside ), Equals( false ) );
+      AssertThat( tile.does_contain( coordinate_inside ), Equals( true ) );
+    }
+
+    const yarrr::Tile tile{ { 10, 10 }, { 11, 10 } };
+    const yarrr::Coordinate coordinate_outside{ 10 * yarrr::Tile::unit_length, 10 * yarrr::Tile::unit_length };
+    const yarrr::Coordinate coordinate_inside{ 10 * yarrr::Tile::unit_length + 1, 10 * yarrr::Tile::unit_length + 1 };
+  };
+
 };
 
 Describe(a_polygon)
@@ -144,6 +171,24 @@ Describe(relative_coordinate)
   const yarrr::Coordinate center_of_mass_relative{ -5_metres, 0 };
   const yarrr::Coordinate center_of_object_absolute{ 100_metres, 100_metres };
   const yarrr::Angle orientation_of_object{ -90_degrees };
+};
+
+Describe(absolute_coordinate)
+{
+  It(can_be_transformed_to_relative_to_center_of_mass)
+  {
+    const yarrr::Coordinate relative_to_center_of_mass(
+        yarrr::transform_absolute_to_relative_to_center_of_mass(
+          absolute_coordinate,
+          absolute_center_of_mass,
+          orientation ) );
+    AssertThat( relative_to_center_of_mass,
+        Equals( yarrr::Coordinate{ 5_metres, 0 } ) );
+  }
+
+  const yarrr::Coordinate absolute_coordinate{ 0, 10_metres };
+  const yarrr::Coordinate absolute_center_of_mass{ 0, 5_metres };
+  const yarrr::Angle orientation{ 90_degrees };
 };
 
 Describe(a_shape)
@@ -265,6 +310,94 @@ Describe(a_shape)
     }
 
     std::unique_ptr< yarrr::Shape > shape;
+  };
+
+  Describe( radius_calculation )
+  {
+
+    void SetUp()
+    {
+      shape.reset( new yarrr::Shape() );
+    }
+
+    It( is_the_most_distant_point_of_a_single_unit_tile )
+    {
+      shape->add_tile( { { 10, 10 }, { 10, 10 } } );
+      AssertThat( shape->radius(),
+          Equals( yarrr::length_of(
+              yarrr::Coordinate{
+              yarrr::Tile::unit_length,
+              yarrr::Tile::unit_length } * 0.5 ) ) );
+    }
+
+    It( is_the_most_distant_point_of_a_bigger_single_tile )
+    {
+      shape->add_tile( { { 10, 10 }, { 14, 14 } } );
+      AssertThat( shape->radius(),
+          Equals( yarrr::length_of(
+              yarrr::Coordinate{
+              yarrr::Tile::unit_length,
+              yarrr::Tile::unit_length } * 2.5 ) ) );
+    }
+
+    It( is_the_most_distant_point_of_all_tiles )
+    {
+      shape->add_tile( { { -1, 0 }, { -1, 0 } } );
+      shape->add_tile( { { 0, 0 }, { 0, 0 } } );
+      AssertThat( shape->radius(),
+          Equals( yarrr::length_of(
+              yarrr::Coordinate{
+              yarrr::Tile::unit_length,
+              yarrr::Tile::unit_length * 0.5 } ) ) );
+    }
+
+    std::unique_ptr< yarrr::Shape > shape;
+  };
+
+  Describe( instantiation )
+  {
+    It( has_a_default_constructor )
+    {
+      yarrr::Shape a_shape;
+      (void)a_shape;
+    }
+
+    It( can_be_constructed_with_a_vector_of_tiles )
+    {
+      yarrr::Shape default_constructed_shape;
+      default_constructed_shape.add_tile( tile_a );
+      default_constructed_shape.add_tile( tile_b );
+
+      const yarrr::Shape vector_constructed_shape{ { tile_a, tile_b } };
+      AssertThat( default_constructed_shape, Equals( vector_constructed_shape ) );
+    }
+
+    const yarrr::Tile tile_a{ { 0, 0 }, { 1, 1 } };
+    const yarrr::Tile tile_b{ { -1, -1 }, { -1, -1 } };
+  };
+
+  Describe( containment )
+  {
+    It( can_tell_if_a_coordinate_is_not_contained_at_all )
+    {
+      AssertThat( shape.does_contain( coordinate_outside_tiles ), Equals( false ) );
+    }
+
+    It( can_tell_if_any_of_its_tiles_contain_a_coordinate_relative_to_the_center_of_mass )
+    {
+      AssertThat( shape.does_contain( coordinate_inside_tile_b ), Equals( true ) );
+      AssertThat( shape.does_contain( coordinate_inside_tile_a ), Equals( true ) );
+    }
+
+    const yarrr::Shape shape{ {
+      yarrr::Tile{ { 0, 0 }, { 0, 0 } },
+      yarrr::Tile{ { 1, 0 }, { 1, 0 } } } };
+
+    const yarrr::Coordinate center_of_mass{ shape.center_of_mass() };
+    const yarrr::Coordinate diff{ yarrr::Tile::unit_length / 2, 0 };
+    const yarrr::Coordinate coordinate_inside_tile_a{ diff * -1 };
+    const yarrr::Coordinate coordinate_inside_tile_b{ diff };
+    const yarrr::Coordinate coordinate_outside_tiles{ diff * 2 };
   };
 
   std::unique_ptr< yarrr::Tile > a_tile;

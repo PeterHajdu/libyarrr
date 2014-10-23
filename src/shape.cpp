@@ -1,16 +1,56 @@
 #include <yarrr/shape.hpp>
 
+namespace
+{
+  yarrr::Tile::Coordinate top_left_from(
+      const yarrr::Tile::Coordinate& a,
+      const yarrr::Tile::Coordinate& b )
+  {
+    return { std::min( a.x, b.x ), std::max( a.y, b.y ) };
+  }
+
+  yarrr::Tile::Coordinate bottom_right_from(
+      const yarrr::Tile::Coordinate& a,
+      const yarrr::Tile::Coordinate& b )
+  {
+    return { std::max( a.x, b.x ), std::min( a.y, b.y ) };
+  }
+
+  typedef std::vector< yarrr::Coordinate > Corners;
+
+  Corners corners_of( const yarrr::Tile& tile )
+  {
+    return {
+      yarrr::Coordinate( tile.top_left.x, tile.top_left.y + 1 ) * yarrr::Tile::unit_length,
+      yarrr::Coordinate( tile.bottom_right.x + 1, tile.top_left.y + 1 ) * yarrr::Tile::unit_length,
+      yarrr::Coordinate( tile.bottom_right.x + 1, tile.bottom_right.y ) * yarrr::Tile::unit_length,
+      yarrr::Coordinate( tile.top_left.x, tile.bottom_right.y ) * yarrr::Tile::unit_length,
+      };
+  }
+}
+
 namespace yarrr
 {
 
 const int16_t Tile::unit_length = 5_metres;
 
 Tile::Tile( const Coordinate& top_left, const Coordinate& bottom_right )
-  : top_left( top_left )
-  , bottom_right( bottom_right )
+  : top_left( top_left_from( top_left, bottom_right ) )
+  , bottom_right( bottom_right_from( top_left, bottom_right ) )
   , center( calculate_center() )
   , mass( calculate_mass() )
 {
+}
+
+bool
+Tile::does_contain( const yarrr::Coordinate& coordinate ) const
+{
+//todo: extract these bound calculations
+  return
+    coordinate.x > top_left.x * unit_length &&
+    coordinate.y < ( top_left.y + 1 ) * unit_length &&
+    coordinate.x < ( bottom_right.x + 1 ) * unit_length &&
+    coordinate.y > bottom_right.y * unit_length;
 }
 
 int
@@ -34,6 +74,7 @@ Shape::add_tile( const Tile& tile )
 {
   m_tiles.emplace_back( tile );
   calculate_center_of_mass_and_mass();
+  calculate_radius();
 }
 
 bool
@@ -54,7 +95,17 @@ operator!=( const Tile& l, const Tile& r )
 Shape::Shape()
   : m_center_of_mass{ 0, 0 }
   , m_mass{ 0 }
+  , m_radius{ 0 }
 {
+}
+
+Shape::Shape( const TileContainer& tiles )
+  : Shape()
+{
+  for ( const auto& tile : tiles )
+  {
+    add_tile( tile );
+  }
 }
 
 int
@@ -193,6 +244,56 @@ center_of_mass_relative_to_absolute(
   absolute_coordinate += center_of_object_absolute;
   return absolute_coordinate;
 }
+
+
+Coordinate::type
+Shape::radius() const
+{
+  return m_radius;
+}
+
+void
+Shape::calculate_radius()
+{
+  m_radius = 0;
+
+  for ( const auto& tile : m_tiles )
+  {
+    const Corners corners( corners_of( tile ) );
+    for ( const auto& corner : corners )
+    {
+      const auto distance_from_center_of_mass( yarrr::length_of( m_center_of_mass - corner ) );
+      m_radius = std::max( m_radius, distance_from_center_of_mass );
+    }
+  }
+
+}
+
+
+bool
+Shape::does_contain( const Coordinate& relative_to_center_of_mass ) const
+{
+  const Coordinate relative_coordinate{ relative_to_center_of_mass + center_of_mass() };
+
+  return std::any_of( std::begin( m_tiles ), std::end( m_tiles ),
+     [ &relative_coordinate ]( const Tile& tile )
+     {
+       return tile.does_contain( relative_coordinate );
+     } );
+}
+
+
+Coordinate
+transform_absolute_to_relative_to_center_of_mass(
+  const Coordinate& absolute_coordinate,
+  const Coordinate& absolute_center_of_mass,
+  const Angle& orientation )
+{
+  Coordinate relative( absolute_coordinate - absolute_center_of_mass );
+  yarrr::rotate( relative, -orientation );
+  return relative;
+}
+
 
 }
 

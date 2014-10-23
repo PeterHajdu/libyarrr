@@ -1,17 +1,6 @@
 #include <yarrr/collider.hpp>
+#include <yarrr/collision_checker.hpp>
 #include <yarrr/basic_behaviors.hpp>
-
-namespace
-{
-
-int64_t length_square( const yarrr::Coordinate& coordinate )
-{
-  return
-    coordinate.x * coordinate.x +
-    coordinate.y * coordinate.y;
-}
-
-}
 
 namespace yarrr
 {
@@ -60,17 +49,7 @@ Collider::collide_if_needed_with( Collider& other )
 bool
 Collider::is_collider_too_far( const Collider& other ) const
 {
-  Coordinate coordinate_difference(
-      m_physical_behavior->physical_parameters.coordinate -
-      other.m_physical_behavior->physical_parameters.coordinate );
-
-  const Coordinate close_enough( 10_metres, 10_metres );
-  if ( length_square( coordinate_difference ) > length_square( close_enough ) )
-  {
-    return true;
-  }
-
-  return false;
+  return !does_collide( *m_object, *other.m_object );
 }
 
 void

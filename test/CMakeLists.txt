@@ -29,6 +29,7 @@ set(TEST_SOURCE_FILES
     test_main_thread_callback_queue.cpp
     test_services.cpp
     test_collider.cpp
+    test_collision_checker.cpp
     test_destruction_handler.cpp
     test_particles.cpp
     test_damage_causer.cpp

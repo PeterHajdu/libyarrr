@@ -14,6 +14,7 @@ set(SOURCE_FILES
   basic_behaviors.cpp
   graphical_engine.cpp
   collider.cpp
+  collision_checker.cpp
   destruction_handlers.cpp
   particle.cpp
   thruster.cpp

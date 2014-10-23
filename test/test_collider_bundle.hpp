@@ -1,10 +1,15 @@
 #pragma once
 
+#include <yarrr/collider.hpp>
+#include <yarrr/shape_behavior.hpp>
+#include <memory>
+
 namespace test
 {
   class ColliderBundle
   {
     public:
+      typedef std::unique_ptr< ColliderBundle > Pointer;
       ColliderBundle( int layer )
         : collider( new yarrr::Collider( layer ) )
         , physical_behavior( new yarrr::PhysicalBehavior() )
@@ -33,6 +38,13 @@ namespace test
       bool did_collide() const
       {
         return collided_with != nullptr;
+      }
+
+      yarrr::Shape* shape{ nullptr };
+      void add_shape()
+      {
+        object.add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShapeBehavior() ) );
+        shape = &yarrr::component_of< yarrr::ShapeBehavior >( object ).shape;
       }
 
       yarrr::PhysicalParameters&

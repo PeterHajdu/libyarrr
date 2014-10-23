@@ -8,6 +8,7 @@ namespace yarrr
 {
 typedef std::vector< Coordinate > Polygon;
 
+//todo: extract tile to separate file
 class Tile final
 {
   public:
@@ -21,6 +22,7 @@ class Tile final
     const yarrr::Coordinate center;
     const int mass;
 
+    bool does_contain( const yarrr::Coordinate& ) const;
   private:
     yarrr::Coordinate calculate_center() const;
     int calculate_mass() const;
@@ -57,6 +59,7 @@ class Shape
   public:
     typedef std::vector< Tile > TileContainer;
     Shape();
+    Shape( const TileContainer& );
     void add_tile( const Tile& );
     const TileContainer& tiles() const;
 
@@ -65,15 +68,25 @@ class Shape
 
     Shape& operator=( const Shape& other );
 
+    Coordinate::type radius() const;
+
+    bool does_contain( const Coordinate& relative_to_center_of_mass ) const;
+
   private:
     void calculate_center_of_mass_and_mass();
+    void calculate_radius();
 
     TileContainer m_tiles;
     Coordinate m_center_of_mass;
     int m_mass;
+    Coordinate::type m_radius;
 };
 
 bool operator==( const Shape& l, const Shape& r );
 
+Coordinate transform_absolute_to_relative_to_center_of_mass(
+  const Coordinate& absolute_coordinate,
+  const Coordinate& absolute_center_of_mass,
+  const Angle& orientation );
 }
 

@@ -9,6 +9,7 @@
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/collider.hpp>
 #include <yarrr/destruction_handlers.hpp>
+#include <yarrr/shape_behavior.hpp>
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
@@ -156,6 +157,9 @@ create_test_laser( int layer, const yarrr::PhysicalParameters& physical_paramete
 {
   yarrr::Object::Pointer laser( new yarrr::Object() );
   laser->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior( physical_parameters ) ) );
+  laser->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::ShapeBehavior() ) );
+  yarrr::component_of< yarrr::ShapeBehavior >( *laser ).shape.add_tile( yarrr::Tile{ { 0, 0 }, { 0, 0 } } );
+
   laser->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( layer ) ) );
   laser->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DamageCauser( 10 ) ) );
   laser->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DeleteWhenDestroyed() ) );
