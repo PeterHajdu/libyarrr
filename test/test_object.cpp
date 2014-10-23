@@ -1,6 +1,7 @@
 #include "test_events.hpp"
 #include "test_behavior.hpp"
 #include "test_remote_object.hpp"
+
 #include <yarrr/object.hpp>
 #include <yarrr/object_update.hpp>
 #include <yarrr/object_creator.hpp>
@@ -8,9 +9,12 @@
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/inventory.hpp>
 #include <yarrr/canon.hpp>
+#include <yarrr/shape_behavior.hpp>
+
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <thetime/timer.hpp>
+
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
@@ -171,6 +175,9 @@ Describe( ship_synchronization_procedure )
     original_inventory = &yarrr::component_of< yarrr::Inventory >( *original_object );
 
     synchronized_object = test::create_remote_object_from( *original_object );
+    AssertThat( yarrr::has_component< yarrr::ShapeBehavior >( *synchronized_object ), Equals( true ) );
+    AssertThat( yarrr::has_component< yarrr::Inventory >( *synchronized_object ), Equals( true ) );
+
     synchronized_inventory = &yarrr::component_of< yarrr::Inventory >( *synchronized_object );
 
     number_of_initial_items = original_inventory->items().size();
@@ -186,6 +193,7 @@ Describe( ship_synchronization_procedure )
     original_object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Canon() ) );
     AssertThat( original_inventory->items().size(), Equals( number_of_initial_items + 1 ) );
     auto object_update( original_object->generate_update() );
+
     object_update->update_object( *synchronized_object );
     AssertThat( synchronized_inventory->items().size(), Equals( number_of_initial_items + 1 ) );
   }

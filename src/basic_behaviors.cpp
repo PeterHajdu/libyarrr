@@ -97,12 +97,12 @@ PhysicalBehavior::serialize_behavior( yarrr::Serializer& serializer ) const
 void
 PhysicalBehavior::deserialize_behavior( yarrr::Deserializer& deserializer )
 {
-  physical_parameters.coordinate.x = deserializer.pop_front<int64_t>();
-  physical_parameters.coordinate.y = deserializer.pop_front<int64_t>();
-  physical_parameters.velocity.x = deserializer.pop_front<int64_t>();
-  physical_parameters.velocity.y = deserializer.pop_front<int64_t>();
-  physical_parameters.orientation = deserializer.pop_front<int16_t>();
-  physical_parameters.angular_velocity = deserializer.pop_front<int16_t>();
+  physical_parameters.coordinate.x = deserializer.pop_front< Coordinate::type >();
+  physical_parameters.coordinate.y = deserializer.pop_front< Coordinate::type >();
+  physical_parameters.velocity.x = deserializer.pop_front< Coordinate::type >();
+  physical_parameters.velocity.y = deserializer.pop_front< Coordinate::type >();
+  physical_parameters.orientation = deserializer.pop_front< Angle >();
+  physical_parameters.angular_velocity = deserializer.pop_front< Angle >();
   physical_parameters.integrity = deserializer.pop_front<int16_t>();
   physical_parameters.timestamp = deserializer.pop_front<the::time::Time>();
 }

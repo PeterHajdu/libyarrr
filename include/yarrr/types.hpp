@@ -61,7 +61,7 @@ namespace yarrr
     return degree * 256;
   }
 
-  inline Angle hiplon_to_degrees( Angle hiplon )
+  inline double hiplon_to_degrees( Angle hiplon )
   {
     return hiplon / 256;
   }

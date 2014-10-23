@@ -97,7 +97,7 @@ Describe(physical_parameters)
     yarrr::PhysicalParameters another_physical_parameters;
     another_physical_parameters.coordinate = { 1000, 2000 };
     another_physical_parameters.velocity = { 1000, 2000 };
-    another_physical_parameters.orientation = 10;
+    another_physical_parameters.orientation = 10_degrees;
     another_physical_parameters.angular_velocity = 10;
 
     yarrr::PhysicalParameters average( yarrr::weight_arithmetic_mean(
@@ -108,6 +108,8 @@ Describe(physical_parameters)
     AssertThat(
         yarrr::length_of( average.coordinate - start_position ), IsLessThan(
         yarrr::length_of( average.coordinate - another_physical_parameters.coordinate ) ) );
+
+    std::cout << "average: " << average.orientation << " start: " << start_angle << " another: " << another_physical_parameters.orientation << std::endl;
 
     AssertThat(
         std::abs( average.orientation - start_angle ), IsLessThan(
@@ -130,7 +132,7 @@ Describe(physical_parameters)
   yarrr::PhysicalParameters physical_parameters;
   const yarrr::Coordinate start_position{ 101, 102 };
   const yarrr::Velocity start_velocity{ 103, 104 };
-  const yarrr::Angle start_angle{ 106 };
+  const yarrr::Angle start_angle{ 50_degrees };
   const yarrr::Angle start_angular_velocity{ -1100 };
   const the::time::Clock::Time future{ 500000u };
   const the::time::Clock::Time now{ 10000u };
