@@ -26,14 +26,14 @@ Canon::Canon()
 {
 }
 
-Canon::Canon( const Tile::Coordinate coordinate, Angle orientation )
+Canon::Canon( const Tile::Coordinate coordinate, const Angle& orientation )
 : Item( rarely_synchronize(), canon_name, coordinate )
 , m_physical_parameters( nullptr )
 , m_orientation( orientation )
 {
 }
 
-Canon::Canon( const Id& id, const Tile::Coordinate coordinate, Angle orientation )
+Canon::Canon( const Id& id, const Tile::Coordinate coordinate, const Angle& orientation )
 : Item( rarely_synchronize(), id, canon_name, coordinate )
 , m_physical_parameters( nullptr )
 , m_orientation( orientation )

@@ -5,14 +5,22 @@
 #include <vector>
 #include <cmath>
 
-constexpr int64_t operator "" _metres( unsigned long long int metre )
+namespace yarrr
 {
-  return metre << 8;
+  typedef int32_t Angle;
+  typedef Vector<int64_t> Coordinate;
+  typedef std::vector<char> Data;
+  typedef Vector<int64_t> Velocity;
 }
 
-constexpr int16_t operator "" _degrees( unsigned long long int deg )
+constexpr yarrr::Coordinate::type operator "" _metres( unsigned long long int metre )
 {
-  return deg << 2;
+  return metre * 256;
+}
+
+constexpr yarrr::Angle operator "" _degrees( unsigned long long int deg )
+{
+  return deg * 256;
 }
 
 namespace yarrr
@@ -22,15 +30,10 @@ namespace yarrr
     return 3.14159265359;
   }
 
-  typedef std::vector<char> Data;
-
-  typedef Vector<int64_t> Coordinate;
-  typedef Vector<int64_t> Velocity;
-  typedef int16_t Angle;
 
   inline Coordinate& metres_to_huplons_in_place( Coordinate& coordinate_in_metres )
   {
-    return coordinate_in_metres<<=8;
+    return coordinate_in_metres *= 256;
   }
 
   inline Coordinate metres_to_huplons( Coordinate coordinate_in_metres )
@@ -40,12 +43,12 @@ namespace yarrr
 
   inline Coordinate::type huplons_to_metres( const Coordinate::type& huplons )
   {
-    return huplons>>8;
+    return huplons / 256;
   }
 
   inline Coordinate& huplons_to_metres_in_place( Coordinate& coordinate_in_huplons )
   {
-    return coordinate_in_huplons>>=8;
+    return coordinate_in_huplons /= 256;
   }
 
   inline Coordinate huplons_to_metres( Coordinate coordinate_in_huplons )
@@ -53,14 +56,14 @@ namespace yarrr
     return huplons_to_metres_in_place( coordinate_in_huplons );
   }
 
-  inline int16_t degree_to_hiplons( int16_t degree )
+  inline Angle degree_to_hiplons( Angle degree )
   {
-    return degree << 2;
+    return degree * 256;
   }
 
-  inline int16_t hiplon_to_degrees( Angle hiplon )
+  inline Angle hiplon_to_degrees( Angle hiplon )
   {
-    return hiplon >> 2;
+    return hiplon / 256;
   }
 
   inline double hiplon_to_radians( Angle hiplon )
@@ -68,7 +71,7 @@ namespace yarrr
     return hiplon_to_degrees( hiplon ) / 180.0 * pi();
   }
 
-  inline int16_t radian_to_hiplons( double radian )
+  inline Angle radian_to_hiplons( double radian )
   {
     return degree_to_hiplons( radian / pi() * 180 );
   }

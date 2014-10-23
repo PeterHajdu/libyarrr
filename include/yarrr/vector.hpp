@@ -35,6 +35,14 @@ namespace yarrr
   }
 
   template <typename T, typename M>
+  inline Vector<T>& operator/=( Vector<T>& l, const M& multiplier )
+  {
+    l.x/=multiplier;
+    l.y/=multiplier;
+    return l;
+  }
+
+  template <typename T, typename M>
   inline Vector<T> operator*( Vector<T> l, const M& multiplier )
   {
     return l*=multiplier;

@@ -118,9 +118,11 @@ Thruster::apply_forces()
 
   const int mass_and_engine_power_ratio( ( m_shape->mass() ? m_shape->mass() : 1 ) * 4096 );
 
+  const int spinning_force_magic_constant{ 30 };
+
   m_physical_parameters->angular_velocity += z_of_cross_product(
       relative_coordinate(),
-      relative_force_vector ) / ( mass_and_engine_power_ratio );
+      relative_force_vector ) * spinning_force_magic_constant / ( mass_and_engine_power_ratio );
 
   auto pushing_force(
       m_normalized_relative_coordinate *

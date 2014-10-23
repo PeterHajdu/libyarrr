@@ -1,5 +1,6 @@
 #pragma once
 
+#include <yarrr/types.hpp>
 #include <yarrr/item.hpp>
 
 namespace yarrr
@@ -12,8 +13,8 @@ class Canon : public Item
   public:
     add_polymorphic_ctci( "yarrr_canon" );
     Canon();
-    Canon( const Tile::Coordinate coordinate, Angle orientation );
-    Canon( const Id& id, const Tile::Coordinate coordinate, Angle orientation );
+    Canon( const Tile::Coordinate coordinate, const Angle& orientation );
+    Canon( const Id& id, const Tile::Coordinate coordinate, const Angle& orientation );
 
     virtual Pointer clone() const override;
 
