@@ -81,6 +81,7 @@ export_yarrr_stuff()
   lua.new_userdata< yarrr::Thruster, int, yarrr::Tile::Coordinate, yarrr::Angle >( "Thruster" );
   lua.new_userdata< yarrr::Canon, yarrr::Tile::Coordinate, yarrr::Angle >( "Canon" );
 
+  lua.set_function( "degrees", yarrr::degree_to_hiplons );
 }
 
 }

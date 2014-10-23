@@ -18,7 +18,19 @@ def run( command )
   end
 end
 
-watch( '.*pp' ) do | filename |
+def deploy()
   run( "compile" ) && run( "unittest" ) && run( "local_deploy" )
+end
+
+watch( '.*pp' ) do | filename |
+  deploy
+end
+
+watch( '.*lua' ) do | filename |
+  deploy
+end
+
+watch( 'CMakeLists.txt' ) do | filename |
+  deploy
 end
 
