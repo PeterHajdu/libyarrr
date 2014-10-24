@@ -1,5 +1,6 @@
 #include <yarrr/shape.hpp>
 #include <yarrr/polygon.hpp>
+#include <algorithm>
 
 namespace
 {

@@ -161,7 +161,7 @@ Describe(a_shape)
           Equals( yarrr::length_of(
               yarrr::Coordinate{
               yarrr::Tile::unit_length,
-              yarrr::Tile::unit_length * 0.5 } ) ) );
+              static_cast< yarrr::Coordinate::type >( yarrr::Tile::unit_length * 0.5 ) } ) ) );
     }
 
     std::unique_ptr< yarrr::Shape > shape;
