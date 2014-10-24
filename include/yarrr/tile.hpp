@@ -25,5 +25,8 @@ class Tile final
     int calculate_mass() const;
 };
 
+bool operator==( const Tile& l, const Tile& r );
+bool operator!=( const Tile& l, const Tile& r );
+
 }
 

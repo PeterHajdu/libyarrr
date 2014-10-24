@@ -38,6 +38,8 @@ set(TEST_SOURCE_FILES
     test_object_creator.cpp
     test_item.cpp
     test_tile.cpp
+    test_polygon.cpp
+    test_coordinate_transformation.cpp
     test_shape.cpp
     test_shape_behavior.cpp
     test_remote_object.cpp

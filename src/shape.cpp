@@ -1,4 +1,5 @@
 #include <yarrr/shape.hpp>
+#include <yarrr/polygon.hpp>
 
 namespace
 {
@@ -113,52 +114,6 @@ Shape::calculate_center_of_mass_and_mass()
   m_mass = running_mass;
 }
 
-Polygon
-shape_coordinate_polygon_from( const Tile& tile )
-{
-  const int left{ tile.top_left.x };
-  const int right{ tile.bottom_right.x + 1 };
-  const int top{ tile.top_left.y + 1 };
-  const int bottom{ tile.bottom_right.y };
-  return Polygon{
-      Coordinate{ left, top } * Tile::unit_length,
-      Coordinate{ right, top } * Tile::unit_length,
-      Coordinate{ right, bottom } * Tile::unit_length,
-      Coordinate{ left, bottom } * Tile::unit_length };
-}
-
-void
-transform_coordinates_to_new_origo( Polygon& polygon , const Coordinate& origo )
-{
-  for ( auto& point : polygon )
-  {
-    point.x-=origo.x;
-    point.y-=origo.y;
-  }
-}
-
-void
-rotate_with( Polygon& polygon, Angle angle )
-{
-  for ( auto& point : polygon )
-  {
-    rotate( point, angle );
-  }
-}
-
-Polygon
-generate_polygon_from(
-    const Tile& tile,
-    const Coordinate& center_of_object,
-    const Coordinate& center_of_mass_of_shape,
-    const Angle& orientation_of_object )
-{
-  Polygon polygon( shape_coordinate_polygon_from( tile ) );
-  transform_coordinates_to_new_origo( polygon, center_of_mass_of_shape );
-  rotate_with( polygon, orientation_of_object );
-  transform_coordinates_to_new_origo( polygon, center_of_object * -1 );
-  return polygon;
-}
 
 Shape&
 Shape::operator=( const Shape& other )
@@ -168,31 +123,6 @@ Shape::operator=( const Shape& other )
     add_tile( tile );
   }
   return *this;
-}
-
-Coordinate
-relative_to_absolute(
-    const Coordinate& relative_coordinate,
-    const Coordinate& center_of_mass_relative,
-    const Coordinate& center_of_object_absolute,
-    const Angle& orientation_of_object )
-{
-  return center_of_mass_relative_to_absolute(
-      relative_coordinate - center_of_mass_relative,
-      center_of_object_absolute,
-      orientation_of_object );
-}
-
-Coordinate
-center_of_mass_relative_to_absolute(
-    const Coordinate& relative_to_center_of_mass_coordinate,
-    const Coordinate& center_of_object_absolute,
-    const Angle& orientation_of_object )
-{
-  Coordinate absolute_coordinate( relative_to_center_of_mass_coordinate );
-  rotate( absolute_coordinate, orientation_of_object );
-  absolute_coordinate += center_of_object_absolute;
-  return absolute_coordinate;
 }
 
 
@@ -231,19 +161,6 @@ Shape::does_contain( const Coordinate& relative_to_center_of_mass ) const
        return tile.does_contain( relative_coordinate );
      } );
 }
-
-
-Coordinate
-transform_absolute_to_relative_to_center_of_mass(
-  const Coordinate& absolute_coordinate,
-  const Coordinate& absolute_center_of_mass,
-  const Angle& orientation )
-{
-  Coordinate relative( absolute_coordinate - absolute_center_of_mass );
-  yarrr::rotate( relative, -orientation );
-  return relative;
-}
-
 
 }
 

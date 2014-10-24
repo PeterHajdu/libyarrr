@@ -7,6 +7,7 @@
 #include <yarrr/bitmagic.hpp>
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/types.hpp>
+#include <yarrr/coordinate_transformation.hpp>
 
 #include <thectci/service_registry.hpp>
 
@@ -143,7 +144,7 @@ Thruster::handle_timer_update( const yarrr::TimerUpdate& update ) const
     return;
   }
 
-  const auto thruster_coordinate( center_of_mass_relative_to_absolute(
+  const auto thruster_coordinate( transform_center_of_mass_relative_to_absolute(
         relative_coordinate(),
         m_physical_parameters->coordinate,
         m_physical_parameters->orientation ) );

@@ -23,7 +23,9 @@ set(SOURCE_FILES
   canon.cpp
   object_creator.cpp
   item.cpp
+  polygon.cpp
   shape.cpp
+  coordinate_transformation.cpp
   shape_behavior.cpp
   resources.cpp
   command.cpp

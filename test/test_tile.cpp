@@ -1,6 +1,4 @@
 #include <yarrr/tile.hpp>
-//todo: remove after polygon is extracted
-#include <yarrr/shape.hpp>
 #include <yarrr/types.hpp>
 #include <igloo/igloo_alt.h>
 
@@ -80,32 +78,6 @@ Describe(a_tile)
     {
       yarrr::Tile tile{ { -1, 0 }, { 0, -1 } };
       AssertThat( tile.mass, Equals( 4 ) );
-    }
-  };
-
-  //todo: move to polygon file
-  Describe( polygon_generation )
-  {
-    It( generates_the_polygon_in_shape_coordinate_system )
-    {
-      const yarrr::Tile tile{ { -2, 0 }, { 1, -1 } };
-      const yarrr::Polygon polygon( yarrr::shape_coordinate_polygon_from( tile ) );
-      AssertThat( polygon, HasLength( 4u ) );
-      AssertThat(
-          polygon.at( 0 ),
-          Equals( yarrr::Coordinate{ -yarrr::Tile::unit_length * 2, yarrr::Tile::unit_length } ) );
-
-      AssertThat(
-          polygon.at( 1 ),
-          Equals( yarrr::Coordinate{ yarrr::Tile::unit_length * 2, yarrr::Tile::unit_length } ) );
-
-      AssertThat(
-          polygon.at( 2 ),
-          Equals( yarrr::Coordinate{ yarrr::Tile::unit_length * 2, -yarrr::Tile::unit_length } ) );
-
-      AssertThat(
-          polygon.at( 3 ),
-          Equals( yarrr::Coordinate{ -yarrr::Tile::unit_length * 2, -yarrr::Tile::unit_length } ) );
     }
   };
 
