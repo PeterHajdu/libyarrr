@@ -94,5 +94,36 @@ Describe(a_tile)
     const yarrr::Coordinate coordinate_inside{ 10 * yarrr::Tile::unit_length + 1, 10 * yarrr::Tile::unit_length + 1 };
   };
 
+  Describe( corner_calculation )
+  {
+    It( can_calculate_the_top_left_coordinate )
+    {
+      AssertThat( yarrr::top_left_corner_of( tile ),
+          Equals( yarrr::Coordinate{ top_left.x, top_left.y + 1 } * yarrr::Tile::unit_length ) );
+    }
+
+    It( can_calculate_the_top_right_coordinate )
+    {
+      AssertThat( yarrr::top_right_corner_of( tile ),
+          Equals( yarrr::Coordinate{ bottom_right.x + 1, top_left.y + 1 } * yarrr::Tile::unit_length ) );
+    }
+
+    It( can_calculate_the_bottom_right_coordinate )
+    {
+      AssertThat( yarrr::bottom_right_corner_of( tile ),
+          Equals( yarrr::Coordinate{ bottom_right.x + 1, bottom_right.y } * yarrr::Tile::unit_length ) );
+    }
+
+    It( can_calculate_the_bottom_left_coordinate )
+    {
+      AssertThat( yarrr::bottom_left_corner_of( tile ),
+          Equals( yarrr::Coordinate{ top_left.x, bottom_right.y } * yarrr::Tile::unit_length ) );
+    }
+
+    const yarrr::Tile::Coordinate top_left{ -10, 123 };
+    const yarrr::Tile::Coordinate bottom_right{ 5, -12 };
+    const yarrr::Tile tile{ top_left, bottom_right };
+  };
+
 };
 

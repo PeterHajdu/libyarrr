@@ -2,22 +2,6 @@
 #include <yarrr/polygon.hpp>
 #include <algorithm>
 
-namespace
-{
-  typedef std::vector< yarrr::Coordinate > Corners;
-
-  //todo: extract these bound calculations
-  Corners corners_of( const yarrr::Tile& tile )
-  {
-    return {
-      yarrr::Coordinate( tile.top_left.x, tile.top_left.y + 1 ) * yarrr::Tile::unit_length,
-      yarrr::Coordinate( tile.bottom_right.x + 1, tile.top_left.y + 1 ) * yarrr::Tile::unit_length,
-      yarrr::Coordinate( tile.bottom_right.x + 1, tile.bottom_right.y ) * yarrr::Tile::unit_length,
-      yarrr::Coordinate( tile.top_left.x, tile.bottom_right.y ) * yarrr::Tile::unit_length,
-      };
-  }
-}
-
 namespace yarrr
 {
 
@@ -27,20 +11,6 @@ Shape::add_tile( const Tile& tile )
   m_tiles.emplace_back( tile );
   calculate_center_of_mass_and_mass();
   calculate_radius();
-}
-
-bool
-operator==( const Tile& l, const Tile& r )
-{
-  return
-    l.top_left == r.top_left &&
-    l.bottom_right == r.bottom_right;
-}
-
-bool
-operator!=( const Tile& l, const Tile& r )
-{
-  return !( l == r );
 }
 
 
@@ -140,7 +110,7 @@ Shape::calculate_radius()
 
   for ( const auto& tile : m_tiles )
   {
-    const Corners corners( corners_of( tile ) );
+    const Polygon corners( shape_coordinate_polygon_from( tile ) );
     for ( const auto& corner : corners )
     {
       const auto distance_from_center_of_mass( yarrr::length_of( m_center_of_mass - corner ) );

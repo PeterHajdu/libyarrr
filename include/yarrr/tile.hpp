@@ -28,5 +28,10 @@ class Tile final
 bool operator==( const Tile& l, const Tile& r );
 bool operator!=( const Tile& l, const Tile& r );
 
+Coordinate top_left_corner_of( const Tile& );
+Coordinate top_right_corner_of( const Tile& );
+Coordinate bottom_right_corner_of( const Tile& );
+Coordinate bottom_left_corner_of( const Tile& );
+
 }
 

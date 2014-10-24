@@ -15,6 +15,30 @@ namespace
   {
     return { std::max( a.x, b.x ), std::min( a.y, b.y ) };
   }
+
+  yarrr::Coordinate::type
+  left_side_of( const yarrr::Tile& tile )
+  {
+    return tile.top_left.x * yarrr::Tile::unit_length;
+  }
+
+  yarrr::Coordinate::type
+  right_side_of( const yarrr::Tile& tile )
+  {
+    return ( tile.bottom_right.x + 1 ) * yarrr::Tile::unit_length;
+  }
+
+  yarrr::Coordinate::type
+  top_side_of( const yarrr::Tile& tile )
+  {
+    return ( tile.top_left.y + 1 ) * yarrr::Tile::unit_length;
+  }
+
+  yarrr::Coordinate::type
+  bottom_side_of( const yarrr::Tile& tile )
+  {
+    return tile.bottom_right.y * yarrr::Tile::unit_length;
+  }
 }
 
 namespace yarrr
@@ -33,12 +57,11 @@ Tile::Tile( const Coordinate& top_left, const Coordinate& bottom_right )
 bool
 Tile::does_contain( const yarrr::Coordinate& coordinate ) const
 {
-//todo: extract these bound calculations
   return
-    coordinate.x > top_left.x * unit_length &&
-    coordinate.y < ( top_left.y + 1 ) * unit_length &&
-    coordinate.x < ( bottom_right.x + 1 ) * unit_length &&
-    coordinate.y > bottom_right.y * unit_length;
+    coordinate.x > left_side_of( *this ) &&
+    coordinate.y < top_side_of( *this ) &&
+    coordinate.x < right_side_of( *this ) &&
+    coordinate.y > bottom_side_of( *this );
 }
 
 int
@@ -52,9 +75,46 @@ Tile::calculate_mass() const
 yarrr::Coordinate
 Tile::calculate_center() const
 {
-  return {
-    static_cast< int64_t >( ( bottom_right.x + top_left.x + 1 ) * 0.5 * unit_length ),
-    static_cast< int64_t >( ( top_left.y + bottom_right.y + 1 ) * 0.5 * unit_length ) };
+  return ( top_left_corner_of( *this ) + bottom_right_corner_of( *this ) ) * 0.5;
+
+}
+
+bool
+operator==( const Tile& l, const Tile& r )
+{
+  return
+    l.top_left == r.top_left &&
+    l.bottom_right == r.bottom_right;
+}
+
+bool
+operator!=( const Tile& l, const Tile& r )
+{
+  return !( l == r );
+}
+
+Coordinate
+top_left_corner_of( const Tile& tile )
+{
+  return yarrr::Coordinate{ left_side_of( tile ), top_side_of( tile ) };
+}
+
+Coordinate
+top_right_corner_of( const Tile& tile )
+{
+  return yarrr::Coordinate{ right_side_of( tile ), top_side_of( tile ) };
+}
+
+Coordinate
+bottom_right_corner_of( const Tile& tile )
+{
+  return yarrr::Coordinate{ right_side_of( tile ), bottom_side_of( tile ) };
+}
+
+Coordinate
+bottom_left_corner_of( const Tile& tile )
+{
+  return yarrr::Coordinate{ left_side_of( tile ), bottom_side_of( tile ) };
 }
 
 }

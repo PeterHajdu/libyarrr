@@ -7,15 +7,11 @@ namespace yarrr
 Polygon
 shape_coordinate_polygon_from( const Tile& tile )
 {
-  const int left{ tile.top_left.x };
-  const int right{ tile.bottom_right.x + 1 };
-  const int top{ tile.top_left.y + 1 };
-  const int bottom{ tile.bottom_right.y };
   return Polygon{
-      Coordinate{ left, top } * Tile::unit_length,
-      Coordinate{ right, top } * Tile::unit_length,
-      Coordinate{ right, bottom } * Tile::unit_length,
-      Coordinate{ left, bottom } * Tile::unit_length };
+    yarrr::top_left_corner_of( tile ),
+    yarrr::top_right_corner_of( tile ),
+    yarrr::bottom_right_corner_of( tile ),
+    yarrr::bottom_left_corner_of( tile ) };
 }
 
 void
