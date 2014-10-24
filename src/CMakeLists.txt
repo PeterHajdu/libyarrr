@@ -30,6 +30,7 @@ set(SOURCE_FILES
   object_factory.cpp
   lua_engine.cpp
   lua_setup.cpp
+  tile.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

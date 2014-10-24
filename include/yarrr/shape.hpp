@@ -1,32 +1,12 @@
 #pragma once
 
-#include <yarrr/vector.hpp>
+#include <yarrr/tile.hpp>
 #include <yarrr/types.hpp>
 #include <vector>
 
 namespace yarrr
 {
 typedef std::vector< Coordinate > Polygon;
-
-//todo: extract tile to separate file
-class Tile final
-{
-  public:
-    typedef Vector< int16_t > Coordinate;
-    static const int16_t unit_length;
-
-    Tile( const Coordinate& top_left, const Coordinate& bottom_right );
-
-    const Coordinate top_left;
-    const Coordinate bottom_right;
-    const yarrr::Coordinate center;
-    const int mass;
-
-    bool does_contain( const yarrr::Coordinate& ) const;
-  private:
-    yarrr::Coordinate calculate_center() const;
-    int calculate_mass() const;
-};
 
 Coordinate relative_to_absolute(
     const Coordinate& relative_coordinate,
