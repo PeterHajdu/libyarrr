@@ -33,6 +33,7 @@ set(SOURCE_FILES
   lua_engine.cpp
   lua_setup.cpp
   tile.cpp
+  mission.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
