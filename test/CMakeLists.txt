@@ -48,6 +48,7 @@ set(TEST_SOURCE_FILES
     test_lua_setup.cpp
     test_object_factory.cpp
     test_mission.cpp
+    test_object_exporter.cpp
     )
 
 

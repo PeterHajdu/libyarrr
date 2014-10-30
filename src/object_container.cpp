@@ -19,6 +19,11 @@ yarrr::Collider& collider_of( const yarrr::Object& object )
 namespace yarrr
 {
 
+const ObjectContainer::Objects&
+ObjectContainer::objects() const
+{
+  return m_objects;
+}
 
 void
 ObjectContainer::add_object( Object::Pointer&& object )

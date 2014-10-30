@@ -45,6 +45,13 @@ Describe(an_object_container)
     add_object_with_id( second_id );
   }
 
+  It( exposes_the_object_container )
+  {
+    const yarrr::ObjectContainer& const_container( *container );
+    const yarrr::ObjectContainer::Objects& objects( const_container.objects() );
+    AssertThat( objects, HasLength( 2u ) );
+  }
+
   It( stores_objects )
   {
     AssertThat( deleted_objects, IsEmpty() );

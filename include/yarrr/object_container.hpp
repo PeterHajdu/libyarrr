@@ -24,8 +24,10 @@ class ObjectContainer : public the::ctci::Dispatcher
 
     void check_collision() const;
 
-  private:
     typedef std::unordered_map< Object::Id, Object::Pointer > Objects;
+    const Objects& objects() const;
+
+  private:
     Objects m_objects;
 };
 
