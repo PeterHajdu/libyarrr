@@ -6,7 +6,7 @@
 
 using namespace igloo;
 
-Describe_Only(an_object_exporter)
+Describe(an_object_exporter)
 {
   void add_new_object()
   {
@@ -95,7 +95,7 @@ Describe_Only(an_object_exporter)
 };
 
 
-Describe_Only( an_object_model )
+Describe( an_object_model )
 {
   void SetUp()
   {
