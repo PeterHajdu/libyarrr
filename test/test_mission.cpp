@@ -6,7 +6,7 @@
 
 using namespace igloo;
 
-Describe_Only( a_mission )
+Describe( a_mission )
 {
 
   void SetUp()
@@ -140,7 +140,7 @@ Describe_Only( a_mission )
   const std::string objective_description{ "an objective" };
 };
 
-Describe_Only( a_mission_objective )
+Describe( a_mission_objective )
 {
   void set_up_lua_stuff()
   {
