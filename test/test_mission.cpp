@@ -30,11 +30,15 @@ Describe( a_mission )
 
   It( is_serializable )
   {
+    add_objectives( 4 );
+    fail_mission();
     const yarrr::Data serialized_mission( mission->serialize() );
     yarrr::Mission deserialized_mission;
     deserialized_mission.deserialize( serialized_mission );
     AssertThat( deserialized_mission.name(), Equals( name ) );
     AssertThat( deserialized_mission.description(), Equals( description ) );
+    AssertThat( deserialized_mission.state(), Equals( yarrr::failed ) );
+    AssertThat( deserialized_mission.objectives(), HasLength( 4 ) );
   }
 
   It( is_registered_to_entity_factory )

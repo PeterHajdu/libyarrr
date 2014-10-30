@@ -106,6 +106,12 @@ Mission::do_serialize( Serializer& serializer ) const
 {
   serializer.push_back( m_name );
   serializer.push_back( m_description );
+  serializer.push_back( m_state );
+  serializer.push_back( uint32_t( m_objectives.size() ) );
+  for ( const auto& objective : m_objectives )
+  {
+    objective.serialize( serializer );
+  }
 }
 
 void
@@ -113,6 +119,13 @@ Mission::do_deserialize( Deserializer& deserializer )
 {
   m_name = deserializer.pop_front< std::string >();
   m_description = deserializer.pop_front< std::string >();
+  m_state = deserializer.pop_front< TaskState >();
+  const uint32_t number_of_objectives( deserializer.pop_front< uint32_t >() );
+  for ( uint32_t i( 0 ); i < number_of_objectives; ++i )
+  {
+    m_objectives.emplace_back();
+    m_objectives.back().deserialize( deserializer );
+  }
 }
 
 
