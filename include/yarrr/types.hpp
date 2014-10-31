@@ -112,6 +112,11 @@ namespace yarrr
   template <typename T>
   Vector<T> normalize( Vector<T> vector )
   {
+    if ( vector == Vector<T>{ 0, 0 } )
+    {
+      return vector;
+    }
+
     huplons_to_metres_in_place( vector );
     const double inverse_sqrt( 1_metres * 1.0 / sqrt( vector.x * vector.x + vector.y * vector.y ) );
     return vector * inverse_sqrt;

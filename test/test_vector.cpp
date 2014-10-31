@@ -115,6 +115,7 @@ Describe(a_vector)
   {
     AssertThat( yarrr::normalize( Vector{ 1234, 0 } ), Equals( Vector{ 1_metres, 0 } ) );
     AssertThat( yarrr::normalize( Vector{ 0, 123453 } ), Equals( Vector{ 0, 1_metres } ) );
+    AssertThat( yarrr::normalize( Vector{ 0, 0 } ), Equals( Vector{ 0, 0 } ) );
   }
 
   const Vector a{ 100, 10 };
