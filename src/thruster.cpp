@@ -8,6 +8,7 @@
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/types.hpp>
 #include <yarrr/coordinate_transformation.hpp>
+#include <yarrr/log.hpp>
 
 #include <thectci/service_registry.hpp>
 
@@ -16,16 +17,21 @@ namespace
   const size_t particle_speed_deviation{ 6_metres };
   yarrr::AutoEntityRegister< yarrr::Thruster > auto_thruster_register;
 
-  const yarrr::Coordinate
-  normalize_relative_coordinate( const yarrr::Coordinate& original )
+  const char * thruster_name = "thruster";
+
+  double strength_of_pushing_force(
+      yarrr::Coordinate normalized_relative_coordinate,
+      const yarrr::Coordinate& relative_force_vector,
+      int mass_and_engine_power_ratio )
   {
-    const bool is_null_vector{ original == yarrr::Coordinate{ 0, 0 } };
-    return is_null_vector ?
-        yarrr::Coordinate{ 1_metres, 1_metres } :
-        yarrr::normalize( original );
+    if ( normalized_relative_coordinate == yarrr::Coordinate{ 0, 0 } )
+    {
+      normalized_relative_coordinate = relative_force_vector * -1;
+    }
+
+    return -1.0 * dot_product( normalized_relative_coordinate, relative_force_vector ) / mass_and_engine_power_ratio;
   }
 
-  const char * thruster_name = "thruster";
 }
 
 namespace yarrr
@@ -79,7 +85,7 @@ Thruster::register_item_to( Object& owner )
       std::bind( &Thruster::handle_command, this, std::placeholders::_1 ) );
   owner.dispatcher.register_listener< TimerUpdate  >(
       std::bind( &Thruster::handle_timer_update, this, std::placeholders::_1 ) );
-  m_normalized_relative_coordinate = normalize_relative_coordinate( relative_coordinate() );
+  m_normalized_relative_coordinate = normalize( relative_coordinate() );
 }
 
 
@@ -126,9 +132,8 @@ Thruster::apply_forces()
       relative_force_vector ) * spinning_force_magic_constant / ( mass_and_engine_power_ratio );
 
   auto pushing_force(
-      m_normalized_relative_coordinate *
-      ( double( dot_product( m_normalized_relative_coordinate, relative_force_vector ) ) /
-      mass_and_engine_power_ratio ) );
+      relative_force_vector *
+      strength_of_pushing_force( m_normalized_relative_coordinate, relative_force_vector, mass_and_engine_power_ratio ) );
 
   rotate( pushing_force, m_physical_parameters->orientation );
 
