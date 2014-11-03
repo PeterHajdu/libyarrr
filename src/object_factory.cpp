@@ -34,6 +34,7 @@ yarrr::AutoLuaRegister function_register(
     []( yarrr::Lua& lua )
     {
       lua.state().set_function( "register_object_factory", register_object_factory );
+      thelog( yarrr::log::debug )( "Registered register_object_factory method on lua state:", &lua.state() );
     } );
 }
 

@@ -34,3 +34,5 @@ assert( degrees( 10 ) )
 
 Canon.new( TileCoordinate.new( 0, 0 ), 0 )
 
+mission_info = MissionInfo.new( "name", "description" )
+

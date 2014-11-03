@@ -11,7 +11,7 @@ Describe( a_mission )
 
   void SetUp()
   {
-    mission.reset( new yarrr::Mission( name, description ) );
+    mission.reset( new yarrr::Mission( yarrr::Mission::Info{ name, description } ) );
     objective_return_values.clear();
     objective_updated_times.clear();
   }
@@ -119,8 +119,9 @@ Describe( a_mission )
     void SetUp()
     {
       lua.reset( new sol::state() );
-      lua->new_userdata< yarrr::Mission, std::string, std::string >( "Mission" );
-      lua->script( "function new_mission()\nreturn Mission.new( \"mission in lua\", \"with description\" )\nend\n" );
+      lua->new_userdata< yarrr::Mission::Info, std::string, std::string >( "MissionInfo" );
+      lua->new_userdata< yarrr::Mission, yarrr::Mission::Info >( "Mission" );
+      lua->script( "function new_mission()\nreturn Mission.new( MissionInfo.new( \"mission in lua\", \"with description\" ) )\nend\n" );
       new_mission.reset( new sol::function( (*lua)[ "new_mission" ] ) );
     }
 

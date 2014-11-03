@@ -1,11 +1,12 @@
 #include <yarrr/lua_engine.hpp>
+#include <yarrr/log.hpp>
 
 #include <memory>
 
 namespace
 {
 
-std::unique_ptr< yarrr::Lua> engine_instance;
+yarrr::Lua* engine_instance( nullptr );
 
 }
 
@@ -22,7 +23,8 @@ Lua& Lua::instance()
 {
   if ( !engine_instance )
   {
-    engine_instance.reset( new Lua() );
+    thelog( log::debug )( "Creating lua engine instance.", engine_instance );
+    engine_instance = new Lua();
   }
 
   return *engine_instance;
@@ -30,7 +32,9 @@ Lua& Lua::instance()
 
 AutoLuaRegister::AutoLuaRegister( std::function< void( Lua& ) > register_function )
 {
-  register_function( Lua::instance() );
+  Lua& instance( Lua::instance() );
+  thelog( yarrr::log::debug )( "Auto registering stuff on lua engine::", &instance, &instance.state() );
+  register_function( instance );
 }
 
 }

@@ -2,12 +2,12 @@
 #include <yarrr/bitmagic.hpp>
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/log.hpp>
+#include <yarrr/lua_engine.hpp>
 
 #include <algorithm>
 
 namespace
 {
-
 yarrr::AutoEntityRegister< yarrr::Mission > auto_mission_register;
 
 yarrr::Mission::Objective::Updater
@@ -26,20 +26,19 @@ wrap_lua_updater( sol::function updater )
 namespace yarrr
 {
 
-Mission::Mission( const std::string& name, const std::string& description )
-  : m_name( name )
-  , m_description( description )
+Mission::Mission( const Info& info )
+  : m_info( info )
   , m_state( ongoing )
   , m_context( Lua::state().create_table() )
 {
-  thelog( log::debug )( "Mission constructed.", m_name, m_description );
+  thelog( log::debug )( "Mission constructed.", m_info.name, m_info.description );
 }
 
 
 Mission::Mission( const Mission& other )
-  : Mission( other.m_name, other.m_description )
+  : Mission( other.m_info )
 {
-  thelog( log::debug )( "Mission copy constructed.", m_name, m_description );
+  thelog( log::debug )( "Mission copy constructed.", m_info.name, m_info.description );
 }
 
 void
@@ -80,13 +79,13 @@ Mission::state() const
 const std::string&
 Mission::name() const
 {
-  return m_name;
+  return m_info.name;
 }
 
 const std::string&
 Mission::description() const
 {
-  return m_description;
+  return m_info.description;
 }
 
 void
@@ -104,8 +103,8 @@ Mission::objectives() const
 void
 Mission::do_serialize( Serializer& serializer ) const
 {
-  serializer.push_back( m_name );
-  serializer.push_back( m_description );
+  serializer.push_back( m_info.name );
+  serializer.push_back( m_info.description );
   serializer.push_back( m_state );
   serializer.push_back( uint32_t( m_objectives.size() ) );
   for ( const auto& objective : m_objectives )
@@ -117,8 +116,8 @@ Mission::do_serialize( Serializer& serializer ) const
 void
 Mission::do_deserialize( Deserializer& deserializer )
 {
-  m_name = deserializer.pop_front< std::string >();
-  m_description = deserializer.pop_front< std::string >();
+  m_info.name = deserializer.pop_front< std::string >();
+  m_info.description = deserializer.pop_front< std::string >();
   m_state = deserializer.pop_front< TaskState >();
   const uint32_t number_of_objectives( deserializer.pop_front< uint32_t >() );
   for ( uint32_t i( 0 ); i < number_of_objectives; ++i )
@@ -180,6 +179,12 @@ void
 Mission::Objective::update( sol::table& context )
 {
   m_state = m_updater( context );
+}
+
+Mission::Pointer
+Mission::create( const Info& info )
+{
+  return Pointer( new Mission( info ) );
 }
 
 }

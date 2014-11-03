@@ -51,6 +51,7 @@ void initialize_lua_engine()
 #include <yarrr/shape_behavior.hpp>
 #include <yarrr/thruster.hpp>
 #include <yarrr/canon.hpp>
+#include <yarrr/mission.hpp>
 namespace
 {
 
@@ -82,6 +83,7 @@ export_yarrr_stuff()
   lua.new_userdata< yarrr::Canon, yarrr::Tile::Coordinate, yarrr::Angle >( "Canon" );
 
   lua.set_function( "degrees", yarrr::degree_to_hiplons );
+  lua.new_userdata< yarrr::Mission::Info, std::string, std::string >( "MissionInfo" );
 }
 
 }
