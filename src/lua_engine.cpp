@@ -17,6 +17,7 @@ Lua::Lua()
 {
   m_state.open_libraries( sol::lib::base );
   m_state.open_libraries( sol::lib::package );
+  m_state.open_libraries( sol::lib::math );
 }
 
 Lua& Lua::instance()
