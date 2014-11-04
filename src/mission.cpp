@@ -178,6 +178,12 @@ Mission::Objective::do_deserialize( Deserializer& deserializer )
 void
 Mission::Objective::update( sol::table& context )
 {
+  const bool is_finished( m_state != ongoing );
+  if ( is_finished )
+  {
+    return;
+  }
+
   m_state = m_updater( context );
 }
 

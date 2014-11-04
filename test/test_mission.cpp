@@ -213,11 +213,32 @@ Describe( a_mission_objective )
     AssertThat( was_updater_called, Equals( true ) );
   }
 
+  void assert_update_to_should_be( yarrr::TaskState returns, yarrr::TaskState expected )
+  {
+    updater_should_return = returns;
+    objective->update( context );
+    AssertThat( objective->state(), Equals( expected ) );
+  }
+
+
   It( updates_its_state_according_to_the_state_updater )
   {
-    updater_should_return = yarrr::succeeded;
-    objective->update( context );
-    AssertThat( objective->state(), Equals( yarrr::succeeded ) );
+    assert_update_to_should_be( yarrr::succeeded, yarrr::succeeded );
+  }
+
+
+  It( should_stay_succeeded )
+  {
+    assert_update_to_should_be( yarrr::succeeded, yarrr::succeeded );
+    assert_update_to_should_be( yarrr::ongoing, yarrr::succeeded );
+    assert_update_to_should_be( yarrr::failed, yarrr::succeeded );
+  }
+
+  It( should_stay_failed )
+  {
+    assert_update_to_should_be( yarrr::failed, yarrr::failed );
+    assert_update_to_should_be( yarrr::ongoing, yarrr::failed );
+    assert_update_to_should_be( yarrr::succeeded, yarrr::failed );
   }
 
   It( passes_context_table_to_the_lua_updater )
