@@ -84,6 +84,11 @@ export_yarrr_stuff()
 
   lua.set_function( "degrees", yarrr::degree_to_hiplons );
   lua.new_userdata< yarrr::Mission::Info, std::string, std::string >( "MissionInfo" );
+  lua.new_userdata< yarrr::Mission::Objective, std::string, sol::function >( "MissionObjective" );
+  lua.new_userdata< yarrr::Mission, yarrr::Mission::Info >( "Mission", "add_objective", &yarrr::Mission::add_objective );
+  lua[ "ongoing" ] = int( yarrr::ongoing );
+  lua[ "succeeded" ] = int( yarrr::succeeded );
+  lua[ "failed" ] = int( yarrr::failed );
 }
 
 }

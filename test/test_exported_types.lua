@@ -36,3 +36,16 @@ Canon.new( TileCoordinate.new( 0, 0 ), 0 )
 
 mission_info = MissionInfo.new( "name", "description" )
 
+mission = Mission.new( mission_info )
+
+function objective_updater( context )
+end
+
+objective = MissionObjective.new( "objective description", objective_updater )
+
+mission:add_objective( objective )
+
+assert( ongoing )
+assert( succeeded )
+assert( failed )
+
