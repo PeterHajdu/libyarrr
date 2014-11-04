@@ -25,6 +25,7 @@ Describe( a_lua_engine )
     {
       yarrr::Lua::state().script( "print( \"hello lua\" ) " );
       yarrr::Lua::state().script( "print( math.sqrt( 25 ) ) " );
+      yarrr::Lua::state().script( "print( os.time() ) " );
     }
     catch ( std::exception& e )
     {
