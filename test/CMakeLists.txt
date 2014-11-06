@@ -50,6 +50,7 @@ set(TEST_SOURCE_FILES
     test_mission.cpp
     test_mission_factory.cpp
     test_object_exporter.cpp
+    test_character.cpp
     )
 
 
