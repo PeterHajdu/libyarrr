@@ -13,6 +13,23 @@ yarrr::Lua* engine_instance( nullptr );
 namespace yarrr
 {
 
+bool
+lua_script( sol::state& state, const std::string& script )
+{
+  try
+  {
+    thelog( log::debug )( "Executing lua script:", script );
+    state.script( script );
+  }
+  catch ( std::exception& e )
+  {
+    thelog( log::error )( "Caught lua exception:", e.what() );
+    return false;
+  }
+
+  return true;
+}
+
 Lua::Lua()
 {
   m_state.open_libraries( sol::lib::base );

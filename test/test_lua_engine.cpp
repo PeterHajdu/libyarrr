@@ -5,6 +5,32 @@
 
 using namespace igloo;
 
+Describe_Only( lua_exec )
+{
+  void SetUp()
+  {
+    lua.reset( new sol::state() );
+    lua->open_libraries( sol::lib::base );
+  }
+
+  It( catches_and_logs_all_exceptions )
+  {
+    yarrr::lua_script( *lua, "assert( false )" );
+  }
+
+  It( returns_false_if_there_was_an_exception )
+  {
+    AssertThat( yarrr::lua_script( *lua, "assert( false )" ), Equals( false ) );
+  }
+
+  It( returns_true_if_the_script_executes_fine )
+  {
+    AssertThat( yarrr::lua_script( *lua, "assert( true )" ), Equals( true ) );
+  }
+
+  std::unique_ptr< sol::state > lua;
+};
+
 Describe( a_lua_engine )
 {
   It( is_a_singleton )

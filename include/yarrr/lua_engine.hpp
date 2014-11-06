@@ -21,6 +21,8 @@ class Lua final
     sol::state m_state;
 };
 
+bool lua_script( sol::state& state, const std::string& script );
+
 class AutoLuaRegister final
 {
   public:
