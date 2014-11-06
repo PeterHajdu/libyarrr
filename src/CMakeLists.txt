@@ -36,6 +36,7 @@ set(SOURCE_FILES
   tile.cpp
   mission.cpp
   mission_factory.cpp
+  character.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

@@ -5,7 +5,7 @@
 
 using namespace igloo;
 
-Describe_Only( lua_exec )
+Describe( lua_exec )
 {
   void SetUp()
   {
