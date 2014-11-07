@@ -45,17 +45,17 @@ Describe( lua_setup )
 
   It( exports_configuration_path_to_lua )
   {
-    AssertThat( yarrr::Lua::state().get< std::string >( "lua_configuration_path" ), Equals( configuration_path ) );
+    AssertThat( yarrr::LuaEngine::state().get< std::string >( "lua_configuration_path" ), Equals( configuration_path ) );
   }
 
   It( loads_lua_configuration_from_the_exported_folder )
   {
-    AssertThat( yarrr::Lua::state().get< bool >( "was_lua_conf_loaded" ), Equals( true ) );
+    AssertThat( yarrr::LuaEngine::state().get< bool >( "was_lua_conf_loaded" ), Equals( true ) );
   }
 
   It( allows_lua_files_to_load_other_lua_files )
   {
-    AssertThat( yarrr::Lua::state().get< bool >( "was_other_lua_file_loaded" ), Equals( true ) );
+    AssertThat( yarrr::LuaEngine::state().get< bool >( "was_other_lua_file_loaded" ), Equals( true ) );
   }
 
   const std::string configuration_path{ std::string( std::getenv( "PWD" ) ) + "/" };

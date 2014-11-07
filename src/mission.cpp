@@ -14,11 +14,18 @@ yarrr::Mission::Objective::Updater
 wrap_lua_updater( sol::function updater )
 {
   return
-    [ updater ]( sol::table& context ) -> yarrr::TaskState
+    [ updater ]( const std::string& mission_id ) -> yarrr::TaskState
     {
       thelog( yarrr::log::debug )( "Calling lua updater." );
-      return yarrr::TaskState( updater.call<int>( context ) );
+      return yarrr::TaskState( updater.call<int>( mission_id ) );
     };
+}
+
+//todo: check uniqueness
+yarrr::Mission::Id next_id()
+{
+  static yarrr::Mission::Id last_id{ 0 };
+  return last_id++;
 }
 
 }
@@ -26,17 +33,25 @@ wrap_lua_updater( sol::function updater )
 namespace yarrr
 {
 
+Mission::Id
+Mission::id() const
+{
+  return m_id;
+}
+
 Mission::Mission( const Info& info )
   : m_info( info )
   , m_state( ongoing )
-  , m_context( Lua::state().create_table() )
+  , m_id( next_id() )
 {
   thelog( log::debug )( "Mission constructed.", m_info.name, m_info.description );
 }
 
 
 Mission::Mission( const Mission& other )
-  : Mission( other.m_info )
+  : m_info( other.m_info )
+  , m_state( other.m_state )
+  , m_id( other.m_id )
 {
   thelog( log::debug )( "Mission copy constructed.", m_info.name, m_info.description );
 }
@@ -44,9 +59,10 @@ Mission::Mission( const Mission& other )
 void
 Mission::update()
 {
+  const std::string mission_id( std::to_string( id() ) );
   for ( auto& objective : m_objectives )
   {
-    objective.update( m_context );
+    objective.update( mission_id );
   }
 
   calculate_mission_state();
@@ -103,6 +119,7 @@ Mission::objectives() const
 void
 Mission::do_serialize( Serializer& serializer ) const
 {
+  serializer.push_back( m_id );
   serializer.push_back( m_info.name );
   serializer.push_back( m_info.description );
   serializer.push_back( m_state );
@@ -116,6 +133,7 @@ Mission::do_serialize( Serializer& serializer ) const
 void
 Mission::do_deserialize( Deserializer& deserializer )
 {
+  m_id = deserializer.pop_front< Mission::Id >();
   m_info.name = deserializer.pop_front< std::string >();
   m_info.description = deserializer.pop_front< std::string >();
   m_state = deserializer.pop_front< TaskState >();
@@ -176,7 +194,7 @@ Mission::Objective::do_deserialize( Deserializer& deserializer )
 
 
 void
-Mission::Objective::update( sol::table& context )
+Mission::Objective::update( const std::string& mission_id )
 {
   const bool is_finished( m_state != ongoing );
   if ( is_finished )
@@ -184,7 +202,7 @@ Mission::Objective::update( sol::table& context )
     return;
   }
 
-  m_state = m_updater( context );
+  m_state = m_updater( mission_id );
 }
 
 Mission::Pointer

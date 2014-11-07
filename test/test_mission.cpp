@@ -16,6 +16,12 @@ Describe( a_mission )
     objective_updated_times.clear();
   }
 
+  It( has_a_unique_id )
+  {
+    yarrr::Mission another_mission( yarrr::Mission::Info{ name, description } );
+    AssertThat( mission->id(), !Equals( another_mission.id() ) );
+  }
+
   It( has_default_constructor )
   {
     yarrr::Mission a_mission;
@@ -39,6 +45,7 @@ Describe( a_mission )
     AssertThat( deserialized_mission.description(), Equals( description ) );
     AssertThat( deserialized_mission.state(), Equals( yarrr::failed ) );
     AssertThat( deserialized_mission.objectives(), HasLength( 4 ) );
+    AssertThat( deserialized_mission.id(), Equals( mission->id() ) );
   }
 
   It( is_registered_to_entity_factory )
@@ -61,8 +68,9 @@ Describe( a_mission )
 
       yarrr::Mission::Objective an_objective(
           objective_description,
-          [ this, i ]( sol::table& )
+          [ this, i ]( const std::string& mission_id )
           {
+            AssertThat( mission_id, Equals( std::to_string( mission->id() ) ) );
             ++objective_updated_times[ i ];
             return objective_return_values.at( i );
           } );
@@ -114,28 +122,6 @@ Describe( a_mission )
     AssertThat( mission->state(), Equals( yarrr::succeeded ) );
   }
 
-  Describe( lua_behavior )
-  {
-    void SetUp()
-    {
-      lua.reset( new sol::state() );
-      lua->new_userdata< yarrr::Mission::Info, std::string, std::string >( "MissionInfo" );
-      lua->new_userdata< yarrr::Mission, yarrr::Mission::Info >( "Mission" );
-      lua->script( "function new_mission()\nreturn Mission.new( MissionInfo.new( \"mission in lua\", \"with description\" ) )\nend\n" );
-      new_mission.reset( new sol::function( (*lua)[ "new_mission" ] ) );
-    }
-
-    It( can_be_constructed )
-    {
-      yarrr::Mission mission( new_mission->call< yarrr::Mission& >() );
-      AssertThat( mission.name(), Equals( "mission in lua" ) );
-      AssertThat( mission.description(), Equals( "with description" ) );
-    }
-
-    std::unique_ptr< sol::state > lua;
-    std::unique_ptr< sol::function > new_mission;
-  };
-
   yarrr::Mission::Pointer mission;
   const std::string name{  "this is the name" };
   const std::string description{ "and this is the description" };
@@ -149,22 +135,23 @@ Describe( a_mission_objective )
 {
   void set_up_lua_stuff()
   {
-    lua.reset( new sol::state() );
-    context = lua->create_table();
-    (*lua)[ "objective_succeeded" ] = int( yarrr::succeeded );
-    lua->new_userdata< yarrr::Mission::Objective, std::string, sol::function >( "MissionObjective" );
-    lua->script( "function updater( context )\ncontext[ \"123\" ]=123\nreturn objective_succeeded\nend\n" );
-    lua->script( "function create_objective()\nreturn MissionObjective.new( \"bla\", updater )\nend\n" );
+    lua.reset( new the::model::Lua() );
+    lua->state()[ "objective_succeeded" ] = int( yarrr::succeeded );
+    lua->state().new_userdata< yarrr::Mission::Objective, std::string, sol::function >( "MissionObjective" );
+    lua->run( "function updater( id )\nprint( \"updater was called:\"..id )\nupdated_mission_id = id\nreturn objective_succeeded\nend\n" );
+    lua->run( "function create_objective()\nreturn MissionObjective.new( \"bla\", updater )\nend\n" );
   }
 
   void SetUp()
   {
     was_updater_called = false;
     updater_should_return = yarrr::ongoing;
+    called_with_mission_id.clear();
     objective.reset( new yarrr::Mission::Objective(
           description,
-          [ this ]( sol::table& ) -> yarrr::TaskState
+          [ this ]( const std::string& mission_id ) -> yarrr::TaskState
           {
+            called_with_mission_id = mission_id;
             was_updater_called = true;
             return updater_should_return;
           } ) );
@@ -193,7 +180,7 @@ Describe( a_mission_objective )
   void finish_with_success()
   {
     updater_should_return = yarrr::succeeded;
-    objective->update( context );
+    objective->update( mission_id );
   }
 
   It( serializes_objective_state )
@@ -209,14 +196,14 @@ Describe( a_mission_objective )
 
   It( calls_state_updater_when_updating )
   {
-    objective->update( context );
+    objective->update( mission_id );
     AssertThat( was_updater_called, Equals( true ) );
   }
 
   void assert_update_to_should_be( yarrr::TaskState returns, yarrr::TaskState expected )
   {
     updater_should_return = returns;
-    objective->update( context );
+    objective->update( mission_id );
     AssertThat( objective->state(), Equals( expected ) );
   }
 
@@ -241,25 +228,26 @@ Describe( a_mission_objective )
     assert_update_to_should_be( yarrr::succeeded, yarrr::failed );
   }
 
-  It( passes_context_table_to_the_lua_updater )
+  It( passes_mission_id_to_the_lua_updater )
   {
-    yarrr::Mission::Objective objective( (*lua)[ "create_objective" ].call<yarrr::Mission::Objective&>() );
-    objective.update( context );
-    AssertThat( context.get< int >( "123" ), Equals( 123 ) );
+    yarrr::Mission::Objective objective( lua->state()[ "create_objective" ].call<yarrr::Mission::Objective&>() );
+    objective.update( mission_id );
+    AssertThat( lua->assert_equals( "updated_mission_id", mission_id ), Equals( true ) );
   }
 
-  It( updates_objective_state_according_to_lua_updater )
+It( updates_objective_state_according_to_lua_updater )
   {
-    yarrr::Mission::Objective objective( (*lua)[ "create_objective" ].call<yarrr::Mission::Objective&>() );
-    objective.update( context );
+    yarrr::Mission::Objective objective( lua->state()[ "create_objective" ].call<yarrr::Mission::Objective&>() );
+    objective.update( mission_id );
     AssertThat( objective.state(), Equals( yarrr::succeeded ) );
   }
 
-  std::unique_ptr< sol::state > lua;
-  sol::table context;
+  std::unique_ptr< the::model::Lua > lua;
   yarrr::Mission::Objective::Pointer objective;
   const std::string description{ "objective description" };
   bool was_updater_called;
+  const std::string mission_id{ "12383498" };
+  std::string called_with_mission_id;
   yarrr::TaskState updater_should_return;
 };
 

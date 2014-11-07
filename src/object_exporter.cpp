@@ -2,35 +2,34 @@
 #include <yarrr/object_container.hpp>
 #include <yarrr/object.hpp>
 #include <yarrr/basic_behaviors.hpp>
+#include <yarrr/log.hpp>
 
 namespace yarrr
 {
 
-ObjectExporter::ObjectExporter( const ObjectContainer& container, sol::state& lua )
-  : m_lua( lua )
-  , m_container( container )
+ObjectExporter::ObjectExporter(
+    const ObjectContainer& container,
+    the::model::Lua& lua )
+  : m_container( container )
+  , m_objects_model( "objects", lua )
 {
-  reset_objects_table();
   refresh();
-}
-
-void
-ObjectExporter::reset_objects_table()
-{
-  m_object_models.clear();
-  m_objects = m_lua.create_table();
-  m_lua[ "objects" ] = m_objects;
 }
 
 void
 ObjectExporter::refresh()
 {
-  reset_objects_table();
+  m_object_models.clear();
   for ( const auto& object : m_container.objects() )
   {
-    m_object_models.emplace_back( *object.second, m_lua );
-    m_objects.set( std::to_string( object.second->id() ), m_object_models.back().table() );
+    add_model_of( *object.second );
   }
+}
+
+void
+ObjectExporter::add_model_of( const yarrr::Object& object )
+{
+  m_object_models.emplace_back( new ObjectModel( object, m_objects_model ) );
 }
 
 }
@@ -61,32 +60,14 @@ namespace
 namespace yarrr
 {
 
-ObjectModel::ObjectModel( const Object& object, sol::state& lua )
-  : m_object_table( lua.create_table() )
-  , m_coordinate( extract_coordinate_from( object ) )
-  , m_coordinate_table( lua.create_table() )
-  , m_velocity( extract_velocity_from( object ) )
-  , m_velocity_table( lua.create_table() )
-  , m_orientation( extract_orientation_from( object ) )
-  , m_angular_velocity( extract_angular_velocity_from( object ) )
+ObjectModel::ObjectModel( const Object& object, the::model::Node& parent )
+  : m_object_model( std::to_string( object.id() ), parent )
+  , m_coordinate( "coordinate", extract_coordinate_from( object ), m_object_model )
+  , m_velocity( "velocity", extract_velocity_from( object ), m_object_model )
+  , m_orientation( "orientation", extract_orientation_from( object ), m_object_model )
+  , m_angular_velocity( "angular_velocity", extract_angular_velocity_from( object ), m_object_model )
 {
-  thelog( log::debug )( "Exporting coordinate of object,", object.id(), m_coordinate );
-  m_object_table[ "coordinate" ] = m_coordinate_table;
-  m_coordinate_table[ "x" ] = m_coordinate.x;
-  m_coordinate_table[ "y" ] = m_coordinate.y;
-
-  m_object_table[ "velocity" ] = m_velocity_table;
-  m_velocity_table[ "x" ] = m_velocity.x;
-  m_velocity_table[ "y" ] = m_velocity.y;
-
-  m_object_table[ "orientation" ] = m_orientation;
-  m_object_table[ "angular_velocity" ] = m_angular_velocity;
-}
-
-sol::table&
-ObjectModel::table()
-{
-  return m_object_table;
+  thelog( log::debug )( "Exporting object model with id,", object.id() );
 }
 
 }

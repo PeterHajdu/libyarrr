@@ -6,7 +6,7 @@
 namespace
 {
 
-yarrr::Lua* engine_instance( nullptr );
+yarrr::LuaEngine* engine_instance( nullptr );
 
 }
 
@@ -14,44 +14,40 @@ namespace yarrr
 {
 
 bool
-lua_script( sol::state& state, const std::string& script )
+lua_script( the::model::Lua& lua, const std::string& script )
 {
-  try
+  thelog( log::debug )( "Executing lua script:", script );
+  if ( !lua.run( script ) )
   {
-    thelog( log::debug )( "Executing lua script:", script );
-    state.script( script );
-  }
-  catch ( std::exception& e )
-  {
-    thelog( log::error )( "Caught lua exception:", e.what() );
+    thelog( log::debug )( "Lua script failed with error message:", lua.error_message() );
     return false;
   }
 
   return true;
 }
 
-Lua::Lua()
+LuaEngine::LuaEngine()
 {
-  m_state.open_libraries( sol::lib::base );
-  m_state.open_libraries( sol::lib::package );
-  m_state.open_libraries( sol::lib::math );
-  m_state.open_libraries( sol::lib::os );
+  m_lua.state().open_libraries( sol::lib::base );
+  m_lua.state().open_libraries( sol::lib::package );
+  m_lua.state().open_libraries( sol::lib::math );
+  m_lua.state().open_libraries( sol::lib::os );
 }
 
-Lua& Lua::instance()
+LuaEngine& LuaEngine::instance()
 {
   if ( !engine_instance )
   {
     thelog( log::debug )( "Creating lua engine instance.", engine_instance );
-    engine_instance = new Lua();
+    engine_instance = new LuaEngine();
   }
 
   return *engine_instance;
 }
 
-AutoLuaRegister::AutoLuaRegister( std::function< void( Lua& ) > register_function )
+AutoLuaRegister::AutoLuaRegister( std::function< void( LuaEngine& ) > register_function )
 {
-  Lua& instance( Lua::instance() );
+  LuaEngine& instance( LuaEngine::instance() );
   thelog( yarrr::log::debug )( "Auto registering stuff on lua engine::", &instance, &instance.state() );
   register_function( instance );
 }

@@ -1,31 +1,43 @@
 #pragma once
 
-#include <yarrr/lua_engine.hpp>
 #include <yarrr/types.hpp>
+#include <themodel/node.hpp>
+#include <themodel/variable.hpp>
 #include <vector>
 
 namespace yarrr
 {
 class Object;
 
-//todo: there's plenty of space to improve the design here: model system
+class CoordinateModel
+{
+  public:
+    CoordinateModel( const std::string& name, const Coordinate& coordinate, the::model::Node& parent )
+      : m_coordinate_model( name, parent )
+      , m_x( "x", coordinate.x, m_coordinate_model )
+      , m_y( "y", coordinate.y, m_coordinate_model )
+    {
+    }
+
+  private:
+    the::model::Node m_coordinate_model;
+    the::model::Variable< int > m_x;
+    the::model::Variable< int > m_y;
+};
+
+
 class ObjectModel
 {
   public:
-    ObjectModel( const Object&, sol::state& );
-    sol::table& table();
+    typedef std::unique_ptr< ObjectModel > Pointer;
+    ObjectModel( const Object&, the::model::Node& parent );
 
   private:
-    sol::table m_object_table;
-
-    yarrr::Coordinate m_coordinate;
-    sol::table m_coordinate_table;
-
-    yarrr::Coordinate m_velocity;
-    sol::table m_velocity_table;
-
-    double m_orientation;
-    double m_angular_velocity;
+    the::model::Node m_object_model;
+    CoordinateModel m_coordinate;
+    CoordinateModel m_velocity;
+    the::model::Variable< double > m_orientation;
+    the::model::Variable< double > m_angular_velocity;
 };
 
 class ObjectContainer;
@@ -33,16 +45,15 @@ class ObjectContainer;
 class ObjectExporter
 {
   public:
-    ObjectExporter( const ObjectContainer&, sol::state& );
+    ObjectExporter( const ObjectContainer&, the::model::Lua& );
     void refresh();
 
   private:
-    void reset_objects_table();
+    void add_model_of( const yarrr::Object& );
 
-    sol::state& m_lua;
-    sol::table m_objects;
     const ObjectContainer& m_container;
-    std::vector< ObjectModel > m_object_models;
+    the::model::Node m_objects_model;
+    std::vector< ObjectModel::Pointer > m_object_models;
 };
 
 }

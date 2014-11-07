@@ -5,43 +5,17 @@
 
 using namespace igloo;
 
-Describe( lua_exec )
-{
-  void SetUp()
-  {
-    lua.reset( new sol::state() );
-    lua->open_libraries( sol::lib::base );
-  }
-
-  It( catches_and_logs_all_exceptions )
-  {
-    yarrr::lua_script( *lua, "assert( false )" );
-  }
-
-  It( returns_false_if_there_was_an_exception )
-  {
-    AssertThat( yarrr::lua_script( *lua, "assert( false )" ), Equals( false ) );
-  }
-
-  It( returns_true_if_the_script_executes_fine )
-  {
-    AssertThat( yarrr::lua_script( *lua, "assert( true )" ), Equals( true ) );
-  }
-
-  std::unique_ptr< sol::state > lua;
-};
-
 Describe( a_lua_engine )
 {
   It( is_a_singleton )
   {
-    yarrr::Lua& lua_engine( yarrr::Lua::instance() );
-    AssertThat( &yarrr::Lua::instance(), Equals( &lua_engine ) );
+    yarrr::LuaEngine& lua_engine( yarrr::LuaEngine::instance() );
+    AssertThat( &yarrr::LuaEngine::instance(), Equals( &lua_engine ) );
   }
 
   It( can_return_the_sol_state )
   {
-    sol::state& sol_state( yarrr::Lua::state() );
+    sol::state& sol_state( yarrr::LuaEngine::state() );
     (void) sol_state;
   }
 
@@ -49,9 +23,9 @@ Describe( a_lua_engine )
   {
     try
     {
-      yarrr::Lua::state().script( "print( \"hello lua\" ) " );
-      yarrr::Lua::state().script( "print( math.sqrt( 25 ) ) " );
-      yarrr::Lua::state().script( "print( os.time() ) " );
+      yarrr::LuaEngine::state().script( "print( \"hello lua\" ) " );
+      yarrr::LuaEngine::state().script( "print( math.sqrt( 25 ) ) " );
+      yarrr::LuaEngine::state().script( "print( os.time() ) " );
     }
     catch ( std::exception& e )
     {
@@ -59,19 +33,26 @@ Describe( a_lua_engine )
       throw e;
     }
   }
+
+  It( returns_the_lua_model_with_the_global_table )
+  {
+    the::model::Lua& model( yarrr::LuaEngine::model() );
+    (void)model;
+  }
+
 };
 
 Describe( an_auto_lua_register )
 {
   It( calls_the_function_when_constructed_with_the_lua_state_as_parameter )
   {
-    yarrr::Lua* called_with{ nullptr };
+    yarrr::LuaEngine* called_with{ nullptr };
     yarrr::AutoLuaRegister auto_lua_register(
-        [ &called_with ]( yarrr::Lua& lua )
+        [ &called_with ]( yarrr::LuaEngine& lua )
         {
           called_with = &lua;
         } );
-    AssertThat( called_with, Equals( &yarrr::Lua::instance() ) );
+    AssertThat( called_with, Equals( &yarrr::LuaEngine::instance() ) );
   }
 };
 
@@ -97,13 +78,13 @@ Describe( a_simple_lua_register )
   It( registers_a_type_without_constructor_parameters_and_exported_functions )
   {
     yarrr::SimpleLuaRegister< class_without_constructor_parameter_and_function >( "a_class" );
-    yarrr::Lua::state().script( "a_class.new()" );
+    yarrr::LuaEngine::state().script( "a_class.new()" );
   }
 
   It( registers_a_type_with_constructor_parameters_and_without_exported_functions )
   {
     yarrr::SimpleLuaRegister< class_with_constructor_parameter_and_without_functions, int >( "another_class" );
-    yarrr::Lua::state().script( "another_class.new( 10 )" );
+    yarrr::LuaEngine::state().script( "another_class.new( 10 )" );
   }
 };
 

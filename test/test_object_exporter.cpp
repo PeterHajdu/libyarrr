@@ -29,23 +29,28 @@ Describe(an_object_exporter)
   void SetUp()
   {
     set_up_object_container();
-    lua.reset( new sol::state() );
-    lua->open_libraries( sol::lib::base );
+    lua.reset( new the::model::Lua() );
 
     const yarrr::ObjectContainer& const_container( *container );
     exporter.reset( new yarrr::ObjectExporter( const_container, *lua ) );
   }
 
+  void TearDown()
+  {
+    exporter.reset();
+  }
+
   It( exposes_objects_table_to_the_lua_world )
   {
-    lua->script( "assert( objects )" );
+    AssertThat( lua->assert_that( "objects" ), Equals( true ) );
   }
 
   void assert_every_object_is_exported()
   {
     for ( const auto& id : object_ids )
     {
-      lua->script( std::string( "assert( objects[ \"" ) + std::to_string( id ) + "\" ] )" );
+      const std::string object_path_exists( "objects[ " + the::model::to_lua_string( std::to_string( id ) ) + " ]" );
+      AssertThat( lua->assert_that( object_path_exists ), Equals( true ) );
     }
   }
 
@@ -63,34 +68,18 @@ Describe(an_object_exporter)
 
   It( removes_deleted_objects_when_refreshed )
   {
-    const yarrr::Object::Id removed_object( object_ids.back() );
-    container->delete_object( removed_object );
+    const std::string removed_object_id( std::to_string( object_ids.back() ) );
+    container->delete_object(  object_ids.back() );
     exporter->refresh();
-    lua->script( std::string( "assert( not objects[ \"" ) + std::to_string( removed_object ) + "\" ] )" );
-  }
 
-  void assert_every_object_has_member( const std::string& member )
-  {
-    for ( const auto& id : object_ids )
-    {
-      lua->script( std::string( "assert( objects[ \"" ) + std::to_string( id ) + "\" ]." + member + " )" );
-    }
-  }
-
-  It( exports_object_models )
-  {
-    assert_every_object_has_member( "coordinate.x" );
-    assert_every_object_has_member( "coordinate.y" );
-    assert_every_object_has_member( "velocity.x" );
-    assert_every_object_has_member( "velocity.y" );
-    assert_every_object_has_member( "orientation" );
-    assert_every_object_has_member( "angular_velocity" );
+    const std::string object_path_exists( "objects[ " + the::model::to_lua_string( removed_object_id ) + " ]" );
+    AssertThat(  lua->assert_that( object_path_exists ), Equals( false ) );
   }
 
   const size_t number_of_objects{ 3 };
   std::unique_ptr< yarrr::ObjectContainer > container;
   std::unique_ptr< yarrr::ObjectExporter > exporter;
-  std::unique_ptr< sol::state > lua;
+  std::unique_ptr< the::model::Lua > lua;
   std::vector< yarrr::Object::Id > object_ids;
 };
 
@@ -107,77 +96,40 @@ Describe( an_object_model )
     object = yarrr::Object::create();
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior( parameters ) ) );
 
-    lua.reset( new sol::state() );
-    lua->open_libraries( sol::lib::base );
+    lua.reset( new the::model::Lua() );
+    objects.reset( new the::model::Node( "objects", *lua ) );
+    model.reset( new yarrr::ObjectModel( *object, *objects ) );
 
-    id = std::to_string( object->id() );
-    model.reset( new yarrr::ObjectModel( *object, *lua ) );
-
-    objects = lua->create_table();
-    objects[ id ] = model->table();
-    (*lua)[ "objects" ] = objects;
+    object_path = std::string( "objects[" ) + the::model::to_lua_string( std::to_string( object->id() ) ) + "]";
   }
 
-  It( can_be_added_to_a_lua_table )
+  void TearDown()
   {
-    lua->script( std::string( "assert( objects[ \"" ) + id + "\" ] )");
-  }
-
-  void assert_has_member( const std::string& member )
-  {
-    try
-    {
-      lua->script( std::string( "assert( objects[ \"" ) + id + "\" ]." + member + " )");
-    }
-    catch( std::exception& e )
-    {
-      std::cout << e.what() << std::endl;
-      throw e;
-    }
-  }
-
-  void assert_member_equals( const std::string& member, const std::string& value )
-  {
-    try
-    {
-      lua->script( std::string( "print( objects[ \"" ) + id + "\" ]." + member + ")" );
-      lua->script( std::string( "assert( objects[ \"" ) + id + "\" ]." + member + " == " + value + " )");
-    }
-    catch( std::exception& e )
-    {
-      std::cout << e.what() << std::endl;
-      throw e;
-    }
+    model.reset();
+    objects.reset();
+    lua.reset();
   }
 
   It( exports_the_objects_coordinate_from_physical_parameters )
   {
-    assert_has_member( "coordinate" );
-    assert_has_member( "coordinate.x" );
-    assert_has_member( "coordinate.y" );
-
-    assert_member_equals( "coordinate.x", std::to_string( position_in_metres.x ) );
-    assert_member_equals( "coordinate.y", std::to_string( position_in_metres.y ) );
+    AssertThat( lua->assert_equals( the::model::path_from( { object_path, "coordinate", "x" } ), position_in_metres.x ), Equals( true ) );
+    AssertThat( lua->assert_equals( the::model::path_from( { object_path, "coordinate", "y" } ), position_in_metres.y ), Equals( true ) );
   }
 
   It( exports_the_objects_velocity_from_physical_parameters )
   {
-    assert_has_member( "velocity" );
-    assert_has_member( "velocity.x" );
-    assert_has_member( "velocity.y" );
-
-    assert_member_equals( "velocity.x", std::to_string( velocity_in_metres.x ) );
-    assert_member_equals( "velocity.y", std::to_string( velocity_in_metres.y ) );
+    AssertThat( lua->assert_equals( the::model::path_from( { object_path, "velocity", "x" } ), velocity_in_metres.x ), Equals( true ) );
+    AssertThat( lua->assert_equals( the::model::path_from( { object_path, "velocity", "y" } ), velocity_in_metres.y ), Equals( true ) );
   }
 
   It( exports_the_objects_orientation )
   {
-    assert_member_equals( "orientation", std::to_string( orientation_in_degrees ) );
+    AssertThat( lua->assert_equals( the::model::path_from( { object_path, "orientation" } ), orientation_in_degrees ), Equals( true ) );
   }
 
   It( exports_the_objects_angular_velocity )
   {
-    assert_member_equals( "angular_velocity", std::to_string( angular_velocity_in_degrees ) );
+    AssertThat( lua->assert_equals( the::model::path_from( { object_path, "angular_velocity" } ), angular_velocity_in_degrees ), Equals( true ) );
   }
 
   const yarrr::Angle orientation{ 1823839 };
@@ -190,10 +142,13 @@ Describe( an_object_model )
   const yarrr::Coordinate position_in_metres{ yarrr::huplons_to_metres( position ) };
   const yarrr::Coordinate velocity_in_metres{ position_in_metres };
   yarrr::PhysicalParameters parameters;
-  std::string id;
-  std::unique_ptr< sol::state > lua;
-  sol::table objects;
+
   yarrr::Object::Pointer object;
+  std::string object_path;
+
+  std::unique_ptr< the::model::Lua > lua;
+  std::unique_ptr< the::model::Node > objects;
   std::unique_ptr< yarrr::ObjectModel > model;
+
 };
 

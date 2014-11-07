@@ -16,7 +16,7 @@ void load_configuration()
 
   try
   {
-    yarrr::Lua::state().open_file( config_file_path );
+    yarrr::LuaEngine::state().open_file( config_file_path );
   }
   catch( std::exception& e )
   {
@@ -58,7 +58,7 @@ namespace
 void
 export_yarrr_stuff()
 {
-  sol::state& lua( yarrr::Lua::state() );
+  sol::state& lua( yarrr::LuaEngine::state() );
   lua[ "lua_configuration_path" ] = the::conf::get< std::string >( "lua_configuration_path" );
   lua.new_userdata< yarrr::Coordinate, int, int >( "Coordinate" );
   lua.new_userdata< yarrr::Tile::Coordinate, int, int >( "TileCoordinate" );

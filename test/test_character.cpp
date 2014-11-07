@@ -10,30 +10,29 @@ Describe(a_character)
 {
   void SetUp()
   {
-    lua.reset( new sol::state() );
-    lua->open_libraries( sol::lib::base );
-
-    object.reset( new yarrr::Object() );
-    object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
-    yarrr::component_of< yarrr::PhysicalBehavior >( *object ).physical_parameters.coordinate = object_coordinate;
-
-    character.reset( new yarrr::Character( *lua ) );
-    character->assign_object( *object );
-
-    character_table = &character->table();
-    ( *lua )[ "the_character" ] = character->table();
+    lua.reset( new the::model::Lua() );
+    root.reset( new the::model::Node( "root", *lua ) );
+    character.reset( new yarrr::Character( *root ) );
+    character->assign_object( object );
   }
 
+  void TearDown()
+  {
+    character.reset();
+    root.reset();
+    lua.reset();
+  }
 
   It( exports_its_object_id )
   {
-    AssertThat( yarrr::lua_script( *lua, std::string( "assert( the_character.object_id == \"" ) + std::to_string( object->id() ) + "\" )" ), Equals( true ) );
+    const std::string object_id_path( the::model::path_from( { "root", "character", "object_id" } ) );
+    AssertThat( lua->assert_equals( object_id_path, expected_object_id ), Equals( true ) );
   }
 
-  const yarrr::Coordinate object_coordinate{ 1234_metres, -29843_metres };
-  yarrr::Object::Pointer object;
+  yarrr::Object object;
+  const std::string expected_object_id{ std::to_string( object.id() ) };
   yarrr::Character::Pointer character;
-  std::unique_ptr< sol::state > lua;
-  const sol::table* character_table;
+  std::unique_ptr< the::model::Lua > lua;
+  std::unique_ptr< the::model::Node > root;
 };
 

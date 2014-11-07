@@ -67,15 +67,17 @@ Describe( an_object_factory )
 
   It( exports_factory_registration_to_the_lua_world )
   {
-    sol::state& lua( yarrr::Lua::state() );
-    lua.new_userdata< yarrr::Object >( "Object", "add_behavior", &yarrr::Object::add_behavior_clone );
-    lua.new_userdata< yarrr::PhysicalBehavior >( "PhysicalBehavior" );
+    the::model::Lua& lua( yarrr::LuaEngine::model() );
+    lua.state().new_userdata< yarrr::Object >( "Object", "add_behavior", &yarrr::Object::add_behavior_clone );
+    lua.state().new_userdata< yarrr::PhysicalBehavior >( "PhysicalBehavior" );
 
-    yarrr::Lua::state().script(
+    AssertThat(
+      lua.run(
         "function dogfood( new_object )\n"
         "  new_object:add_behavior( PhysicalBehavior.new() )\n"
         "end\n"
-        "register_object_factory( \"dogfood\", dogfood )\n" );
+        "object_factory.register_factory( \"dogfood\", dogfood )\n" ),
+      Equals( true ) );
 
     yarrr::Object::Pointer new_object( the::ctci::service< yarrr::ObjectFactory >().create_a( "dogfood" ) );
   }

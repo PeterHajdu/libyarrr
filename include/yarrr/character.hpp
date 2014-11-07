@@ -1,7 +1,8 @@
 #pragma once
 
 #include <memory>
-#include <yarrr/lua_engine.hpp>
+#include <themodel/node.hpp>
+#include <themodel/variable.hpp>
 
 namespace yarrr
 {
@@ -11,14 +12,12 @@ class Character
 {
   public:
     typedef std::unique_ptr< Character > Pointer;
-    Character( sol::state& );
+    Character( the::model::Node& parent );
     void assign_object( const Object& );
 
-    sol::table& table();
-
   private:
-    sol::table m_table;
-    std::string m_object_id;
+    the::model::Node m_character_model;
+    the::model::Variable< std::string > m_object_id;
 };
 
 }

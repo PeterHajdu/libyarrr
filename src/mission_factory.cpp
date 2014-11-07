@@ -29,17 +29,16 @@ namespace
     thelog( yarrr::log::info )( "Registered lua mission factory method for mission type:", info.name );
   }
 
-  yarrr::AutoLuaRegister function_register(
-      []( yarrr::Lua& lua )
-      {
-        lua.state().set_function( "register_mission_factory", register_mission_factory );
-        thelog( yarrr::log::debug )( "Registered register_mission_factory method on lua state:", &lua.state() );
-      } );
-
 }
 
 namespace yarrr
 {
+
+MissionFactory::MissionFactory()
+  : m_factory_model( "mission_factory", yarrr::LuaEngine::model() )
+  , m_register_model( "register_factory", m_factory_model, &register_mission_factory )
+{
+}
 
 Mission::Pointer
 MissionFactory::create_a( const std::string& name ) const

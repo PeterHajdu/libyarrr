@@ -35,27 +35,21 @@ Describe( a_mission_factory )
 
   It( exports_factory_registration_to_the_lua_world )
   {
-    try
-    {
-      sol::state& lua( yarrr::Lua::state() );
-      lua.new_userdata< yarrr::Mission::Info, std::string, std::string >( "MissionInfo" );
+    the::model::Lua& lua( yarrr::LuaEngine::model() );
+    lua.state().new_userdata< yarrr::Mission::Info, std::string, std::string >( "MissionInfo" );
 
-      lua.script(
-          "function a_mission_factory( new_mission )\n"
-          "a_mission_factory_was_called = true\n"
-          "end\n"
-          "register_mission_factory( MissionInfo.new( \"a\", \"b\" ), a_mission_factory )\n" );
+    AssertThat(
+      lua.run(
+        "function a_mission_factory( new_mission )\n"
+        "a_mission_factory_was_called = true\n"
+        "end\n"
+        "mission_factory.register_factory( MissionInfo.new( \"a\", \"b\" ), a_mission_factory )\n" ),
+      Equals( true ) );
 
-      yarrr::Mission::Pointer mission( factory->create_a( "a" ) );
-      lua.script( "assert( a_mission_factory_was_called )\n" );
-      AssertThat( mission->name(), Equals( "a" ) );
-      AssertThat( mission->description(), Equals( "b" ) );
-    }
-    catch ( std::exception& e )
-    {
-      std::cout << e.what() << std::endl;
-      throw e;
-    }
+    yarrr::Mission::Pointer mission( factory->create_a( "a" ) );
+    AssertThat( lua.assert_that( "a_mission_factory_was_called" ), Equals( true ) );
+    AssertThat( mission->name(), Equals( "a" ) );
+    AssertThat( mission->description(), Equals( "b" ) );
   }
 
   yarrr::MissionFactory* factory;

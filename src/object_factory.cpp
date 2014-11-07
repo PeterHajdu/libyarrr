@@ -30,16 +30,16 @@ void register_object_factory( const std::string& name, sol::function factory )
   thelog( yarrr::log::info )( "Registered lua factory method for object type:", name );
 }
 
-yarrr::AutoLuaRegister function_register(
-    []( yarrr::Lua& lua )
-    {
-      lua.state().set_function( "register_object_factory", register_object_factory );
-      thelog( yarrr::log::debug )( "Registered register_object_factory method on lua state:", &lua.state() );
-    } );
 }
 
 namespace yarrr
 {
+
+ObjectFactory::ObjectFactory()
+  : m_factory_model( "object_factory", yarrr::LuaEngine::model() )
+  , m_register_model( "register_factory", m_factory_model, &register_object_factory )
+{
+}
 
 yarrr::Object::Pointer
 ObjectFactory::create_a( const std::string& key )

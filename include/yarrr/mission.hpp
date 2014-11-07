@@ -23,6 +23,7 @@ class Mission final : public Entity
   public:
     add_polymorphic_ctci( "yarrr_mission" );
     typedef std::unique_ptr< Mission > Pointer;
+    typedef uint64_t Id;
 
     class Info
     {
@@ -41,6 +42,8 @@ class Mission final : public Entity
     Mission() = default;
     Mission( const Mission& );
     Mission( const Info& );
+
+    Id id() const;
 
     static Pointer create( const Info& info );
 
@@ -65,7 +68,7 @@ class Mission final : public Entity
     Info m_info;
     Objectives m_objectives;
     TaskState m_state;
-    sol::table m_context;
+    Id m_id;
 };
 
 class Mission::Objective final : public Entity
@@ -73,7 +76,7 @@ class Mission::Objective final : public Entity
   public:
     add_polymorphic_ctci( "yarrr_mission_objective" );
     typedef std::unique_ptr< Objective > Pointer;
-    typedef std::function< TaskState( sol::table& ) > Updater;
+    typedef std::function< TaskState( const std::string& mission_id ) > Updater;
 
     Objective() = default;
     Objective( const std::string& description, Updater updater );
@@ -83,7 +86,7 @@ class Mission::Objective final : public Entity
     const std::string& description() const;
     const TaskState state() const;
 
-    void update( sol::table& context );
+    void update( const std::string& mission_id );
 
   private:
     virtual void do_serialize( Serializer& serializer ) const override final;
