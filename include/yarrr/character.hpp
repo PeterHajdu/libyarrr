@@ -6,14 +6,12 @@
 
 namespace yarrr
 {
-class Object;
 
 class Character
 {
   public:
     typedef std::unique_ptr< Character > Pointer;
-    Character( the::model::Node& parent );
-    void assign_object( const Object& );
+    Character( const std::string& object_id, the::model::Node& parent );
 
   private:
     the::model::Node m_character_model;

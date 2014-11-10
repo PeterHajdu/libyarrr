@@ -37,6 +37,7 @@ set(SOURCE_FILES
   mission.cpp
   mission_factory.cpp
   character.cpp
+  mission_exporter.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
