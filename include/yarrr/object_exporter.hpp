@@ -1,7 +1,7 @@
 #pragma once
 
 #include <yarrr/types.hpp>
-#include <themodel/node.hpp>
+#include <themodel/node_list.hpp>
 #include <themodel/variable.hpp>
 #include <vector>
 
@@ -26,14 +26,12 @@ class CoordinateModel
 };
 
 
-class ObjectModel
+class ObjectModel : public the::model::Node
 {
   public:
-    typedef std::unique_ptr< ObjectModel > Pointer;
     ObjectModel( const Object&, the::model::Node& parent );
 
   private:
-    the::model::Node m_object_model;
     CoordinateModel m_coordinate;
     CoordinateModel m_velocity;
     the::model::Variable< double > m_orientation;
@@ -52,8 +50,7 @@ class ObjectExporter
     void add_model_of( const yarrr::Object& );
 
     const ObjectContainer& m_container;
-    the::model::Node m_objects_model;
-    std::vector< ObjectModel::Pointer > m_object_models;
+    the::model::NodeList m_objects_model;
 };
 
 }

@@ -19,18 +19,13 @@ ObjectExporter::ObjectExporter(
 void
 ObjectExporter::refresh()
 {
-  m_object_models.clear();
+  m_objects_model.clear();
   for ( const auto& object : m_container.objects() )
   {
-    add_model_of( *object.second );
+    m_objects_model.add_node( the::model::Node::Pointer( new ObjectModel( *object.second, m_objects_model ) ) );
   }
 }
 
-void
-ObjectExporter::add_model_of( const yarrr::Object& object )
-{
-  m_object_models.emplace_back( new ObjectModel( object, m_objects_model ) );
-}
 
 }
 
@@ -61,11 +56,11 @@ namespace yarrr
 {
 
 ObjectModel::ObjectModel( const Object& object, the::model::Node& parent )
-  : m_object_model( std::to_string( object.id() ), parent )
-  , m_coordinate( "coordinate", extract_coordinate_from( object ), m_object_model )
-  , m_velocity( "velocity", extract_velocity_from( object ), m_object_model )
-  , m_orientation( "orientation", extract_orientation_from( object ), m_object_model )
-  , m_angular_velocity( "angular_velocity", extract_angular_velocity_from( object ), m_object_model )
+  : Node( std::to_string( object.id() ), parent )
+  , m_coordinate( "coordinate", extract_coordinate_from( object ), *this )
+  , m_velocity( "velocity", extract_velocity_from( object ), *this )
+  , m_orientation( "orientation", extract_orientation_from( object ), *this )
+  , m_angular_velocity( "angular_velocity", extract_angular_velocity_from( object ), *this )
 {
   thelog( log::debug )( "Exporting object model with id,", object.id() );
 }
