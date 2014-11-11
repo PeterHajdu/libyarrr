@@ -6,7 +6,7 @@
 
 using namespace igloo;
 
-Describe_Only( a_mission_container )
+Describe( a_mission_container )
 {
 
   void add_mission()
