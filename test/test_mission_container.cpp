@@ -9,16 +9,22 @@ using namespace igloo;
 Describe( a_mission_container )
 {
 
-  void add_mission()
+  void decorate_mission( yarrr::Mission& mission )
   {
-    yarrr::Mission::Pointer new_mission( new yarrr::Mission() );
-    new_mission->add_objective( yarrr::Mission::Objective( "updater name",
+    mission.add_objective( yarrr::Mission::Objective( "updater name",
           [ this ]( const std::string& ) -> yarrr::TaskState
           {
             was_mission_updated = true;
             return mission_state;
           } ) );
+  }
+
+  void add_mission()
+  {
+    yarrr::Mission::Pointer new_mission( new yarrr::Mission() );
+    decorate_mission( *new_mission );
     mission_id = new_mission->id();
+    mission_copy = *new_mission;
     container->add_mission( std::move( new_mission ) );
   }
 
@@ -66,7 +72,7 @@ Describe( a_mission_container )
     AssertThat( contains( mission_id ), Equals( true ) );
   }
 
-  void finish()
+  void finish_all()
   {
     mission_state = yarrr::succeeded;
     container->update();
@@ -74,19 +80,36 @@ Describe( a_mission_container )
 
   It( deletes_finished_missions )
   {
-    finish();
+    finish_all();
     AssertThat( container->missions(), HasLength( 0u ) );
   }
 
   It( calls_finished_callback_when_a_mission_gets_finished )
   {
-    finish();
+    finish_all();
     AssertThat( was_mission_finished_callback_called, Equals( true ) );
+  }
+
+  void finish_mission( yarrr::Mission& mission )
+  {
+    decorate_mission( mission );
+    mission_state = yarrr::succeeded;
+    mission.update();
+  }
+
+  It( updates_the_mission_when_adding_one_with_an_existing_id )
+  {
+    yarrr::Mission::Pointer new_mission( new yarrr::Mission( mission_copy ) );
+    finish_mission( *new_mission );
+    container->add_mission( std::move( new_mission ) );
+    AssertThat( container->missions(), HasLength( 1u ) );
+    AssertThat( container->missions().back()->state(), Equals( yarrr::succeeded ) );
   }
 
   std::unique_ptr< yarrr::MissionContainer > container;
   bool was_mission_updated;
   yarrr::TaskState mission_state;
+  yarrr::Mission mission_copy;
   yarrr::Mission::Id mission_id;
   yarrr::Mission::Id mission_finished_id;
   bool was_mission_finished_callback_called;

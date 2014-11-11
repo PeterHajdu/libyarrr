@@ -9,9 +9,21 @@ MissionContainer::MissionContainer( FinishedCallback finished_callback )
 }
 
 void
-MissionContainer::add_mission( Mission::Pointer&& mission )
+MissionContainer::add_mission( Mission::Pointer&& new_mission )
 {
-  m_missions.emplace_back( std::move( mission ) );
+  const auto mission_iterator( std::find_if( std::begin( m_missions ), std::end( m_missions ),
+       [ &new_mission ]( const Mission::Pointer& mission )
+       {
+         return new_mission->id() == mission->id();
+       } ) );
+
+  if ( mission_iterator != std::end( m_missions ) )
+  {
+    mission_iterator->swap( new_mission );
+    return;
+  }
+
+  m_missions.emplace_back( std::move( new_mission ) );
 }
 
 const MissionContainer::Missions&
