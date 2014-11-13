@@ -37,7 +37,6 @@ set(SOURCE_FILES
   mission.cpp
   mission_factory.cpp
   character.cpp
-  mission_exporter.cpp
   mission_container.cpp
     )
 
