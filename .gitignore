@@ -5,6 +5,7 @@ test/valgrind.log
 *log*
 *core*
 *swp
+*swo
 *pyc
 *.cmake
 Makefile
