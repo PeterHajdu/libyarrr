@@ -10,7 +10,7 @@ Describe(a_character)
   void SetUp()
   {
     lua.reset( new the::model::Lua() );
-    root.reset( new the::model::Node( "root", *lua ) );
+    root.reset( new the::model::OwningNode( "root", *lua ) );
     character.reset( new yarrr::Character( object_id, *root ) );
   }
 
@@ -30,6 +30,6 @@ Describe(a_character)
   const std::string object_id{ "384658" };
   yarrr::Character::Pointer character;
   std::unique_ptr< the::model::Lua > lua;
-  std::unique_ptr< the::model::Node > root;
+  std::unique_ptr< the::model::OwningNode > root;
 };
 

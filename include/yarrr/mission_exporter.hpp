@@ -7,12 +7,12 @@
 namespace yarrr
 {
 
-typedef the::model::NodeList MissionsModel;
+typedef the::model::OwningNodeList MissionsModel;
 
-class MissionModel : public the::model::Node
+class MissionModel : public the::model::OwningNode
 {
   public:
-    MissionModel( const std::string& mission_id, const std::string& object_id, the::model::Node& parent );
+    MissionModel( const std::string& mission_id, const std::string& object_id, the::model::OwningNode& parent );
 
   private:
     Character m_character;

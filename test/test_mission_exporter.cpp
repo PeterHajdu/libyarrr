@@ -11,7 +11,7 @@ Describe( a_mission_model )
   {
     lua.reset( new the::model::Lua() );
     missions.reset( new yarrr::MissionsModel( missions_name, *lua ) );
-    missions->add_node( the::model::Node::Pointer(
+    missions->add_node( the::model::OwningNode::Pointer(
           new yarrr::MissionModel( mission_id, object_id, *missions ) ) );
   }
 

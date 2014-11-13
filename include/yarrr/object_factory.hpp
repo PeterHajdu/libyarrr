@@ -24,7 +24,7 @@ class ObjectFactory final
     typedef std::unordered_map< std::string, Creator > Creators;
     Creators m_creators;
 
-    the::model::Node m_factory_model;
+    the::model::OwningNode m_factory_model;
     the::model::Function m_register_model;
 };
 

@@ -11,10 +11,10 @@ class Character
 {
   public:
     typedef std::unique_ptr< Character > Pointer;
-    Character( const std::string& object_id, the::model::Node& parent );
+    Character( const std::string& object_id, the::model::OwningNode& parent );
 
   private:
-    the::model::Node m_character_model;
+    the::model::OwningNode m_character_model;
     the::model::Variable< std::string > m_object_id;
 };
 

@@ -22,7 +22,7 @@ ObjectExporter::refresh()
   m_objects_model.clear();
   for ( const auto& object : m_container.objects() )
   {
-    m_objects_model.add_node( the::model::Node::Pointer( new ObjectModel( *object.second, m_objects_model ) ) );
+    m_objects_model.add_node( the::model::OwningNode::Pointer( new ObjectModel( *object.second, m_objects_model ) ) );
   }
 }
 
@@ -55,8 +55,8 @@ namespace
 namespace yarrr
 {
 
-ObjectModel::ObjectModel( const Object& object, the::model::Node& parent )
-  : Node( std::to_string( object.id() ), parent )
+ObjectModel::ObjectModel( const Object& object, the::model::OwningNode& parent )
+  : the::model::OwningNode( std::to_string( object.id() ), parent )
   , m_coordinate( "coordinate", extract_coordinate_from( object ), *this )
   , m_velocity( "velocity", extract_velocity_from( object ), *this )
   , m_orientation( "orientation", extract_orientation_from( object ), *this )

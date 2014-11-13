@@ -12,7 +12,7 @@ class Object;
 class CoordinateModel
 {
   public:
-    CoordinateModel( const std::string& name, const Coordinate& coordinate, the::model::Node& parent )
+    CoordinateModel( const std::string& name, const Coordinate& coordinate, the::model::OwningNode& parent )
       : m_coordinate_model( name, parent )
       , m_x( "x", coordinate.x, m_coordinate_model )
       , m_y( "y", coordinate.y, m_coordinate_model )
@@ -20,16 +20,16 @@ class CoordinateModel
     }
 
   private:
-    the::model::Node m_coordinate_model;
+    the::model::OwningNode m_coordinate_model;
     the::model::Variable< int > m_x;
     the::model::Variable< int > m_y;
 };
 
 
-class ObjectModel : public the::model::Node
+class ObjectModel : public the::model::OwningNode
 {
   public:
-    ObjectModel( const Object&, the::model::Node& parent );
+    ObjectModel( const Object&, the::model::OwningNode& parent );
 
   private:
     CoordinateModel m_coordinate;
@@ -50,7 +50,7 @@ class ObjectExporter
     void add_model_of( const yarrr::Object& );
 
     const ObjectContainer& m_container;
-    the::model::NodeList m_objects_model;
+    the::model::OwningNodeList m_objects_model;
 };
 
 }

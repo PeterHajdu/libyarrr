@@ -97,7 +97,7 @@ Describe( an_object_model )
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior( parameters ) ) );
 
     lua.reset( new the::model::Lua() );
-    objects.reset( new the::model::Node( "objects", *lua ) );
+    objects.reset( new the::model::OwningNode( "objects", *lua ) );
     model.reset( new yarrr::ObjectModel( *object, *objects ) );
 
     object_path = std::string( "objects[" ) + the::model::to_lua_string( std::to_string( object->id() ) ) + "]";
@@ -147,7 +147,7 @@ Describe( an_object_model )
   std::string object_path;
 
   std::unique_ptr< the::model::Lua > lua;
-  std::unique_ptr< the::model::Node > objects;
+  std::unique_ptr< the::model::OwningNode > objects;
   std::unique_ptr< yarrr::ObjectModel > model;
 
 };
