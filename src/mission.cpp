@@ -17,7 +17,16 @@ wrap_lua_updater( sol::function updater )
     [ updater ]( const std::string& mission_id ) -> yarrr::TaskState
     {
       thelog( yarrr::log::debug )( "Calling lua updater." );
-      return yarrr::TaskState( updater.call<int>( mission_id ) );
+      yarrr::TaskState result( yarrr::failed );
+      try
+      {
+        result = yarrr::TaskState( updater.call<int>( mission_id ) );
+      }
+      catch ( std::exception& e )
+      {
+        thelog( yarrr::log::error )( "Lua updater crashed:", e.what() );
+      }
+      return result;
     };
 }
 

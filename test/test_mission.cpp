@@ -140,6 +140,9 @@ Describe( a_mission_objective )
     lua->state().new_userdata< yarrr::Mission::Objective, std::string, sol::function >( "MissionObjective" );
     lua->run( "function updater( id )\nprint( \"updater was called:\"..id )\nupdated_mission_id = id\nreturn objective_succeeded\nend\n" );
     lua->run( "function create_objective()\nreturn MissionObjective.new( \"bla\", updater )\nend\n" );
+
+    lua->run( "function crashing_updater( id )\nassert( false )\nend\n" );
+    lua->run( "function create_crashing_objective()\nreturn MissionObjective.new( \"blasldkfj\", crashing_updater )\nend\n" );
   }
 
   void SetUp()
@@ -235,11 +238,17 @@ Describe( a_mission_objective )
     AssertThat( lua->assert_equals( "updated_mission_id", mission_id ), Equals( true ) );
   }
 
-It( updates_objective_state_according_to_lua_updater )
+  It( updates_objective_state_according_to_lua_updater )
   {
     yarrr::Mission::Objective objective( lua->state()[ "create_objective" ].call<yarrr::Mission::Objective&>() );
     objective.update( mission_id );
     AssertThat( objective.state(), Equals( yarrr::succeeded ) );
+  }
+
+  It( should_catch_lua_exceptions )
+  {
+    yarrr::Mission::Objective objective( lua->state()[ "create_crashing_objective" ].call<yarrr::Mission::Objective&>() );
+    objective.update( mission_id );
   }
 
   std::unique_ptr< the::model::Lua > lua;
