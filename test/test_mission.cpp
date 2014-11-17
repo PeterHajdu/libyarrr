@@ -86,6 +86,13 @@ Describe( a_mission )
     AssertThat( mission->objectives().back().description(), Equals( objective_description ) );
   }
 
+  It( copies_objectives_when_copy_constructed )
+  {
+    add_objectives( 1u );
+    yarrr::Mission copy( *mission );
+    AssertThat( mission->objectives().back().description(), Equals( copy.objectives().back().description() ) );
+  }
+
   It( updates_all_objectives_during_update )
   {
     add_objectives( 5u );

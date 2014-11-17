@@ -59,6 +59,7 @@ Mission::Mission( const Info& info )
 
 Mission::Mission( const Mission& other )
   : m_info( other.m_info )
+  , m_objectives( other.m_objectives )
   , m_state( other.m_state )
   , m_id( other.m_id )
 {
