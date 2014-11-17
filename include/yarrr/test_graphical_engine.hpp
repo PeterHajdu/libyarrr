@@ -48,6 +48,15 @@ class GraphicalEngine : public yarrr::GraphicalEngine
       printed_texts.push_back( text );
     }
 
+    bool was_printed( const std::string& text ) const
+    {
+      return std::any_of( std::begin( printed_texts ), std::end( printed_texts ),
+          [ this, text ]( const std::string& line )
+          {
+            return line.find( text ) != std::string::npos;
+          } );
+    }
+
     virtual void print_text_tokens( uint16_t x, uint16_t y, const yarrr::TextTokens& tokens ) override
     {
       std::string accumulated_text;
