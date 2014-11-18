@@ -37,8 +37,8 @@ class Colour
 class TextToken
 {
   public:
-    const std::string text;
-    const Colour colour;
+    std::string text;
+    Colour colour;
 };
 
 typedef std::vector< TextToken > TextTokens;
