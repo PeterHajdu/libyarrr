@@ -20,6 +20,7 @@ MissionContainer::add_mission( Mission::Pointer&& new_mission )
   if ( mission_iterator != std::end( m_missions ) )
   {
     mission_iterator->swap( new_mission );
+    delete_finished_missions();
     return;
   }
 
@@ -35,10 +36,19 @@ MissionContainer::missions() const
 void
 MissionContainer::update()
 {
+  for ( const auto& mission : m_missions )
+  {
+    mission->update();
+  }
+  delete_finished_missions();
+}
+
+void
+MissionContainer::delete_finished_missions()
+{
   auto mission( std::begin( m_missions ) );
   while ( mission != std::end( m_missions ) )
   {
-    (*mission)->update();
     const bool is_finished( ongoing != (*mission)->state() );
     if ( is_finished )
     {

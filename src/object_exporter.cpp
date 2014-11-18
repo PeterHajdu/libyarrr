@@ -62,7 +62,6 @@ ObjectModel::ObjectModel( const Object& object, the::model::OwningNode& parent )
   , m_orientation( "orientation", extract_orientation_from( object ), *this )
   , m_angular_velocity( "angular_velocity", extract_angular_velocity_from( object ), *this )
 {
-  thelog( log::debug )( "Exporting object model with id,", object.id() );
 }
 
 }

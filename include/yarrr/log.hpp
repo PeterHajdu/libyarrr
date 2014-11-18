@@ -15,7 +15,8 @@ enum : int
   warning = 150,
   info = 100,
   debug = 50,
-  trace = 0
+  trace = 0,
+  insane = -10
 };
 
 }

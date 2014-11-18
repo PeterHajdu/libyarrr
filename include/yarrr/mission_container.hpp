@@ -17,6 +17,8 @@ class MissionContainer final
     void update();
 
   private:
+    void delete_finished_missions();
+
     Missions m_missions;
     FinishedCallback m_finished_callback;
 };

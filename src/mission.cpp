@@ -84,6 +84,7 @@ Mission::calculate_mission_state()
   if ( std::all_of( std::begin( m_objectives ), std::end( m_objectives ),
         []( const Objective& objective ){ return objective.state() == succeeded; } ) )
   {
+    thelog( log::debug )( "Mission succeeded:", m_id, m_info.name );
     m_state = succeeded;
     return;
   }
@@ -91,6 +92,7 @@ Mission::calculate_mission_state()
   if ( std::any_of( std::begin( m_objectives ), std::end( m_objectives ),
         []( const Objective& objective ){ return objective.state() == failed; } ) )
   {
+    thelog( log::debug )( "Mission failed:", m_id, m_info.name );
     m_state = failed;
     return;
   }

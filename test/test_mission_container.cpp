@@ -102,8 +102,7 @@ Describe( a_mission_container )
     yarrr::Mission::Pointer new_mission( new yarrr::Mission( mission_copy ) );
     finish_mission( *new_mission );
     container->add_mission( std::move( new_mission ) );
-    AssertThat( container->missions(), HasLength( 1u ) );
-    AssertThat( container->missions().back()->state(), Equals( yarrr::succeeded ) );
+    AssertThat( container->missions(), HasLength( 0u ) );
   }
 
   std::unique_ptr< yarrr::MissionContainer > container;
