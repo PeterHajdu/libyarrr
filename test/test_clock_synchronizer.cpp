@@ -31,8 +31,6 @@ namespace
 
   class TestConnection
   {
-      static const size_t length_of_protocol_id{ sizeof( the::ctci::Id ) };
-      static const size_t length_of_timestamp{ 8 };
     public:
       void reset()
       {
