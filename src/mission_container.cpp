@@ -20,11 +20,13 @@ MissionContainer::add_mission( Mission::Pointer&& new_mission )
   if ( mission_iterator != std::end( m_missions ) )
   {
     mission_iterator->swap( new_mission );
-    delete_finished_missions();
-    return;
+  }
+  else
+  {
+    m_missions.emplace_back( std::move( new_mission ) );
   }
 
-  m_missions.emplace_back( std::move( new_mission ) );
+  delete_finished_missions();
 }
 
 const MissionContainer::Missions&

@@ -43,7 +43,7 @@ Describe( a_mission_container )
     add_mission();
   }
 
-  bool contains( const yarrr::Mission::Id& id )
+  bool container_contains( const yarrr::Mission::Id& id )
   {
     for ( const auto& mission : container->missions() )
     {
@@ -57,7 +57,7 @@ Describe( a_mission_container )
 
   It( shows_stored_missions )
   {
-    AssertThat( contains( mission_id ), Equals( true ) );
+    AssertThat( container_contains( mission_id ), Equals( true ) );
   }
 
   It( updates_all_missions )
@@ -69,7 +69,7 @@ Describe( a_mission_container )
   It( deletes_missions_only_when_they_finish )
   {
     container->update();
-    AssertThat( contains( mission_id ), Equals( true ) );
+    AssertThat( container_contains( mission_id ), Equals( true ) );
   }
 
   void finish_all()
@@ -99,10 +99,18 @@ Describe( a_mission_container )
 
   It( updates_the_mission_when_adding_one_with_an_existing_id )
   {
-    yarrr::Mission::Pointer new_mission( new yarrr::Mission( mission_copy ) );
+    finish_mission( mission_copy );
+    container->add_mission( yarrr::Mission::Pointer( new yarrr::Mission( mission_copy ) ) );
+    AssertThat( container_contains( mission_id ), Equals( false ) );
+  }
+
+  It( removes_immediately_new_but_finished_missions )
+  {
+    yarrr::Mission::Pointer new_mission( new yarrr::Mission() );
+    const yarrr::Mission::Id new_mission_id{ new_mission->id() };
     finish_mission( *new_mission );
     container->add_mission( std::move( new_mission ) );
-    AssertThat( container->missions(), HasLength( 0u ) );
+    AssertThat( container_contains( new_mission_id ), Equals( false ) );
   }
 
   std::unique_ptr< yarrr::MissionContainer > container;
