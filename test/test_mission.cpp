@@ -217,12 +217,17 @@ Describe( a_mission_objective )
     AssertThat( objective->state(), Equals( expected ) );
   }
 
-
   It( updates_its_state_according_to_the_state_updater )
   {
     assert_update_to_should_be( yarrr::succeeded, yarrr::succeeded );
   }
 
+  It( copies_its_state_when_copy_constructed )
+  {
+    assert_update_to_should_be( yarrr::succeeded, yarrr::succeeded );
+    yarrr::Mission::Objective a_copy( *objective );
+    AssertThat( a_copy.state(), Equals( yarrr::succeeded ) );
+  }
 
   It( should_stay_succeeded )
   {

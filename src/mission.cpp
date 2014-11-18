@@ -167,7 +167,9 @@ Mission::Objective::Objective( const std::string& description, Updater updater )
 }
 
 Mission::Objective::Objective( const Objective& other )
-  : Objective( other.m_description, other.m_updater )
+  : m_description( other.m_description )
+  , m_updater( other.m_updater )
+  , m_state( other.m_state )
 {
   thelog( log::debug )( "Mission objective copy constructed.", m_description );
 }
