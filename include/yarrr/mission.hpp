@@ -39,7 +39,7 @@ class Mission final : public Entity
         std::string description;
     };
 
-    Mission() = default;
+    Mission();
     Mission( const Mission& );
     Mission( const Info& );
 

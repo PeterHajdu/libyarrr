@@ -48,6 +48,11 @@ Mission::id() const
   return m_id;
 }
 
+Mission::Mission()
+  : m_id( next_id() )
+{
+}
+
 Mission::Mission( const Info& info )
   : m_info( info )
   , m_state( ongoing )
