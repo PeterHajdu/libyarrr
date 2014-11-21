@@ -56,6 +56,14 @@ void
 MissionFactory::register_creator( const Mission::Info& info, Creator&& creator )
 {
   m_creators.emplace( std::make_pair( info.name, std::move( creator ) ) );
+  m_mission_list.push_back( info.name );
+}
+
+
+const MissionFactory::MissionList&
+MissionFactory::missions() const
+{
+  return m_mission_list;
 }
 
 }

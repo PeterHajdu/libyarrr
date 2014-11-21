@@ -23,7 +23,7 @@ Describe(a_clock_exporter)
     AssertThat( lua->assert_that( "universe_time" ), Equals( true ) );
   }
 
-  It_Only( returns_the_epoch_of_the_clock )
+  It( returns_the_epoch_of_the_clock )
   {
     const auto now( std::to_string( clock.now() / the::time::Clock::ticks_per_second ) );
     const std::string time_diff_statement( "universe_time() - " + now );

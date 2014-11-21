@@ -10,14 +10,19 @@ using namespace igloo;
 Describe( a_mission_factory )
 {
 
+  void add_creator_with_info( const yarrr::Mission::Info& mission_info )
+  {
+    factory->register_creator( mission_info,
+        [ mission_info ]()
+        {
+          return yarrr::Mission::Pointer( new yarrr::Mission( mission_info ) );
+        } );
+  }
+
   void SetUp()
   {
     factory = &the::ctci::service< yarrr::MissionFactory >();
-    factory->register_creator( info,
-        [ this ]()
-        {
-          return yarrr::Mission::Pointer( new yarrr::Mission( info ) );
-        } );
+    add_creator_with_info( info );
   }
 
   It( returns_null_mission_objects_if_name_is_unknown )
@@ -50,6 +55,14 @@ Describe( a_mission_factory )
     AssertThat( lua.assert_that( "a_mission_factory_was_called" ), Equals( true ) );
     AssertThat( mission->name(), Equals( "a" ) );
     AssertThat( mission->description(), Equals( "b" ) );
+  }
+
+  It( can_return_the_collection_of_mission_names )
+  {
+    const yarrr::Mission::Info another_info{ "lsdkjfoisef", "sdlkfjaoijweoij" };
+    add_creator_with_info( another_info );
+    AssertThat( factory->missions(), Contains( existing_mission_name ) );
+    AssertThat( factory->missions(), Contains( another_info.name ) );
   }
 
   yarrr::MissionFactory* factory;
