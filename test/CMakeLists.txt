@@ -53,6 +53,7 @@ set(TEST_SOURCE_FILES
     test_character.cpp
     test_mission_exporter.cpp
     test_mission_container.cpp
+    test_clock_exporter.cpp
     )
 
 
