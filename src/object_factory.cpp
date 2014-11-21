@@ -60,7 +60,14 @@ ObjectFactory::register_creator(
     Creator creator )
 {
   m_creators[ key ] = creator;
+  m_object_types.push_back( key );
   thelog( yarrr::log::info )( "Registered creator for type: ", key );
+}
+
+const ObjectFactory::ObjectTypeList&
+ObjectFactory::objects() const
+{
+  return m_object_types;
 }
 
 }

@@ -10,17 +10,22 @@ using namespace igloo;
 
 Describe( an_object_factory )
 {
-  void SetUp()
+  void register_creator_with_name( const std::string& name )
   {
-    object_factory.reset( new yarrr::ObjectFactory() );
-    created_object_id = 0;
-    object_factory->register_creator( key,
+    object_factory->register_creator( name,
         [ this ]()
         {
           yarrr::Object::Pointer object( new yarrr::Object() );
           created_object_id = object->id();
           return object;
         } );
+  }
+
+  void SetUp()
+  {
+    object_factory.reset( new yarrr::ObjectFactory() );
+    created_object_id = 0;
+    register_creator_with_name( key );
   }
 
   It( allows_factory_function_registration_by_type )
@@ -80,6 +85,14 @@ Describe( an_object_factory )
       Equals( true ) );
 
     yarrr::Object::Pointer new_object( the::ctci::service< yarrr::ObjectFactory >().create_a( "dogfood" ) );
+  }
+
+  It( can_return_registered_object_names )
+  {
+    const std::string another_ship_name{ "another_ship_name" };
+    register_creator_with_name( another_ship_name );
+    AssertThat( object_factory->objects(), Contains( key ) );
+    AssertThat( object_factory->objects(), Contains( another_ship_name ) );
   }
 
   yarrr::Object::Id created_object_id;
