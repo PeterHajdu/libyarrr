@@ -18,8 +18,8 @@ DeleteWhenDestroyed::DeleteWhenDestroyed()
 void
 DeleteWhenDestroyed::do_register_to( Object& owner )
 {
-  owner.dispatcher.register_listener< yarrr::ObjectDestroyed >( std::bind(
-        &DeleteWhenDestroyed::handle_object_destroyed, this, std::placeholders::_1 ) );
+  owner.dispatcher.register_listener< yarrr::ObjectDestroyed >(
+        [ this ]( const ObjectDestroyed& destroyed ){ handle_object_destroyed( destroyed ); } );
 }
 
 ObjectBehavior::Pointer
@@ -46,8 +46,8 @@ RespawnWhenDestroyed::RespawnWhenDestroyed()
 void
 RespawnWhenDestroyed::do_register_to( Object& owner )
 {
-  owner.dispatcher.register_listener< yarrr::ObjectDestroyed >( std::bind(
-        &RespawnWhenDestroyed::handle_object_destroyed, this, std::placeholders::_1 ) );
+  owner.dispatcher.register_listener< yarrr::ObjectDestroyed >(
+        [ this ]( const ObjectDestroyed& destroyed ){ handle_object_destroyed( destroyed ); } );
 }
 
 ObjectBehavior::Pointer

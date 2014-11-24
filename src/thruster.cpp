@@ -84,7 +84,7 @@ Thruster::register_item_to( Object& owner )
   owner.dispatcher.register_listener< ShipControl  >(
       std::bind( &Thruster::handle_command, this, std::placeholders::_1 ) );
   owner.dispatcher.register_listener< TimerUpdate  >(
-      std::bind( &Thruster::handle_timer_update, this, std::placeholders::_1 ) );
+      [ this ]( const TimerUpdate& update ){ handle_timer_update( update ); } );
   m_normalized_relative_coordinate = normalize( relative_coordinate() );
 }
 

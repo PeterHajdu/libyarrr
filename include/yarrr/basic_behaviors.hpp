@@ -90,8 +90,8 @@ class GraphicalBehavior :
     GraphicalBehavior();
     GraphicalBehavior( const Id& id );
 
-    Pointer clone() const = 0;
-    virtual void draw() const = 0;
+    Pointer clone() const override = 0;
+    virtual void draw() const override = 0;
 
   protected:
     PhysicalBehavior* m_physical_behavior;
@@ -108,8 +108,8 @@ class ShapeGraphics : public GraphicalBehavior
     add_polymorphic_ctci( "yarrr_shape_graphics" );
     ShapeGraphics() = default;
     ShapeGraphics( const Id& id );
-    virtual void draw() const;
-    Pointer clone() const;
+    virtual void draw() const override;
+    Pointer clone() const override;
 
   private:
     virtual void register_graphical_behavior_to( Object& ) override;

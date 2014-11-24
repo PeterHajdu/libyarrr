@@ -21,8 +21,8 @@ class ShapeBehavior : public ObjectBehavior
     Shape shape;
 
   private:
-    virtual void serialize_behavior( Serializer& serializer ) const;
-    virtual void deserialize_behavior( Deserializer& deserializer );
+    virtual void serialize_behavior( Serializer& serializer ) const override;
+    virtual void deserialize_behavior( Deserializer& deserializer ) override;
 
     void serialize_tile( Serializer&, const Tile& ) const;
     Tile deserialize_tile( Deserializer& ) const;

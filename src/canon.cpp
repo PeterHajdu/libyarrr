@@ -44,7 +44,7 @@ void
 Canon::register_item_to( Object& owner )
 {
   owner.dispatcher.register_listener< yarrr::ShipControl >(
-      std::bind( &Canon::handle_command, this, std::placeholders::_1 ) );
+      [ this ]( const ShipControl& control ){ handle_command( control ); } );
   m_physical_parameters = &owner.components.component< yarrr::PhysicalBehavior >().physical_parameters;
 }
 

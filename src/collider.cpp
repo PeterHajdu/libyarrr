@@ -73,7 +73,7 @@ DamageCauser::do_register_to( Object& owner )
   assert( owner.components.has_component< PhysicalBehavior >() );
   m_integrity = &owner.components.component< PhysicalBehavior >().physical_parameters.integrity;
   owner.dispatcher.register_listener< Collide >(
-      std::bind( &DamageCauser::handle_collision, this, std::placeholders::_1 ) );
+      [ this ]( const Collide& collide ){ handle_collision( collide ); } );
   reset_integrity();
 }
 

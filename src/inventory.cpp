@@ -62,7 +62,7 @@ void
 LootDropper::do_register_to( Object& owner )
 {
   owner.dispatcher.register_listener< yarrr::ObjectDestroyed >(
-      std::bind( &LootDropper::handle_object_destroyed, this, std::placeholders::_1 ) );
+      [ this ]( const ObjectDestroyed& destroyed ){ handle_object_destroyed( destroyed ); } );
   m_owner_parameters = &owner.components.component< PhysicalBehavior >().physical_parameters;
   m_inventory = &owner.components.component< Inventory >();
 }
@@ -93,7 +93,7 @@ void
 LootAttacher::do_register_to( Object& owner )
 {
   owner.dispatcher.register_listener< yarrr::Collide >(
-      std::bind( &LootAttacher::handle_object_collided, this, std::placeholders::_1 ) );
+      [ this ]( const Collide& collide ){ handle_object_collided( collide ); } );
   m_inventory = &owner.components.component< Inventory >();
 }
 

@@ -40,7 +40,7 @@ class GraphicalEngine : public yarrr::GraphicalEngine
         uint16_t x,
         uint16_t y,
         const std::string& text,
-        const yarrr::Colour& )
+        const yarrr::Colour& ) override
     {
       last_printed_text = text;
       x_of_printed_text = x;
@@ -75,7 +75,7 @@ class GraphicalEngine : public yarrr::GraphicalEngine
 
     virtual void update_screen() override {}
 
-    virtual const yarrr::Coordinate& screen_resolution() const
+    virtual const yarrr::Coordinate& screen_resolution() const override
     {
       return resolution;
     }

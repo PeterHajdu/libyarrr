@@ -46,7 +46,7 @@ class Behavior : public yarrr::ObjectBehavior
     }
 
     const ObjectBehavior* updated_with{ nullptr };
-    virtual void update( const ObjectBehavior& behavior )
+    virtual void update( const ObjectBehavior& behavior ) override
     {
       updated_with = &behavior;
     }
@@ -73,12 +73,12 @@ class Behavior : public yarrr::ObjectBehavior
       }
     }
 
-    virtual void serialize_behavior( yarrr::Serializer& serializer ) const
+    virtual void serialize_behavior( yarrr::Serializer& serializer ) const override
     {
       serializer.push_back( some_data );
     }
 
-    virtual void deserialize_behavior( yarrr::Deserializer& deserializer )
+    virtual void deserialize_behavior( yarrr::Deserializer& deserializer ) override
     {
       some_data = deserializer.pop_front< Id >();
     }
@@ -97,7 +97,7 @@ class NonSynchronizableBehavior : public yarrr::ObjectBehavior
     }
 
     mutable bool was_cloned{ false };
-    virtual yarrr::ObjectBehavior::Pointer clone() const
+    virtual yarrr::ObjectBehavior::Pointer clone() const override
     {
       was_cloned = true;
       return Pointer{ nullptr };
