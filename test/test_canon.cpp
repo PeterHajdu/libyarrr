@@ -7,6 +7,7 @@
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/ship_control.hpp>
 #include <yarrr/shape_behavior.hpp>
+#include <yarrr/object_created.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <thectci/service_registry.hpp>

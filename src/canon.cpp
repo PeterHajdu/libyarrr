@@ -7,6 +7,7 @@
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/lua_engine.hpp>
 #include <yarrr/bitmagic.hpp>
+#include <yarrr/object_created.hpp>
 
 #include <thectci/service_registry.hpp>
 

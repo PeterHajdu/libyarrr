@@ -6,6 +6,8 @@
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/destruction_handlers.hpp>
 #include <yarrr/shape_behavior.hpp>
+#include <yarrr/object_created.hpp>
+
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 

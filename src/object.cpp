@@ -72,13 +72,6 @@ Object::add_behavior( ObjectBehavior::Pointer&& behavior )
 }
 
 void
-Object::add_behavior_clone( ObjectBehavior& behavior )
-{
-  thelog( yarrr::log::debug )( "Adding behavior clone to:", this, id(), "behavior:", &behavior );
-  add_behavior( behavior.clone() );
-}
-
-void
 Object::update_behavior( ObjectBehavior::Pointer&& updater_behavior )
 {
   const ObjectBehavior::Id behavior_id( updater_behavior->id() );

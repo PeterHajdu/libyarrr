@@ -2,7 +2,11 @@
 #include <yarrr/lua_engine.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/object.hpp>
+#include <yarrr/object_decorator.hpp>
 #include <yarrr/object_update.hpp>
+#include <yarrr/engine_dispatcher.hpp>
+#include <yarrr/object_created.hpp>
+#include <yarrr/destruction_handlers.hpp>
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 
@@ -21,11 +25,36 @@ Describe( an_object_factory )
         } );
   }
 
+  void set_up_lua()
+  {
+    lua = &yarrr::LuaEngine::model();
+    AssertThat(
+      lua->run(
+        "was_decorator_called = false\n"
+        "function decorator( new_object )\n"
+        "  was_decorator_called = true\n"
+        "end\n" ),
+      Equals( true ) );
+  }
+
   void SetUp()
   {
     object_factory.reset( new yarrr::ObjectFactory() );
     created_object_id = 0;
     register_creator_with_name( key );
+    set_up_lua();
+
+    was_object_created_dispatched = false;
+    the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::ObjectCreated >(
+        [ this ]( const yarrr::ObjectCreated& created ){
+          was_object_created_dispatched = true;
+          created_object = std::move( created.object );
+        } );
+  }
+
+  void TearDown()
+  {
+    the::ctci::service< yarrr::EngineDispatcher >().clear();
   }
 
   It( allows_factory_function_registration_by_type )
@@ -72,12 +101,13 @@ Describe( an_object_factory )
 
   It( exports_factory_registration_to_the_lua_world )
   {
-    the::model::Lua& lua( yarrr::LuaEngine::model() );
-    lua.state().new_userdata< yarrr::Object >( "Object", "add_behavior", &yarrr::Object::add_behavior_clone );
-    lua.state().new_userdata< yarrr::PhysicalBehavior >( "PhysicalBehavior" );
+    lua->state().new_userdata< yarrr::ObjectDecorator, yarrr::Object& >( "Object",
+      "add_behavior", &yarrr::ObjectDecorator::add_behavior_clone );
+
+    lua->state().new_userdata< yarrr::PhysicalBehavior >( "PhysicalBehavior" );
 
     AssertThat(
-      lua.run(
+      lua->run(
         "function dogfood( new_object )\n"
         "  new_object:add_behavior( PhysicalBehavior.new() )\n"
         "end\n"
@@ -85,6 +115,8 @@ Describe( an_object_factory )
       Equals( true ) );
 
     yarrr::Object::Pointer new_object( the::ctci::service< yarrr::ObjectFactory >().create_a( "dogfood" ) );
+    AssertThat( new_object.get() != nullptr, Equals( true ) );
+    AssertThat( yarrr::has_component< yarrr::PhysicalBehavior >( *new_object ), Equals( true ) );
   }
 
   It( can_return_registered_object_names )
@@ -95,8 +127,42 @@ Describe( an_object_factory )
     AssertThat( object_factory->objects(), Contains( another_ship_name ) );
   }
 
+
+  void create_object_from_lua()
+  {
+    AssertThat(
+      lua->run(
+        "object_factory.create_object( \"" + key + "\", decorator )\n" ),
+      Equals( true ) );
+  }
+
+
+  It( sends_lua_created_objects_to_the_engine_dispatcher )
+  {
+    create_object_from_lua();
+    AssertThat( was_object_created_dispatched, Equals( true ) );
+  }
+
+
+  It( calls_the_lua_decorator_function_when_called )
+  {
+    create_object_from_lua();
+    AssertThat( lua->assert_equals( "was_decorator_called", true ), Equals( true ) );
+  }
+
+  It( creates_objects_with_delete_when_destroyed_from_lua )
+  {
+    create_object_from_lua();
+    AssertThat( yarrr::has_component< yarrr::DeleteWhenDestroyed >( *created_object ), Equals( true ) );
+  }
+
+  the::model::Lua* lua;
   yarrr::Object::Id created_object_id;
   std::unique_ptr< yarrr::ObjectFactory > object_factory;
   const std::string key{ "duck" };
+
+  yarrr::Object::Pointer created_object;
+
+  bool was_object_created_dispatched;
 };
 

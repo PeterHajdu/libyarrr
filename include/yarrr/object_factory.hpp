@@ -17,18 +17,21 @@ class ObjectFactory final
     using Creator = std::function< yarrr::Object::Pointer() >;
 
     ObjectFactory();
-    yarrr::Object::Pointer create_a( const std::string& key );
+    yarrr::Object::Pointer create_a( const std::string& key ) const;
     void register_creator( const std::string& key, Creator creator );
 
     using ObjectTypeList = std::vector< std::string >;
     const ObjectTypeList& objects() const;
 
   private:
+    void create_object( const std::string& key, sol::function decorator ) const;
+
     typedef std::unordered_map< std::string, Creator > Creators;
     Creators m_creators;
 
     the::model::OwningNode m_factory_model;
     the::model::Function m_register_model;
+    the::model::Function m_create_model;
 
     ObjectTypeList m_object_types;
 };

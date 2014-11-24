@@ -80,6 +80,13 @@ Describe( a_physical_behavior )
     AssertThat( clone_physical_behavior.physical_parameters, Equals( physical_behavior->physical_parameters ) );
   }
 
+  It( has_fast_coordinate_retriever )
+  {
+    const yarrr::Coordinate new_coordinate{ 123, -32 };
+    yarrr::coordinate_of( *object ) = new_coordinate;
+    AssertThat( physical_behavior->physical_parameters.coordinate, Equals( new_coordinate ) );
+  }
+
   std::unique_ptr< yarrr::PhysicalBehavior > physical_behavior;
   yarrr::Object::Pointer object;
 };

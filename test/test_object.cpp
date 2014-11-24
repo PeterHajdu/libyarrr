@@ -68,14 +68,6 @@ Describe(an_object)
     AssertThat( rarely_synchronized_behavior->was_registered, Equals( true ) );
   }
 
-  It( can_add_behavior_clones_with_references )
-  {
-    yarrr::Object another_object;
-    yarrr::ObjectBehavior::Pointer another_behavior( new test::Behavior() );
-    another_object.add_behavior_clone( *another_behavior );
-    AssertThat( yarrr::has_component< test::Behavior >( another_object ), Equals( true ) );
-    AssertThat( yarrr::component_of< test::Behavior >( another_object ).id(), Equals( another_behavior->id() ) );
-  }
 
   It( dispatches_events_to_registered_listeners )
   {

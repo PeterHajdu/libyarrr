@@ -5,6 +5,7 @@
 #include <yarrr/destruction_handlers.hpp>
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/object_creator.hpp>
+#include <yarrr/object_created.hpp>
 #include <thectci/service_registry.hpp>
 
 namespace

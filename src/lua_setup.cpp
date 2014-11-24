@@ -52,6 +52,7 @@ void initialize_lua_engine()
 #include <yarrr/thruster.hpp>
 #include <yarrr/canon.hpp>
 #include <yarrr/mission.hpp>
+#include <yarrr/object_decorator.hpp>
 namespace
 {
 
@@ -64,7 +65,11 @@ export_yarrr_stuff()
   lua.new_userdata< yarrr::Tile::Coordinate, int, int >( "TileCoordinate" );
   lua.new_userdata< yarrr::Tile, yarrr::Tile::Coordinate, yarrr::Tile::Coordinate >( "Tile" );
   lua.new_userdata< yarrr::PhysicalBehavior >( "PhysicalBehavior" );
-  lua.new_userdata< yarrr::Object >( "Object", "add_behavior", &yarrr::Object::add_behavior_clone );
+  lua.new_userdata< yarrr::ObjectDecorator, yarrr::Object& >( "Object",
+      "add_behavior", &yarrr::ObjectDecorator::add_behavior_clone,
+      "id", &yarrr::ObjectDecorator::id,
+      "move_to", &yarrr::ObjectDecorator::move_to );
+
   lua.new_userdata< yarrr::Inventory >( "Inventory" );
   lua.new_userdata< yarrr::Collider, int >( "Collider" );
   lua[ "ship_layer" ] = int( yarrr::Collider::ship_layer );
@@ -83,6 +88,7 @@ export_yarrr_stuff()
   lua.new_userdata< yarrr::Canon, yarrr::Tile::Coordinate, yarrr::Angle >( "Canon" );
 
   lua.set_function( "degrees", yarrr::degree_to_hiplons );
+  lua.set_function( "metres", yarrr::metre_to_huplons );
   lua.new_userdata< yarrr::Mission::Info, std::string, std::string >( "MissionInfo" );
   lua.new_userdata< yarrr::Mission::Objective, std::string, sol::function >( "MissionObjective" );
   lua.new_userdata< yarrr::Mission, yarrr::Mission::Info >( "Mission", "add_objective", &yarrr::Mission::add_objective );

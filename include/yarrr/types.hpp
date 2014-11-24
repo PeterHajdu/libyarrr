@@ -7,10 +7,10 @@
 
 namespace yarrr
 {
-  typedef int32_t Angle;
-  typedef Vector<int64_t> Coordinate;
-  typedef std::vector<char> Data;
-  typedef Vector<int64_t> Velocity;
+  using Angle = int32_t;
+  using Coordinate = Vector<int64_t>;
+  using Data = std::vector<char>;
+  using Velocity = Vector<int64_t>;
 }
 
 constexpr yarrr::Coordinate::type operator "" _metres( unsigned long long int metre )
@@ -30,6 +30,10 @@ namespace yarrr
     return 3.14159265359;
   }
 
+  inline long metre_to_huplons( long metre )
+  {
+    return metre * 256;
+  }
 
   inline Coordinate& metres_to_huplons_in_place( Coordinate& coordinate_in_metres )
   {

@@ -15,6 +15,8 @@
 
 #include <thectci/service_registry.hpp>
 
+#include <cassert>
+
 namespace
 {
   yarrr::AutoEntityRegister< yarrr::PhysicalBehavior > auto_physical_behavior_register;
@@ -35,6 +37,12 @@ namespace
 
 namespace yarrr
 {
+
+Coordinate& coordinate_of( const Object& object )
+{
+  assert( yarrr::has_component< yarrr::PhysicalBehavior >( object ) );
+  return yarrr::component_of< yarrr::PhysicalBehavior >( object ).physical_parameters.coordinate;
+}
 
 PhysicalBehavior::PhysicalBehavior()
   : ObjectBehavior( always_synchronize() )

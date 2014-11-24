@@ -13,8 +13,6 @@ behavior.shape = a_shape
 ShapeGraphics.new()
 
 PhysicalBehavior.new()
-an_object = Object.new()
-an_object:add_behavior( PhysicalBehavior.new() )
 
 Inventory.new()
 
@@ -31,6 +29,7 @@ assert( port_thruster )
 assert( starboard_thruster )
 
 assert( degrees( 10 ) )
+assert( metres( 10 ) )
 
 Canon.new( TileCoordinate.new( 0, 0 ), 0 )
 

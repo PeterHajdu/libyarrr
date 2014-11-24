@@ -1,8 +1,12 @@
 #include <yarrr/object_factory.hpp>
 #include <yarrr/lua_engine.hpp>
 #include <yarrr/log.hpp>
+#include <yarrr/object_decorator.hpp>
+#include <yarrr/object_created.hpp>
+#include <yarrr/engine_dispatcher.hpp>
+#include <yarrr/destruction_handlers.hpp>
+
 #include <thectci/service_registry.hpp>
-#include <yarrr/object_creator.hpp>
 
 namespace
 {
@@ -18,14 +22,14 @@ void register_object_factory( const std::string& name, sol::function factory )
         {
           auto new_object( yarrr::Object::create() );
           thelog( yarrr::log::debug )( "Sending object to lua factory method:", new_object.get(), new_object->id() );
-          factory.call( *new_object );
+          factory.call( yarrr::ObjectDecorator( *new_object ) );
           return std::move( new_object );
         }
         catch( std::exception& e )
         {
           thelog( yarrr::log::info )( "Lua factory method failed:", name, e.what() );
         }
-        return yarrr::create_ship();
+        return yarrr::Object::Pointer( nullptr );
       } );
   thelog( yarrr::log::info )( "Registered lua factory method for object type:", name );
 }
@@ -38,11 +42,16 @@ namespace yarrr
 ObjectFactory::ObjectFactory()
   : m_factory_model( "object_factory", yarrr::LuaEngine::model() )
   , m_register_model( "register_factory", m_factory_model, &register_object_factory )
+  , m_create_model( "create_object", m_factory_model,
+      [ this ]( const std::string& key, sol::function decorator )
+      {
+        create_object( key, decorator );
+      } )
 {
 }
 
 yarrr::Object::Pointer
-ObjectFactory::create_a( const std::string& key )
+ObjectFactory::create_a( const std::string& key ) const
 {
   Creators::const_iterator creator( m_creators.find( key ) );
   if ( creator == m_creators.end() )
@@ -51,7 +60,7 @@ ObjectFactory::create_a( const std::string& key )
     return nullptr;
   }
 
-  return m_creators[ key ]();
+  return m_creators.at( key )();
 }
 
 void
@@ -68,6 +77,16 @@ const ObjectFactory::ObjectTypeList&
 ObjectFactory::objects() const
 {
   return m_object_types;
+}
+
+
+void
+ObjectFactory::create_object( const std::string& key, sol::function decorator ) const
+{
+  auto new_object( create_a( key ) );
+  decorator( ObjectDecorator( *new_object ) );
+  new_object->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
+  engine_dispatch( ObjectCreated( std::move( new_object ) ) );
 }
 
 }

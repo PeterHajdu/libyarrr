@@ -33,7 +33,6 @@ class Object final
     Id id() const;
 
     void add_behavior( ObjectBehavior::Pointer&& behavior );
-    void add_behavior_clone( ObjectBehavior& behavior );
 
     void update_behavior( ObjectBehavior::Pointer&& behavior );
 
