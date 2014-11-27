@@ -21,13 +21,13 @@ class LuaEngine final
       return instance().m_lua;
     }
 
+    static bool run( const std::string& script );
+
   private:
     LuaEngine();
 
     the::model::Lua m_lua;
 };
-
-bool lua_script( sol::state& state, const std::string& script );
 
 class AutoLuaRegister final
 {

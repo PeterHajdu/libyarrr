@@ -7,6 +7,13 @@ using namespace igloo;
 
 Describe( a_lua_engine )
 {
+  It( can_run_a_script )
+  {
+    AssertThat( yarrr::LuaEngine::run( "called = true\n" ), Equals( true ) );
+    AssertThat( yarrr::LuaEngine::model().assert_equals( "called", true ), Equals( true ) );
+    AssertThat( yarrr::LuaEngine::run( "assert( false )\n" ), Equals( false ) );
+  }
+
   It( is_a_singleton )
   {
     yarrr::LuaEngine& lua_engine( yarrr::LuaEngine::instance() );

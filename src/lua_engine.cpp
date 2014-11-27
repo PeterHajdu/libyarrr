@@ -13,19 +13,6 @@ yarrr::LuaEngine* engine_instance( nullptr );
 namespace yarrr
 {
 
-bool
-lua_script( the::model::Lua& lua, const std::string& script )
-{
-  thelog( log::debug )( "Executing lua script:", script );
-  if ( !lua.run( script ) )
-  {
-    thelog( log::debug )( "Lua script failed with error message:", lua.error_message() );
-    return false;
-  }
-
-  return true;
-}
-
 LuaEngine::LuaEngine()
 {
   m_lua.state().open_libraries( sol::lib::base );
@@ -43,6 +30,21 @@ LuaEngine& LuaEngine::instance()
   }
 
   return *engine_instance;
+}
+
+bool
+LuaEngine::run( const std::string& script )
+{
+  the::model::Lua& model{ instance().model() };
+  const bool did_succeed{ model.run( script ) };
+  if ( did_succeed )
+  {
+    thelog( log::debug )( "Lua script execution succeeded:\n", script );
+    return did_succeed;
+  }
+
+  thelog( log::error )( "Lua script failed:\n", script, "Error message:\n", model.error_message() );
+  return did_succeed;
 }
 
 AutoLuaRegister::AutoLuaRegister( std::function< void( LuaEngine& ) > register_function )
