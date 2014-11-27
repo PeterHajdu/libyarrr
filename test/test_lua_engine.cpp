@@ -95,7 +95,7 @@ Describe( a_simple_lua_register )
   }
 };
 
-Describe_Only( a_lua_function_wrapper )
+Describe( a_lua_function_wrapper )
 {
 
   void set_function( const std::string& name )
