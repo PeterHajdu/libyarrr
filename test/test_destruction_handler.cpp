@@ -4,8 +4,10 @@
 #include <yarrr/object.hpp>
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/delete_object.hpp>
+#include <yarrr/lua_engine.hpp>
 
 #include <thectci/service_registry.hpp>
+#include <themodel/lua.hpp>
 
 #include "test_services.hpp"
 
@@ -38,6 +40,22 @@ Describe_Only( call_when_destroyed )
   {
     object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
     AssertThat( called_with, Equals( object.get() ) );
+  }
+
+  It( wokrs_with_lua_function )
+  {
+    the::model::Lua lua;
+    AssertThat( lua.run(
+          "the_function_was_called = false\n"
+          "function the_function()\n"
+          "the_function_was_called = true\n"
+          "end\n"
+          ), Equals( true ) );
+
+    yarrr::LuaFunction function( lua.state()[ "the_function" ] );
+    object->add_behavior( std::make_unique< yarrr::CallWhenDestroyed >( function ) );
+    object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
+    AssertThat( lua.assert_equals( "the_function_was_called", true ), Equals( true ) );
   }
 
   const yarrr::Object* called_with;

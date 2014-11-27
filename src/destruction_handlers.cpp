@@ -5,10 +5,21 @@
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/log.hpp>
+#include <yarrr/lua_engine.hpp>
+#include <yarrr/object_decorator.hpp>
 #include <thectci/service_registry.hpp>
 
 namespace yarrr
 {
+CallWhenDestroyed::CallWhenDestroyed( const LuaFunction& lua_function )
+  : ObjectBehavior( do_not_synchronize() )
+  , m_callback(
+      [ lua_function ]( Object& object )
+      {
+        lua_function.call( yarrr::ObjectDecorator( object ) );
+      } )
+{
+}
 
 CallWhenDestroyed::CallWhenDestroyed( Callback callback )
   : ObjectBehavior( do_not_synchronize() )
@@ -33,7 +44,7 @@ CallWhenDestroyed::clone() const
 void
 CallWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
 {
-  thelog( yarrr::log::debug )( "Call when destroyed.", m_object->id() );
+  thelog_trace( yarrr::log::debug, "Call when destroyed." );
   m_callback( *m_object );
 }
 

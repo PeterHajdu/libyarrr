@@ -6,14 +6,16 @@ namespace yarrr
 {
 class ObjectDestroyed;
 class PhysicalParameters;
+class LuaFunction;
 
 class CallWhenDestroyed : public ObjectBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_call_when_destroyed" );
 
-    using Callback = std::function< void( const Object& ) >;
+    using Callback = std::function< void( Object& ) >;
     CallWhenDestroyed( Callback );
+    CallWhenDestroyed( const LuaFunction& );
     virtual Pointer clone() const override;
 
   private:
