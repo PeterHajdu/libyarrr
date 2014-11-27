@@ -30,6 +30,12 @@ Describe( an_object_factory )
     lua = &yarrr::LuaEngine::model();
     AssertThat(
       lua->run(
+        "function an_object_key( new_object )\n"
+        "end\n"
+        "print(123)\n"
+        "object_factory.register_factory( \"" + key + "\", an_object_key )\n"
+        "print(123)\n"
+        ""
         "was_decorator_called = false\n"
         "function decorator( new_object )\n"
         "  was_decorator_called = true\n"
@@ -153,6 +159,7 @@ Describe( an_object_factory )
   It( creates_objects_with_delete_when_destroyed_from_lua )
   {
     create_object_from_lua();
+    AssertThat( created_object.get() != nullptr, Equals( true ) );
     AssertThat( yarrr::has_component< yarrr::DeleteWhenDestroyed >( *created_object ), Equals( true ) );
   }
 

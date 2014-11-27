@@ -34,6 +34,11 @@ void register_object_factory( const std::string& name, sol::function factory )
   thelog( yarrr::log::info )( "Registered lua factory method for object type:", name );
 }
 
+void create_object_callback( const std::string& key, sol::function decorator )
+{
+  the::ctci::service< yarrr::ObjectFactory >().create_object( key, decorator );
+}
+
 }
 
 namespace yarrr
@@ -42,11 +47,7 @@ namespace yarrr
 ObjectFactory::ObjectFactory()
   : m_factory_model( "object_factory", yarrr::LuaEngine::model() )
   , m_register_model( "register_factory", m_factory_model, &register_object_factory )
-  , m_create_model( "create_object", m_factory_model,
-      [ this ]( const std::string& key, sol::function decorator )
-      {
-        create_object( key, decorator );
-      } )
+  , m_create_model( "create_object", m_factory_model, &create_object_callback )
 {
 }
 
@@ -84,6 +85,13 @@ void
 ObjectFactory::create_object( const std::string& key, sol::function decorator ) const
 {
   auto new_object( create_a( key ) );
+
+  if (!new_object)
+  {
+    thelog( log::error )( "Unable to create object with type:", key );
+    return;
+  }
+
   decorator( ObjectDecorator( *new_object ) );
   new_object->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
   engine_dispatch( ObjectCreated( std::move( new_object ) ) );

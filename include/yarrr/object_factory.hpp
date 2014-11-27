@@ -23,8 +23,9 @@ class ObjectFactory final
     using ObjectTypeList = std::vector< std::string >;
     const ObjectTypeList& objects() const;
 
-  private:
     void create_object( const std::string& key, sol::function decorator ) const;
+
+  private:
 
     typedef std::unordered_map< std::string, Creator > Creators;
     Creators m_creators;
