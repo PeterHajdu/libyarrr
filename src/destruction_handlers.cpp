@@ -59,30 +59,16 @@ delete_when_destroyed()
       } );
 }
 
-RespawnWhenDestroyed::RespawnWhenDestroyed()
-  : ObjectBehavior( do_not_synchronize() )
-{
-}
-
-
-void
-RespawnWhenDestroyed::do_register_to( Object& owner )
-{
-  owner.dispatcher.register_listener< yarrr::ObjectDestroyed >(
-        [ this ]( const ObjectDestroyed& destroyed ){ handle_object_destroyed( destroyed ); } );
-}
 
 ObjectBehavior::Pointer
-RespawnWhenDestroyed::clone() const
+kill_player_when_destroyed()
 {
-  return Pointer( new RespawnWhenDestroyed() );
-}
-
-
-void
-RespawnWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
-{
-  the::ctci::service< EngineDispatcher >().dispatch( PlayerKilled( m_object->id() ) );
+  return std::make_unique< CallWhenDestroyed >(
+      []( Object& object )
+      {
+        thelog( yarrr::log::debug )( "Kill player when destroyed.", object.id() );
+        the::ctci::service< EngineDispatcher >().dispatch( PlayerKilled( object.id() ) );
+      } );
 }
 
 

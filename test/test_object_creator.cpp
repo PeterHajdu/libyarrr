@@ -44,11 +44,6 @@ Describe( ship_creator )
     AssertThat( object->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
   }
 
-  It ( creates_objects_with_respawn_when_destroyed )
-  {
-    AssertThat( object->components.has_component< yarrr::RespawnWhenDestroyed >(), Equals( true ) );
-  }
-
   It ( creates_objects_with_inventory )
   {
     AssertThat( object->components.has_component< yarrr::Inventory >(), Equals( true ) );

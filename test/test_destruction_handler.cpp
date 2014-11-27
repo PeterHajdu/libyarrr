@@ -63,7 +63,7 @@ Describe( call_when_destroyed )
   bool was_called;
 };
 
-Describe( delete_when_destroyed )
+Describe( a_delete_when_destroyed )
 {
   void SetUp()
   {
@@ -98,7 +98,7 @@ Describe( delete_when_destroyed )
   yarrr::Object::Pointer object;
 };
 
-Describe( respawn_when_destroyed )
+Describe( a_kill_player_when_destroyed )
 {
   void destroy_object()
   {
@@ -108,8 +108,7 @@ Describe( respawn_when_destroyed )
   void SetUp()
   {
     object.reset( new yarrr::Object() );
-    respawn_when_destroyed = new yarrr::RespawnWhenDestroyed();
-    object->add_behavior( yarrr::ObjectBehavior::Pointer( respawn_when_destroyed ) );
+    object->add_behavior( yarrr::kill_player_when_destroyed() );
 
     was_player_killed = false;
     the::ctci::service< yarrr::EngineDispatcher >().register_listener< yarrr::PlayerKilled >(
@@ -126,13 +125,6 @@ Describe( respawn_when_destroyed )
     test::clean_engine_dispatcher();
   }
 
-  It( registers_itself_as_a_component )
-  {
-    AssertThat(
-        &object->components.component< yarrr::RespawnWhenDestroyed >(),
-        Equals( respawn_when_destroyed ) );
-  }
-
   It( should_send_player_killed_event_to_the_engine_when_object_is_destroyed )
   {
     AssertThat( was_player_killed, Equals( true ) );
@@ -145,7 +137,6 @@ Describe( respawn_when_destroyed )
 
   bool was_player_killed;
   yarrr::Object::Id destroyed_object_id;
-  yarrr::RespawnWhenDestroyed* respawn_when_destroyed;
   yarrr::Object::Pointer object;
 };
 

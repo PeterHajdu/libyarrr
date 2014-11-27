@@ -25,8 +25,6 @@ class CallWhenDestroyed : public ObjectBehavior
     Callback m_callback;
 };
 
-ObjectBehavior::Pointer delete_when_destroyed();
-
 class PlayerKilled
 {
   public:
@@ -35,19 +33,8 @@ class PlayerKilled
     const Object::Id object_id;
 };
 
-
-class RespawnWhenDestroyed : public ObjectBehavior
-{
-  public:
-    add_polymorphic_ctci( "yarrr_respawn_when_destroyed" );
-
-    RespawnWhenDestroyed();
-    virtual Pointer clone() const override;
-
-  private:
-    virtual void do_register_to( Object& ) override;
-    void handle_object_destroyed( const ObjectDestroyed& ) const;
-};
+ObjectBehavior::Pointer delete_when_destroyed();
+ObjectBehavior::Pointer kill_player_when_destroyed();
 
 }
 

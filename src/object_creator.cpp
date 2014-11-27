@@ -95,7 +95,7 @@ create_ship()
   ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer ) ) );
   ship->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 100 ) ) );
   ship->add_behavior( ObjectBehavior::Pointer( new LootDropper() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new RespawnWhenDestroyed() ) );
+  ship->add_behavior( kill_player_when_destroyed() );
 
   ship->add_behavior( ObjectBehavior::Pointer( new ShapeGraphics() ) );
   return ship;
