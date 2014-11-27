@@ -10,6 +10,34 @@
 namespace yarrr
 {
 
+CallWhenDestroyed::CallWhenDestroyed( Callback callback )
+  : ObjectBehavior( do_not_synchronize() )
+  , m_callback( callback )
+{
+}
+
+void
+CallWhenDestroyed::do_register_to( Object& owner )
+{
+  owner.dispatcher.register_listener< yarrr::ObjectDestroyed >(
+        [ this ]( const ObjectDestroyed& destroyed ){ handle_object_destroyed( destroyed ); } );
+}
+
+ObjectBehavior::Pointer
+CallWhenDestroyed::clone() const
+{
+  return Pointer( new CallWhenDestroyed( m_callback ) );
+}
+
+
+void
+CallWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
+{
+  thelog( yarrr::log::debug )( "Call when destroyed.", m_object->id() );
+  m_callback( *m_object );
+}
+
+
 DeleteWhenDestroyed::DeleteWhenDestroyed()
   : ObjectBehavior( do_not_synchronize() )
 {

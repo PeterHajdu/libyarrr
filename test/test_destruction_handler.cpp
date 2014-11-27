@@ -13,6 +13,38 @@
 
 using namespace igloo;
 
+Describe_Only( call_when_destroyed )
+{
+  void SetUp()
+  {
+    object.reset( new yarrr::Object() );
+    object->add_behavior( std::make_unique< yarrr::CallWhenDestroyed >(
+          [ this ]( const yarrr::Object& object )
+          {
+            called_with = &object;
+            was_called = true;
+          } ) );
+
+    was_called = false;
+  }
+
+  It( sends_delete_object_when_it_is_destroyed )
+  {
+    object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
+    AssertThat( was_called, Equals( true ) );
+  }
+
+  It( calls_the_callback_with_the_proper_object_as_parameter )
+  {
+    object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
+    AssertThat( called_with, Equals( object.get() ) );
+  }
+
+  const yarrr::Object* called_with;
+  yarrr::Object::Pointer object;
+  bool was_called;
+};
+
 Describe( delete_when_destroyed )
 {
   void SetUp()
