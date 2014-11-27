@@ -93,7 +93,7 @@ ObjectFactory::create_object( const std::string& key, sol::function decorator ) 
   }
 
   decorator( ObjectDecorator( *new_object ) );
-  new_object->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
+  new_object->add_behavior( delete_when_destroyed() );
   engine_dispatch( ObjectCreated( std::move( new_object ) ) );
 }
 

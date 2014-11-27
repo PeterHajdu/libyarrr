@@ -169,7 +169,7 @@ create_test_laser( int layer, const yarrr::PhysicalParameters& physical_paramete
 
   laser->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::Collider( layer ) ) );
   laser->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DamageCauser( 10 ) ) );
-  laser->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::DeleteWhenDestroyed() ) );
+  laser->add_behavior( yarrr::delete_when_destroyed() );
   return laser;
 }
 

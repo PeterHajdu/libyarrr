@@ -15,7 +15,7 @@
 
 using namespace igloo;
 
-Describe_Only( call_when_destroyed )
+Describe( call_when_destroyed )
 {
   void SetUp()
   {
@@ -68,8 +68,7 @@ Describe( delete_when_destroyed )
   void SetUp()
   {
     object.reset( new yarrr::Object() );
-    delete_when_destroyed = new yarrr::DeleteWhenDestroyed();
-    object->add_behavior( yarrr::ObjectBehavior::Pointer( delete_when_destroyed ) );
+    object->add_behavior( yarrr::delete_when_destroyed() );
 
     deleted_object_id = 0;
     was_object_deleted = false;
@@ -87,13 +86,6 @@ Describe( delete_when_destroyed )
     test::clean_engine_dispatcher();
   }
 
-  It( registers_itself_as_a_component )
-  {
-    AssertThat(
-        &object->components.component< yarrr::DeleteWhenDestroyed >(),
-        Equals( delete_when_destroyed ) );
-  }
-
   It( sends_delete_object_when_it_is_destroyed )
   {
     object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
@@ -103,7 +95,6 @@ Describe( delete_when_destroyed )
 
   bool was_object_deleted;
   yarrr::Object::Id deleted_object_id;
-  yarrr::DeleteWhenDestroyed* delete_when_destroyed;
   yarrr::Object::Pointer object;
 };
 

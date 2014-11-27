@@ -115,11 +115,6 @@ Describe( laser_creator )
     AssertThat( object->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
   }
 
-  It ( creates_objects_with_delete_when_destroyed )
-  {
-    AssertThat( object->components.has_component< yarrr::DeleteWhenDestroyed >(), Equals( true ) );
-  }
-
   yarrr::PhysicalParameters ships_physical_parameters;
   yarrr::PhysicalParameters laser_parameters;
   yarrr::Object::Pointer object;
@@ -145,11 +140,6 @@ Describe( loot_creator )
   It( creates_objects_with_collider )
   {
     AssertThat( object->components.has_component< yarrr::Collider >(), Equals( true ) );
-  }
-
-  It( creates_objects_with_delete_when_destroyed )
-  {
-    AssertThat( object->components.has_component< yarrr::DeleteWhenDestroyed >(), Equals( true ) );
   }
 
   It( creates_destructable_objects )

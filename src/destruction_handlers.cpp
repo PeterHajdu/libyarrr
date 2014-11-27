@@ -48,33 +48,16 @@ CallWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
   m_callback( *m_object );
 }
 
-
-DeleteWhenDestroyed::DeleteWhenDestroyed()
-  : ObjectBehavior( do_not_synchronize() )
-{
-}
-
-void
-DeleteWhenDestroyed::do_register_to( Object& owner )
-{
-  owner.dispatcher.register_listener< yarrr::ObjectDestroyed >(
-        [ this ]( const ObjectDestroyed& destroyed ){ handle_object_destroyed( destroyed ); } );
-}
-
 ObjectBehavior::Pointer
-DeleteWhenDestroyed::clone() const
+delete_when_destroyed()
 {
-  return Pointer( new DeleteWhenDestroyed() );
+  return std::make_unique< CallWhenDestroyed >(
+      []( Object& object )
+      {
+        thelog( yarrr::log::debug )( "Delete when destroyed deletes object", object.id() );
+        the::ctci::service< EngineDispatcher >().dispatch( DeleteObject( object.id() ) );
+      } );
 }
-
-
-void
-DeleteWhenDestroyed::handle_object_destroyed( const ObjectDestroyed& ) const
-{
-  thelog( yarrr::log::debug )( "Delete when destroyed deletes object", m_object->id() );
-  the::ctci::service< EngineDispatcher >().dispatch( DeleteObject( m_object->id() ) );
-}
-
 
 RespawnWhenDestroyed::RespawnWhenDestroyed()
   : ObjectBehavior( do_not_synchronize() )

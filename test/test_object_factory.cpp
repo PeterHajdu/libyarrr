@@ -156,12 +156,6 @@ Describe( an_object_factory )
     AssertThat( lua->assert_equals( "was_decorator_called", true ), Equals( true ) );
   }
 
-  It( creates_objects_with_delete_when_destroyed_from_lua )
-  {
-    create_object_from_lua();
-    AssertThat( created_object.get() != nullptr, Equals( true ) );
-    AssertThat( yarrr::has_component< yarrr::DeleteWhenDestroyed >( *created_object ), Equals( true ) );
-  }
 
   the::model::Lua* lua;
   yarrr::Object::Id created_object_id;

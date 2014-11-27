@@ -46,7 +46,7 @@ create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& i
   loot->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
   loot->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior( new_physical_parameters ) ) );
   loot->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::loot_layer ) ) );
-  loot->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
+  loot->add_behavior( delete_when_destroyed() );
   loot->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 30 ) ) );
   loot->add_behavior( ObjectBehavior::Pointer( new LootAttacher() ) );
   loot->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( loot->id(), 36000000u ) ) );
@@ -113,7 +113,7 @@ create_laser( const PhysicalParameters& laser_parameters )
   laser->add_behavior( ObjectBehavior::Pointer( new LaserGraphics() ) );
   laser->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::laser_layer ) ) );
   laser->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 10 ) ) );
-  laser->add_behavior( ObjectBehavior::Pointer( new DeleteWhenDestroyed() ) );
+  laser->add_behavior( delete_when_destroyed() );
   laser->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( laser->id(), 3000000u ) ) );
 
   return laser;
