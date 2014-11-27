@@ -54,5 +54,10 @@ AutoLuaRegister::AutoLuaRegister( std::function< void( LuaEngine& ) > register_f
   register_function( instance );
 }
 
+LuaFunction::LuaFunction( sol::function sol_function )
+  : m_sol_function( sol_function )
+{
+}
+
 }
 

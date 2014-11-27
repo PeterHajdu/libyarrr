@@ -29,6 +29,32 @@ class LuaEngine final
     the::model::Lua m_lua;
 };
 
+class LuaFunction
+{
+  public:
+    LuaFunction( sol::function sol_function );
+
+    template < typename...Args >
+    bool call( Args&&...args ) const
+    {
+      thelog( log::debug )( "Calling LuaFunction." );
+      try
+      {
+        m_sol_function( std::forward< Args >( args )... );
+      }
+      catch( std::exception& e )
+      {
+        thelog( log::debug )( "LuaFunction failed:", e.what() );
+        return false;
+      }
+      thelog( log::debug )( "LuaFunction finished with success." );
+      return true;
+    }
+
+  private:
+    sol::function m_sol_function;
+};
+
 class AutoLuaRegister final
 {
   public:

@@ -95,3 +95,56 @@ Describe( a_simple_lua_register )
   }
 };
 
+Describe_Only( a_lua_function_wrapper )
+{
+
+  void set_function( const std::string& name )
+  {
+    sol::function sol_function( yarrr::LuaEngine::state().get< sol::function >( name ) );
+    function = std::make_unique< yarrr::LuaFunction >( sol_function );
+  }
+
+  void SetUp()
+  {
+    lua = &yarrr::LuaEngine::model();
+    AssertThat( yarrr::LuaEngine::run(
+          "was_test_function_called = false\n"
+          "with_argument = 123\n"
+          "function test_function( argument )\n"
+          "was_test_function_called = true\n"
+          "with_argument = argument\n"
+          "end\n"
+          "function exception_thrower()\n"
+          "assert(false)\n"
+          "end\n"),
+        Equals( true ) );
+    set_function( "test_function" );
+  }
+
+  It( can_be_called )
+  {
+    AssertThat( function->call( 123 ), Equals( true ) );
+    AssertThat(
+        lua->assert_equals( "was_test_function_called", true ),
+        Equals( true ) );
+  }
+
+  It( forwards_arguments )
+  {
+    const int argument{ 987 };
+    AssertThat( function->call( argument ), Equals( true ) );
+    AssertThat(
+        lua->assert_equals( "with_argument", argument ),
+        Equals( true ) );
+  }
+
+  It( catches_exceptions )
+  {
+    set_function( "exception_thrower" );
+    AssertThat( function->call(), Equals( false ) );
+  }
+
+  std::unique_ptr< yarrr::LuaFunction > function;
+  the::model::Lua* lua;
+};
+
