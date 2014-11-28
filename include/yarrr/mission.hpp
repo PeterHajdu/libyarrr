@@ -62,12 +62,14 @@ class Mission final : public Entity
 
   private:
     void calculate_mission_state();
+    void initiate_new_objectives();
 
     virtual void do_serialize( Serializer& serializer ) const override final;
     virtual void do_deserialize( Deserializer& deserializer ) override final;
 
     Info m_info;
     Objectives m_objectives;
+    Objectives m_temporary_container;
     TaskState m_state;
     Id m_id;
 };

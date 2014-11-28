@@ -36,7 +36,7 @@ Describe( a_mission )
 
   It( is_serializable )
   {
-    add_objectives( 4 );
+    add_objectives_and_update_once( 4 );
     fail_mission();
     const yarrr::Data serialized_mission( mission->serialize() );
     yarrr::Mission deserialized_mission;
@@ -59,7 +59,7 @@ Describe( a_mission )
   }
 
 
-  void add_objectives( size_t count )
+  void add_objectives_and_update_once( size_t count )
   {
     for ( size_t i( 0 ); i < count; ++i )
     {
@@ -77,26 +77,26 @@ Describe( a_mission )
 
       mission->add_objective( an_objective );
     }
+    mission->update();
     AssertThat( mission->objectives(), HasLength( count ) );
   }
 
   It( has_objectives )
   {
-    add_objectives( 1u );
+    add_objectives_and_update_once( 1u );
     AssertThat( mission->objectives().back().description(), Equals( objective_description ) );
   }
 
   It( copies_objectives_when_copy_constructed )
   {
-    add_objectives( 1u );
+    add_objectives_and_update_once( 1u );
     yarrr::Mission copy( *mission );
     AssertThat( mission->objectives().back().description(), Equals( copy.objectives().back().description() ) );
   }
 
   It( updates_all_objectives_during_update )
   {
-    add_objectives( 5u );
-    mission->update();
+    add_objectives_and_update_once( 5u );
     for ( const auto& update_time : objective_updated_times )
     {
       AssertThat( update_time, Equals( 1 ) );
@@ -113,14 +113,14 @@ Describe( a_mission )
 
   It( fails_if_any_of_the_objectives_fail )
   {
-    add_objectives( 5u );
+    add_objectives_and_update_once( 5u );
     fail_mission();
     AssertThat( mission->state(), Equals( yarrr::failed ) );
   }
 
   It( succeeds_only_if_all_of_the_objectives_succeed )
   {
-    add_objectives( 5u );
+    add_objectives_and_update_once( 5u );
     objective_return_values.back() = yarrr::succeeded;
     mission->update();
     AssertThat( mission->state(), Equals( yarrr::ongoing ) );

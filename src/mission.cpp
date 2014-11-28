@@ -74,6 +74,7 @@ Mission::Mission( const Mission& other )
 void
 Mission::update()
 {
+  initiate_new_objectives();
   for ( auto& objective : m_objectives )
   {
     objective.update( *this );
@@ -85,6 +86,7 @@ Mission::update()
 void
 Mission::calculate_mission_state()
 {
+  initiate_new_objectives();
   if ( std::all_of( std::begin( m_objectives ), std::end( m_objectives ),
         []( const Objective& objective ){ return objective.state() == succeeded; } ) )
   {
@@ -121,9 +123,18 @@ Mission::description() const
 }
 
 void
+Mission::initiate_new_objectives()
+{
+  m_objectives.insert( std::end( m_objectives ),
+      std::make_move_iterator( std::begin( m_temporary_container ) ),
+      std::make_move_iterator( std::end( m_temporary_container ) ) );
+  m_temporary_container.clear();
+}
+
+void
 Mission::add_objective( const Objective& objective )
 {
-  m_objectives.emplace_back( objective );
+  m_temporary_container.emplace_back( objective );
 }
 
 const Mission::Objectives&
