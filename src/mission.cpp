@@ -125,6 +125,11 @@ Mission::description() const
 void
 Mission::initiate_new_objectives()
 {
+  if ( m_temporary_container.empty() )
+  {
+    return;
+  }
+
   m_objectives.insert( std::end( m_objectives ),
       std::make_move_iterator( std::begin( m_temporary_container ) ),
       std::make_move_iterator( std::end( m_temporary_container ) ) );
