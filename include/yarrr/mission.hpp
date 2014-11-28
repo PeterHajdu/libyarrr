@@ -44,6 +44,7 @@ class Mission final : public Entity
     Mission( const Info& );
 
     Id id() const;
+    std::string string_id() { return std::to_string( id() ); }
 
     static Pointer create( const Info& info );
 
