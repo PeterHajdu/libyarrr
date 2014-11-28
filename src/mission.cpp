@@ -14,13 +14,13 @@ yarrr::Mission::Objective::Updater
 wrap_lua_updater( sol::function updater )
 {
   return
-    [ updater ]( const std::string& mission_id ) -> yarrr::TaskState
+    [ updater ]( yarrr::Mission& mission ) -> yarrr::TaskState
     {
       thelog( yarrr::log::debug )( "Calling lua updater." );
       yarrr::TaskState result( yarrr::failed );
       try
       {
-        result = yarrr::TaskState( updater.call<int>( mission_id ) );
+        result = yarrr::TaskState( updater.call<int>( mission ) );
       }
       catch ( std::exception& e )
       {
@@ -74,10 +74,9 @@ Mission::Mission( const Mission& other )
 void
 Mission::update()
 {
-  const std::string mission_id( std::to_string( id() ) );
   for ( auto& objective : m_objectives )
   {
-    objective.update( mission_id );
+    objective.update( *this );
   }
 
   calculate_mission_state();
@@ -213,7 +212,7 @@ Mission::Objective::do_deserialize( Deserializer& deserializer )
 
 
 void
-Mission::Objective::update( const std::string& mission_id )
+Mission::Objective::update( Mission& mission )
 {
   const bool is_finished( m_state != ongoing );
   if ( is_finished )
@@ -221,7 +220,7 @@ Mission::Objective::update( const std::string& mission_id )
     return;
   }
 
-  m_state = m_updater( mission_id );
+  m_state = m_updater( mission );
 }
 
 Mission::Pointer

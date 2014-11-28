@@ -12,7 +12,7 @@ Describe( a_mission_container )
   void decorate_mission( yarrr::Mission& mission )
   {
     mission.add_objective( yarrr::Mission::Objective( "updater name",
-          [ this ]( const std::string& ) -> yarrr::TaskState
+          [ this ]( yarrr::Mission& ) -> yarrr::TaskState
           {
             was_mission_updated = true;
             return mission_state;

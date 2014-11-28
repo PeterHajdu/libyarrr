@@ -68,9 +68,9 @@ Describe( a_mission )
 
       yarrr::Mission::Objective an_objective(
           objective_description,
-          [ this, i ]( const std::string& mission_id )
+          [ this, i ]( yarrr::Mission& m )
           {
-            AssertThat( mission_id, Equals( std::to_string( mission->id() ) ) );
+            AssertThat( &m, Equals( mission.get() ) );
             ++objective_updated_times[ i ];
             return objective_return_values.at( i );
           } );
@@ -144,8 +144,13 @@ Describe( a_mission_objective )
   {
     lua.reset( new the::model::Lua() );
     lua->state()[ "objective_succeeded" ] = int( yarrr::succeeded );
+
+    lua->state().new_userdata< yarrr::Mission, yarrr::Mission::Info >( "Mission",
+        "add_objective", &yarrr::Mission::add_objective,
+        "id", &yarrr::Mission::string_id );
+
     lua->state().new_userdata< yarrr::Mission::Objective, std::string, sol::function >( "MissionObjective" );
-    lua->run( "function updater( id )\nprint( \"updater was called:\"..id )\nupdated_mission_id = id\nreturn objective_succeeded\nend\n" );
+    lua->run( "function updater( mission )\nprint( \"updater was called:\"..mission:id() )\nupdated_mission_id = mission:id()\nreturn objective_succeeded\nend\n" );
     lua->run( "function create_objective()\nreturn MissionObjective.new( \"bla\", updater )\nend\n" );
 
     lua->run( "function crashing_updater( id )\nassert( false )\nend\n" );
@@ -159,9 +164,9 @@ Describe( a_mission_objective )
     called_with_mission_id.clear();
     objective.reset( new yarrr::Mission::Objective(
           description,
-          [ this ]( const std::string& mission_id ) -> yarrr::TaskState
+          [ this ]( yarrr::Mission& m ) -> yarrr::TaskState
           {
-            called_with_mission_id = mission_id;
+            called_with_mission_id = m.id();
             was_updater_called = true;
             return updater_should_return;
           } ) );
@@ -190,7 +195,7 @@ Describe( a_mission_objective )
   void finish_with_success()
   {
     updater_should_return = yarrr::succeeded;
-    objective->update( mission_id );
+    objective->update( mission );
   }
 
   It( serializes_objective_state )
@@ -206,14 +211,14 @@ Describe( a_mission_objective )
 
   It( calls_state_updater_when_updating )
   {
-    objective->update( mission_id );
+    objective->update( mission );
     AssertThat( was_updater_called, Equals( true ) );
   }
 
   void assert_update_to_should_be( yarrr::TaskState returns, yarrr::TaskState expected )
   {
     updater_should_return = returns;
-    objective->update( mission_id );
+    objective->update( mission );
     AssertThat( objective->state(), Equals( expected ) );
   }
 
@@ -246,28 +251,28 @@ Describe( a_mission_objective )
   It( passes_mission_id_to_the_lua_updater )
   {
     yarrr::Mission::Objective objective( lua->state()[ "create_objective" ].call<yarrr::Mission::Objective&>() );
-    objective.update( mission_id );
-    AssertThat( lua->assert_equals( "updated_mission_id", mission_id ), Equals( true ) );
+    objective.update( mission );
+    AssertThat( lua->assert_equals( "updated_mission_id", mission.string_id() ), Equals( true ) );
   }
 
   It( updates_objective_state_according_to_lua_updater )
   {
     yarrr::Mission::Objective objective( lua->state()[ "create_objective" ].call<yarrr::Mission::Objective&>() );
-    objective.update( mission_id );
+    objective.update( mission );
     AssertThat( objective.state(), Equals( yarrr::succeeded ) );
   }
 
   It( should_catch_lua_exceptions )
   {
     yarrr::Mission::Objective objective( lua->state()[ "create_crashing_objective" ].call<yarrr::Mission::Objective&>() );
-    objective.update( mission_id );
+    objective.update( mission );
   }
 
   std::unique_ptr< the::model::Lua > lua;
   yarrr::Mission::Objective::Pointer objective;
   const std::string description{ "objective description" };
   bool was_updater_called;
-  const std::string mission_id{ "12383498" };
+  yarrr::Mission mission;
   std::string called_with_mission_id;
   yarrr::TaskState updater_should_return;
 };

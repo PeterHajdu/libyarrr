@@ -77,7 +77,7 @@ class Mission::Objective final : public Entity
   public:
     add_polymorphic_ctci( "yarrr_mission_objective" );
     typedef std::unique_ptr< Objective > Pointer;
-    typedef std::function< TaskState( const std::string& mission_id ) > Updater;
+    typedef std::function< TaskState( Mission& ) > Updater;
 
     Objective() = default;
     Objective( const std::string& description, Updater updater );
@@ -87,7 +87,7 @@ class Mission::Objective final : public Entity
     const std::string& description() const;
     const TaskState state() const;
 
-    void update( const std::string& mission_id );
+    void update( Mission& );
 
   private:
     virtual void do_serialize( Serializer& serializer ) const override final;
