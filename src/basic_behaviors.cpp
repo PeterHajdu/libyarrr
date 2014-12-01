@@ -31,6 +31,7 @@ namespace
     parameters.velocity = { 0, 0 };
     parameters.orientation = 0;
     parameters.angular_velocity = 0;
+    parameters.timestamp = 0;
     return parameters;
   }
 }
