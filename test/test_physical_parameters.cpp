@@ -40,6 +40,14 @@ Describe(physical_parameters)
     physical_parameters.timestamp = now;
   }
 
+  It(sets_only_the_timestamp_if_it_is_just_initialized)
+  {
+    physical_parameters.timestamp = 0u;
+    yarrr::travel_in_time_to( future, physical_parameters );
+    AssertThat( physical_parameters.coordinate, Equals( start_position ) );
+    AssertThat( physical_parameters.timestamp, Equals( future ) );
+  }
+
   It(moves)
   {
     yarrr::travel_in_time_to( future, physical_parameters );
