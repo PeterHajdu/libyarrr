@@ -3,10 +3,12 @@
 #include <yarrr/character.hpp>
 #include <themodel/node.hpp>
 #include <themodel/node_list.hpp>
+#include <string>
 
 namespace yarrr
 {
 
+const std::string mission_contexts{ "mission_contexts" };
 typedef the::model::OwningNodeList MissionsModel;
 
 class MissionModel : public the::model::OwningNode
