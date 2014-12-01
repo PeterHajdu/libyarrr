@@ -53,9 +53,9 @@ bool operator==( const PhysicalParameters& l, const PhysicalParameters& r )
 void travel_in_time_to( const the::time::Clock::Time& timestamp, PhysicalParameters& physical_parameters )
 {
   const the::time::Difference delta( timestamp - physical_parameters.timestamp );
+  const bool just_initialized{ 0u == physical_parameters.timestamp };
   physical_parameters.timestamp = timestamp;
 
-  const bool just_initialized{ delta == timestamp };
   if ( just_initialized )
   {
     return;
