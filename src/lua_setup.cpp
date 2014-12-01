@@ -68,7 +68,8 @@ export_yarrr_stuff()
   lua.new_userdata< yarrr::ObjectDecorator, yarrr::Object& >( "Object",
       "add_behavior", &yarrr::ObjectDecorator::add_behavior_clone,
       "id", &yarrr::ObjectDecorator::id,
-      "move_to", &yarrr::ObjectDecorator::move_to );
+      "move_to", &yarrr::ObjectDecorator::move_to,
+      "set_velocity", &yarrr::ObjectDecorator::set_velocity );
 
   lua.new_userdata< yarrr::Inventory >( "Inventory" );
   lua.new_userdata< yarrr::Collider, int >( "Collider" );

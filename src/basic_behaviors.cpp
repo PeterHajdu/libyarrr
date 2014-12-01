@@ -44,6 +44,12 @@ Coordinate& coordinate_of( const Object& object )
   return yarrr::component_of< yarrr::PhysicalBehavior >( object ).physical_parameters.coordinate;
 }
 
+Velocity& velocity_of( const Object& object )
+{
+  assert( yarrr::has_component< yarrr::PhysicalBehavior >( object ) );
+  return yarrr::component_of< yarrr::PhysicalBehavior >( object ).physical_parameters.velocity;
+}
+
 PhysicalBehavior::PhysicalBehavior()
   : ObjectBehavior( always_synchronize() )
   , physical_parameters( zero_parameters() )

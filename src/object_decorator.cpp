@@ -32,5 +32,11 @@ ObjectDecorator::move_to( const yarrr::Coordinate& new_position )
   coordinate_of( m_object ) = new_position;
 }
 
+void
+ObjectDecorator::set_velocity( const yarrr::Velocity& new_velocity )
+{
+  velocity_of( m_object ) = new_velocity;
+}
+
 }
 

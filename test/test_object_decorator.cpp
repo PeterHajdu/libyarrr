@@ -15,6 +15,7 @@ Describe( an_object_decorator )
     object = std::make_unique< yarrr::Object >();
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
     current_position = &yarrr::coordinate_of( *object );
+    current_velocity = &yarrr::velocity_of( *object );
     decorator = std::make_unique< yarrr::ObjectDecorator >( *object );
   }
 
@@ -39,7 +40,15 @@ Describe( an_object_decorator )
     AssertThat( *current_position, Equals( new_position ) );
   }
 
+  It( can_set_an_objects_velocity )
+  {
+    const yarrr::Velocity new_velocity{ *current_velocity + yarrr::Velocity{ 100, 200 } };
+    decorator->set_velocity( new_velocity );
+    AssertThat( *current_velocity, Equals( new_velocity ) );
+  }
+
   yarrr::Coordinate* current_position;
+  yarrr::Coordinate* current_velocity;
   yarrr::Object::Pointer object;
   std::unique_ptr< yarrr::ObjectDecorator > decorator;
 };

@@ -17,6 +17,7 @@ class ObjectDecorator
     std::string id();
     void add_behavior_clone( ObjectBehavior& behavior );
     void move_to( const yarrr::Coordinate& );
+    void set_velocity( const yarrr::Velocity& );
 
   private:
     Object& m_object;

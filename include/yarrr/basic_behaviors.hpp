@@ -42,6 +42,7 @@ class PhysicalBehavior : public ObjectBehavior
 };
 
 Coordinate& coordinate_of( const Object& );
+Velocity& velocity_of( const Object& );
 
 class SelfDestructor : public ObjectBehavior
 {

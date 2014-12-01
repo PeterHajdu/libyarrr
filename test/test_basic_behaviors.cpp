@@ -87,6 +87,13 @@ Describe( a_physical_behavior )
     AssertThat( physical_behavior->physical_parameters.coordinate, Equals( new_coordinate ) );
   }
 
+  It( has_fast_velocity_retriever )
+  {
+    const yarrr::Velocity new_velocity{ 123, -32 };
+    yarrr::velocity_of( *object ) = new_velocity;
+    AssertThat( physical_behavior->physical_parameters.velocity, Equals( new_velocity ) );
+  }
+
   std::unique_ptr< yarrr::PhysicalBehavior > physical_behavior;
   yarrr::Object::Pointer object;
 };
