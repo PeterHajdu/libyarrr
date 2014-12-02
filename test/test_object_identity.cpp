@@ -4,7 +4,7 @@
 
 using namespace igloo;
 
-Describe_Only( a_object_identity )
+Describe( a_object_identity )
 {
 
   void SetUp()
