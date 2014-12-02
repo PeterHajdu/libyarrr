@@ -53,6 +53,7 @@ void initialize_lua_engine()
 #include <yarrr/canon.hpp>
 #include <yarrr/mission.hpp>
 #include <yarrr/object_decorator.hpp>
+#include <yarrr/object_identity.hpp>
 namespace
 {
 
@@ -65,6 +66,8 @@ export_yarrr_stuff()
   lua.new_userdata< yarrr::Tile::Coordinate, int, int >( "TileCoordinate" );
   lua.new_userdata< yarrr::Tile, yarrr::Tile::Coordinate, yarrr::Tile::Coordinate >( "Tile" );
   lua.new_userdata< yarrr::PhysicalBehavior >( "PhysicalBehavior" );
+  lua.new_userdata< yarrr::ObjectIdentity, std::string >( "ObjectIdentity" );
+
   lua.new_userdata< yarrr::ObjectDecorator, yarrr::Object& >( "Object",
       "add_behavior", &yarrr::ObjectDecorator::add_behavior_clone,
       "id", &yarrr::ObjectDecorator::id,
