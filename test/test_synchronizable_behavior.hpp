@@ -14,6 +14,7 @@ void assert_that_it_is_a_synchronizable_behavior()
 {
   Behavior behavior;
   AssertThat( behavior.should_synchronize(), Equals( true ) );
+  AssertThat( behavior.clone().get() != nullptr, Equals( true ) );
   AssertThat( behavior.clone()->id(), Equals( behavior.id() ) );
   AssertThat( yarrr::EntityFactory::is_registered( Behavior::ctci ), Equals( true ) );
 }

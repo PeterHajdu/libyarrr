@@ -13,6 +13,7 @@ set(SOURCE_FILES
   object_container.cpp
   object_exporter.cpp
   object_decorator.cpp
+  object_identity.cpp
   basic_behaviors.cpp
   graphical_engine.cpp
   collider.cpp
