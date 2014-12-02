@@ -52,7 +52,7 @@ class GraphicalEngine
     virtual void draw_laser( const PhysicalParameters& ) = 0;
     virtual void print_text( uint16_t x, uint16_t y, const std::string&, const Colour& ) = 0;
     virtual void print_text_tokens( uint16_t x, uint16_t y, const TextTokens& ) = 0;
-    virtual void focus_to( const yarrr::Coordinate& ) = 0;
+    virtual void focus_to( const Object& ) = 0;
     virtual ~GraphicalEngine() = default;
     virtual void update_screen() = 0;
     virtual const Coordinate& screen_resolution() const = 0;

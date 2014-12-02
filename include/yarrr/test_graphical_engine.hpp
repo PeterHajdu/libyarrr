@@ -67,10 +67,10 @@ class GraphicalEngine : public yarrr::GraphicalEngine
       print_text( x, y, accumulated_text, { 255, 255, 255, 255 } );
     }
 
-    yarrr::Coordinate last_focused_to;
-    virtual void focus_to( const yarrr::Coordinate& coordinate ) override
+    const yarrr::Object* last_focused_to;
+    virtual void focus_to( const yarrr::Object& object ) override
     {
-      last_focused_to = coordinate;
+      last_focused_to = &object;
     }
 
     virtual void update_screen() override {}

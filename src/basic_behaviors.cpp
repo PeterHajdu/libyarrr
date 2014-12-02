@@ -201,7 +201,7 @@ void
 GraphicalBehavior::handle_focus_on_object( const FocusOnObject& )
 {
   assert( m_physical_behavior );
-  m_graphical_engine.focus_to( m_physical_behavior->physical_parameters.coordinate );
+  m_graphical_engine.focus_to( *m_object );
 }
 
 LaserGraphics::LaserGraphics( const Id& id )

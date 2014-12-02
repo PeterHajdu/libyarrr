@@ -12,7 +12,7 @@ class DummyGraphicalEngine : public yarrr::GraphicalEngine
     virtual void draw_laser( const yarrr::PhysicalParameters& ) override {}
     virtual void print_text( uint16_t, uint16_t, const std::string&, const yarrr::Colour& ) override {}
     virtual void print_text_tokens( uint16_t, uint16_t, const yarrr::TextTokens& ) override {}
-    virtual void focus_to( const yarrr::Coordinate& ) override {}
+    virtual void focus_to( const Object& ) override {}
     virtual void update_screen() override {}
     virtual const Coordinate& screen_resolution() const override { return resolution; }
 

@@ -115,7 +115,7 @@ Describe( graphical_behaviors )
     laser_graphics->register_to( *object );
 
     graphical_engine = static_cast< test::GraphicalEngine* >( &the::ctci::service<yarrr::GraphicalEngine>() );
-    graphical_engine->last_focused_to = physical_behavior.physical_parameters.coordinate + yarrr::Coordinate( 10, 10 );
+    graphical_engine->last_focused_to = nullptr;
   }
 
   It( handles_draw_even_without_registration )
@@ -132,9 +132,8 @@ Describe( graphical_behaviors )
 
   It( focuses_the_engine_to_the_object_if_it_receives_focus_on_object_event )
   {
-    AssertThat( graphical_engine->last_focused_to, !Equals( physical_behavior.physical_parameters.coordinate ) );
     object->dispatcher.dispatch( yarrr::FocusOnObject() );
-    AssertThat( graphical_engine->last_focused_to, Equals( physical_behavior.physical_parameters.coordinate ) );
+    AssertThat( graphical_engine->last_focused_to, Equals( object.get() ) );
   }
 
   It( draws_a_laser_with_the_physical_parameters_of_the_object )
