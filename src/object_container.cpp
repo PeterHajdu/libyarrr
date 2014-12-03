@@ -1,5 +1,6 @@
 #include <yarrr/object_container.hpp>
 #include <yarrr/collider.hpp>
+#include <yarrr/log.hpp>
 
 namespace
 {
@@ -28,6 +29,7 @@ ObjectContainer::objects() const
 void
 ObjectContainer::add_object( Object::Pointer&& object )
 {
+  thelog( log::debug )( "Adding object with id:", object->id() );
   assert( object );
   assert( !has_object_with_id( object->id() ) );
   register_dispatcher( object->dispatcher );
@@ -38,6 +40,7 @@ ObjectContainer::add_object( Object::Pointer&& object )
 void
 ObjectContainer::delete_object( Object::Id id )
 {
+  thelog( log::debug )( "Deleting object with id:", id );
   Objects::iterator object( m_objects.find( id ) );
   if ( object == m_objects.end() )
   {
@@ -84,6 +87,7 @@ ObjectContainer::generate_object_updates() const
 void
 ObjectContainer::handle_object_update( const ObjectUpdate& update )
 {
+  thelog( log::debug )( "Handling object update with id:", update.id() );
   if ( has_object_with_id( update.id() ) )
   {
     update.update_object( object_with_id( update.id() ) );
