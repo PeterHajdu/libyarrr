@@ -8,6 +8,8 @@
 #include <yarrr/lua_engine.hpp>
 #include <yarrr/bitmagic.hpp>
 #include <yarrr/object_created.hpp>
+#include <yarrr/log.hpp>
+#include <yarrr/coordinate_transformation.hpp>
 
 #include <thectci/service_registry.hpp>
 
@@ -69,8 +71,17 @@ PhysicalParameters
 Canon::generate_physical_parameters() const
 {
   PhysicalParameters new_parameters( *m_physical_parameters );
-  new_parameters.coordinate += relative_coordinate();
+
+
+  new_parameters.coordinate = transform_center_of_mass_relative_to_absolute(
+      relative_coordinate(),
+      m_physical_parameters->coordinate,
+      m_physical_parameters->orientation );
+
   new_parameters.orientation += m_orientation;
+
+  thelog( log::debug )( "shooting: ", new_parameters );
+
   return new_parameters;
 }
 
