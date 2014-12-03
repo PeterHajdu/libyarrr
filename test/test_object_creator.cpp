@@ -12,63 +12,6 @@
 
 using namespace igloo;
 
-Describe( ship_creator )
-{
-
-  void SetUp()
-  {
-    object = yarrr::create_ship();
-  }
-
-  It ( creates_objects_with_physical_parameters )
-  {
-    AssertThat( object->components.has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
-  }
-
-  It ( creates_objects_with_a_thruster )
-  {
-    AssertThat( object->components.has_component< yarrr::Thruster >(), Equals( true ) );
-  }
-
-  It ( creates_objects_with_a_canon )
-  {
-    AssertThat( object->components.has_component< yarrr::Canon >(), Equals( true ) );
-  }
-
-  It ( creates_objects_with_a_collider )
-  {
-    AssertThat( object->components.has_component< yarrr::Collider >(), Equals( true ) );
-  }
-
-  It ( creates_objects_with_a_damage_causer )
-  {
-    AssertThat( object->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
-  }
-
-  It ( creates_objects_with_inventory )
-  {
-    AssertThat( object->components.has_component< yarrr::Inventory >(), Equals( true ) );
-  }
-
-  It ( creates_objects_with_loot_dropper )
-  {
-    AssertThat( object->components.has_component< yarrr::LootDropper >(), Equals( true ) );
-  }
-
-  It ( creates_objects_with_shape_behavior )
-  {
-    AssertThat( object->components.has_component< yarrr::ShapeBehavior >(), Equals( true ) );
-  }
-
-  It ( creates_objects_with_shape_graphics_with_at_least_one_tile )
-  {
-    AssertThat( object->components.has_component< yarrr::ShapeGraphics >(), Equals( true ) );
-    AssertThat( yarrr::component_of< yarrr::ShapeBehavior >( *object ).shape.tiles().size(), !Equals( 0u ) );
-  }
-
-  yarrr::Object::Pointer object;
-};
-
 Describe( laser_creator )
 {
 

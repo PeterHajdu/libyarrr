@@ -163,7 +163,7 @@ Describe( ship_synchronization_procedure )
 {
   void SetUp()
   {
-    original_object = yarrr::create_ship();
+    original_object = test::create_ship();
     original_inventory = &yarrr::component_of< yarrr::Inventory >( *original_object );
 
     synchronized_object = test::create_remote_object_from( *original_object );

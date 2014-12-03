@@ -43,20 +43,19 @@ Object::Pointer
 create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& item )
 {
   add_random_parameters( new_physical_parameters );
-  Object::Pointer loot( new Object() );
-  loot->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
-  loot->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior( new_physical_parameters ) ) );
-  loot->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::loot_layer ) ) );
+  auto loot( std::make_unique< Object >() );
+  loot->add_behavior( std::make_unique< Inventory >() );
+  loot->add_behavior( std::make_unique< PhysicalBehavior >( new_physical_parameters ) );
+  loot->add_behavior( std::make_unique< Collider >( Collider::loot_layer ) );
+  loot->add_behavior( std::make_unique< DamageCauser >( 30 ) );
+  loot->add_behavior( std::make_unique< LootAttacher >() );
+  loot->add_behavior( std::make_unique< SelfDestructor >( loot->id(), 36000000u ) );
   loot->add_behavior( delete_when_destroyed() );
-  loot->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 30 ) ) );
-  loot->add_behavior( ObjectBehavior::Pointer( new LootAttacher() ) );
-  loot->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( loot->id(), 36000000u ) ) );
 
-  ShapeBehavior* shape( new ShapeBehavior() );
-  //todo: should this be the wreck?
+  auto shape( std::make_unique< ShapeBehavior >() );
   shape->shape.add_tile( Tile{ { 0, 0 }, { 0, 0 } } );
-  loot->add_behavior( ObjectBehavior::Pointer( shape ) );
-  loot->add_behavior( ObjectBehavior::Pointer( new ShapeGraphics() ) );
+  loot->add_behavior( std::move( shape ) );
+  loot->add_behavior( std::make_unique< ShapeGraphics >() );
 
   loot->add_behavior( item.clone() );
 
@@ -64,9 +63,38 @@ create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& i
 }
 
 
+
 Object::Pointer
+create_laser( const PhysicalParameters& laser_parameters, const ObjectIdentity& identity )
+{
+  auto laser( std::make_unique< Object >() );
+  std::unique_ptr< PhysicalBehavior > physical_behavior( new PhysicalBehavior( laser_parameters ) );
+  physical_behavior->physical_parameters.angular_velocity = 0;
+  physical_behavior->physical_parameters.velocity += heading( laser_parameters, laser_speed );
+  //todo: remove after solving suicide issue
+  physical_behavior->physical_parameters.coordinate += heading( laser_parameters, 10_metres );
+  laser->add_behavior( ObjectBehavior::Pointer( physical_behavior.release() ) );
+
+  laser->add_behavior( std::make_unique< LaserGraphics >() );
+  laser->add_behavior( std::make_unique< Collider >( Collider::laser_layer ) );
+  laser->add_behavior( std::make_unique< DamageCauser >( 10 ) );
+  laser->add_behavior( std::make_unique< SelfDestructor >( laser->id(), 3000000u ) );
+  laser->add_behavior( std::make_unique< ObjectIdentity >( identity.captain() ) );
+  laser->add_behavior( delete_when_destroyed() );
+
+  return laser;
+}
+
+
+}
+
+namespace test
+{
+
+yarrr::Object::Pointer
 create_ship()
 {
+  using namespace yarrr;
   Object::Pointer ship( new Object() );
   ship->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior() ) );
@@ -101,27 +129,6 @@ create_ship()
   ship->add_behavior( ObjectBehavior::Pointer( new ShapeGraphics() ) );
   return ship;
 }
-
-Object::Pointer
-create_laser( const PhysicalParameters& laser_parameters, const ObjectIdentity& identity )
-{
-  Object::Pointer laser( new Object() );
-  std::unique_ptr< PhysicalBehavior > physical_behavior( new PhysicalBehavior( laser_parameters ) );
-  physical_behavior->physical_parameters.angular_velocity = 0;
-  physical_behavior->physical_parameters.velocity += heading( laser_parameters, laser_speed );
-  //todo: remove after solving suicide issue
-  physical_behavior->physical_parameters.coordinate += heading( laser_parameters, 10_metres );
-  laser->add_behavior( ObjectBehavior::Pointer( physical_behavior.release() ) );
-  laser->add_behavior( ObjectBehavior::Pointer( new LaserGraphics() ) );
-  laser->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::laser_layer ) ) );
-  laser->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 10 ) ) );
-  laser->add_behavior( delete_when_destroyed() );
-  laser->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( laser->id(), 3000000u ) ) );
-  laser->add_behavior( std::make_unique< ObjectIdentity >( identity.captain() ) );
-
-  return laser;
-}
-
 
 }
 
