@@ -42,6 +42,7 @@ class Collider : public ObjectBehavior
   private:
     virtual void do_register_to( Object& ) override;
     bool is_collider_too_far( const Collider& ) const;
+    bool is_collider_from_the_same_captain( const Collider& other ) const;
     void collide_with( const Collider& ) const;
 
     yarrr::PhysicalBehavior* m_physical_behavior;

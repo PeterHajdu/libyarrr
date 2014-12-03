@@ -1,6 +1,8 @@
 #include <yarrr/collider.hpp>
 #include <yarrr/collision_checker.hpp>
 #include <yarrr/basic_behaviors.hpp>
+#include <yarrr/object.hpp>
+#include <yarrr/object_identity.hpp>
 
 namespace yarrr
 {
@@ -37,7 +39,9 @@ Collider::collide_if_needed_with( Collider& other )
   assert( m_physical_behavior );
 
   const bool is_collider_on_the_same_layer( m_layer == other.m_layer );
-  if ( is_collider_on_the_same_layer || is_collider_too_far( other ) )
+  if ( is_collider_on_the_same_layer ||
+       is_collider_too_far( other ) ||
+       is_collider_from_the_same_captain( other ) )
   {
     return;
   }
@@ -50,6 +54,30 @@ bool
 Collider::is_collider_too_far( const Collider& other ) const
 {
   return !does_collide( *m_object, *other.m_object );
+}
+
+bool
+Collider::is_collider_from_the_same_captain( const Collider& other ) const
+{
+  const bool both_has_identity{
+    has_component< ObjectIdentity >( *m_object ) &&
+    has_component< ObjectIdentity >( *other.m_object ) };
+
+  if ( !both_has_identity )
+  {
+    return false;
+  }
+
+  const bool has_same_captain{
+    component_of< ObjectIdentity >( *m_object ).captain() ==
+    component_of< ObjectIdentity >( *other.m_object ).captain() };
+
+  if ( !has_same_captain )
+  {
+    return false;
+  }
+
+  return true;
 }
 
 void
