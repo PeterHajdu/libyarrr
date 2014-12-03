@@ -138,9 +138,8 @@ Describe( graphical_behaviors )
 
   It( draws_a_laser_with_the_physical_parameters_of_the_object )
   {
-    AssertThat( graphical_engine->last_drawn_laser, !Equals( physical_behavior.physical_parameters ) );
     laser_graphics->draw();
-    AssertThat( graphical_engine->last_drawn_laser, Equals( physical_behavior.physical_parameters ) );
+    AssertThat( graphical_engine->last_drawn_laser, Equals( object.get() ) );
   }
 
   It( draws_object_with_shape )

@@ -18,10 +18,10 @@ class GraphicalEngine : public yarrr::GraphicalEngine
       last_drawn_object_with_shape = &object;
     }
 
-    yarrr::PhysicalParameters last_drawn_laser;
-    virtual void draw_laser( const yarrr::PhysicalParameters& parameters ) override
+    const yarrr::Object* last_drawn_laser;
+    virtual void draw_laser( const yarrr::Object& laser ) override
     {
-      last_drawn_laser = parameters;
+      last_drawn_laser = &laser;
     }
 
     yarrr::PhysicalParameters last_drawn_particle;

@@ -213,7 +213,7 @@ void
 LaserGraphics::draw() const
 {
   assert( m_physical_behavior );
-  m_graphical_engine.draw_laser( m_physical_behavior->physical_parameters );
+  m_graphical_engine.draw_laser( *m_object );
 }
 
 ObjectBehavior::Pointer
