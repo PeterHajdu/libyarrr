@@ -1,5 +1,6 @@
 #include <yarrr/object_creator.hpp>
 #include <yarrr/object.hpp>
+#include <yarrr/object_identity.hpp>
 #include <yarrr/inventory.hpp>
 #include <yarrr/canon.hpp>
 #include <yarrr/basic_behaviors.hpp>
@@ -102,7 +103,7 @@ create_ship()
 }
 
 Object::Pointer
-create_laser( const PhysicalParameters& laser_parameters )
+create_laser( const PhysicalParameters& laser_parameters, const ObjectIdentity& identity )
 {
   Object::Pointer laser( new Object() );
   std::unique_ptr< PhysicalBehavior > physical_behavior( new PhysicalBehavior( laser_parameters ) );
@@ -116,6 +117,7 @@ create_laser( const PhysicalParameters& laser_parameters )
   laser->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 10 ) ) );
   laser->add_behavior( delete_when_destroyed() );
   laser->add_behavior( ObjectBehavior::Pointer( new SelfDestructor( laser->id(), 3000000u ) ) );
+  laser->add_behavior( std::make_unique< ObjectIdentity >( identity.captain() ) );
 
   return laser;
 }

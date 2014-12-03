@@ -10,6 +10,7 @@
 #include <yarrr/object_created.hpp>
 #include <yarrr/log.hpp>
 #include <yarrr/coordinate_transformation.hpp>
+#include <yarrr/object_identity.hpp>
 
 #include <thectci/service_registry.hpp>
 
@@ -48,7 +49,7 @@ Canon::register_item_to( Object& owner )
 {
   owner.dispatcher.register_listener< yarrr::ShipControl >(
       [ this ]( const ShipControl& control ){ handle_command( control ); } );
-  m_physical_parameters = &owner.components.component< yarrr::PhysicalBehavior >().physical_parameters;
+  m_physical_parameters = &owner.components.component< PhysicalBehavior >().physical_parameters;
 }
 
 
@@ -61,9 +62,13 @@ Canon::handle_command( const ShipControl& command ) const
   }
 
   assert( m_physical_parameters );
+  assert( has_component< ObjectIdentity >( *m_object ) );
 
-  the::ctci::service< yarrr::EngineDispatcher >().dispatch( ObjectCreated(
-        create_laser( generate_physical_parameters() ) ) );
+  the::ctci::service< EngineDispatcher >().dispatch( ObjectCreated(
+        create_laser(
+          generate_physical_parameters(),
+          component_of< ObjectIdentity >( *m_object )
+          ) ) );
 }
 
 

@@ -3,6 +3,7 @@
 #include <yarrr/canon.hpp>
 #include <yarrr/inventory.hpp>
 #include <yarrr/object.hpp>
+#include <yarrr/object_identity.hpp>
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/ship_control.hpp>
@@ -23,6 +24,7 @@ Describe( a_canon )
   {
     canons.push_back( new yarrr::Canon( { 0, 0 }, canon_orientation ) );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( canons.back() ) );
+    object->add_behavior( std::make_unique< yarrr::ObjectIdentity >( "Black Beard" ) );
   }
 
   void SetUp()

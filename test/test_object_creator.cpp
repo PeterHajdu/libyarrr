@@ -1,4 +1,5 @@
 #include <yarrr/object_creator.hpp>
+#include <yarrr/object_identity.hpp>
 #include <yarrr/inventory.hpp>
 #include <yarrr/canon.hpp>
 #include <yarrr/basic_behaviors.hpp>
@@ -74,10 +75,18 @@ Describe( laser_creator )
   void SetUp()
   {
     ships_physical_parameters.angular_velocity = 100;
-    object = yarrr::create_laser( ships_physical_parameters );
+
+    const auto identity( std::make_unique< yarrr::ObjectIdentity >( originator ) );
+    object = yarrr::create_laser( ships_physical_parameters, *identity );
 
     AssertThat( object->components.has_component< yarrr::PhysicalBehavior >(), Equals( true ) );
     laser_parameters = object->components.component<yarrr::PhysicalBehavior>().physical_parameters;
+  }
+
+  It ( creates_objects_with_the_originators_object_identity )
+  {
+    AssertThat( yarrr::has_component< yarrr::ObjectIdentity >( *object ), Equals( true ) );
+    AssertThat( yarrr::component_of< yarrr::ObjectIdentity >( *object ).captain(), Equals( originator ) );
   }
 
   It ( creates_objects_with_laser_graphics )
@@ -113,6 +122,7 @@ Describe( laser_creator )
   yarrr::PhysicalParameters ships_physical_parameters;
   yarrr::PhysicalParameters laser_parameters;
   yarrr::Object::Pointer object;
+  const std::string originator{ "Black Beard" };
 };
 
 Describe( loot_creator )
