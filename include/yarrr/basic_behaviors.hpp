@@ -8,17 +8,7 @@
 namespace yarrr
 {
 
-class TimerUpdate
-{
-  public:
-    add_ctci( "timer_update" );
-    TimerUpdate( const the::time::Time& timestamp )
-      : timestamp( timestamp )
-    {
-    }
-
-    const the::time::Time& timestamp;
-};
+class TimerUpdate;
 
 class PhysicalBehavior : public ObjectBehavior
 {

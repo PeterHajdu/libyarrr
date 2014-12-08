@@ -9,6 +9,7 @@
 #include <yarrr/types.hpp>
 #include <yarrr/coordinate_transformation.hpp>
 #include <yarrr/log.hpp>
+#include <yarrr/timer_update.hpp>
 
 #include <thectci/service_registry.hpp>
 

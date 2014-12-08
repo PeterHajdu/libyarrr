@@ -14,6 +14,7 @@
 #include <yarrr/collider.hpp>
 #include <yarrr/shape_behavior.hpp>
 #include <yarrr/destruction_handlers.hpp>
+#include <yarrr/timer_update.hpp>
 #include <thectci/dispatcher.hpp>
 #include <thectci/component_registry.hpp>
 #include <thectci/service_registry.hpp>

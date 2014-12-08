@@ -1,4 +1,5 @@
 #include <yarrr/basic_behaviors.hpp>
+#include <yarrr/timer_update.hpp>
 #include <yarrr/inventory.hpp>
 #include <yarrr/object_container.hpp>
 #include <yarrr/bitmagic.hpp>

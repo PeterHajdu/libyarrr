@@ -12,6 +12,7 @@
 #include <yarrr/entity_factory.hpp>
 #include <yarrr/particle.hpp>
 #include <yarrr/bitmagic.hpp>
+#include <yarrr/timer_update.hpp>
 #include <thectci/service_registry.hpp>
 #include <igloo/igloo_alt.h>
 

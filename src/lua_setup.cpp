@@ -54,6 +54,7 @@ void initialize_lua_engine()
 #include <yarrr/mission.hpp>
 #include <yarrr/object_decorator.hpp>
 #include <yarrr/object_identity.hpp>
+#include <yarrr/lua_agent.hpp>
 namespace
 {
 
@@ -104,6 +105,7 @@ export_yarrr_stuff()
 
   lua.new_userdata< yarrr::LuaFunction, sol::function >( "LuaFunction" );
   lua.new_userdata< yarrr::CallWhenDestroyed, yarrr::LuaFunction >( "CallWhenDestroyed" );
+  lua.new_userdata< yarrr::LuaAgent, yarrr::LuaFunction, long >( "LuaAgent" );
 }
 
 }

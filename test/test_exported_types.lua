@@ -47,3 +47,9 @@ assert( ongoing )
 assert( succeeded )
 assert( failed )
 
+function a( object )
+end
+
+lua_function = LuaFunction.new( a )
+LuaAgent.new( lua_function, 1000000 )
+
