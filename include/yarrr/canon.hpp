@@ -8,6 +8,7 @@ namespace yarrr
 
 class ShipControl;
 class PhysicalParameters;
+class Fire;
 class Canon : public Item
 {
   public:
@@ -26,7 +27,9 @@ class Canon : public Item
 
     virtual void register_item_to( Object& ) override;
     void handle_command( const ShipControl& ) const;
-    PhysicalParameters generate_physical_parameters() const;
+    void handle_aimed_fire( const Fire& ) const;
+    void shoot_in_direction( const yarrr::Angle& direction ) const;
+    PhysicalParameters generate_physical_parameters( const yarrr::Angle& direction ) const;
 
     PhysicalParameters* m_physical_parameters;
     Angle m_orientation;

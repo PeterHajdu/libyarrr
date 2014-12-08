@@ -35,5 +35,17 @@ class ShipControl : public Entity
     the::time::Time m_timestamp;
 };
 
+class Fire
+{
+  public:
+    add_ctci( "yarrr_fire" );
+    Fire( const Angle& angle )
+      : direction( angle )
+    {
+    }
+
+    const Angle direction;
+};
+
 }
 

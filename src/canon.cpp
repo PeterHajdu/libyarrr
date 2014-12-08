@@ -49,7 +49,18 @@ Canon::register_item_to( Object& owner )
 {
   owner.dispatcher.register_listener< yarrr::ShipControl >(
       [ this ]( const ShipControl& control ){ handle_command( control ); } );
+
+  owner.dispatcher.register_listener< yarrr::Fire >(
+      [ this ]( const Fire& fire ){ handle_aimed_fire( fire ); } );
+
   m_physical_parameters = &owner.components.component< PhysicalBehavior >().physical_parameters;
+}
+
+
+void
+Canon::handle_aimed_fire( const Fire& fire ) const
+{
+  shoot_in_direction( fire.direction );
 }
 
 
@@ -61,29 +72,31 @@ Canon::handle_command( const ShipControl& command ) const
     return;
   }
 
+  shoot_in_direction( m_physical_parameters->orientation + m_orientation );
+}
+
+void
+Canon::shoot_in_direction( const yarrr::Angle& direction ) const
+{
   assert( m_physical_parameters );
   assert( has_component< ObjectIdentity >( *m_object ) );
 
   the::ctci::service< EngineDispatcher >().dispatch( ObjectCreated(
         create_laser(
-          generate_physical_parameters(),
+          generate_physical_parameters( direction ),
           component_of< ObjectIdentity >( *m_object )
           ) ) );
 }
 
-
 PhysicalParameters
-Canon::generate_physical_parameters() const
+Canon::generate_physical_parameters( const yarrr::Angle& direction ) const
 {
   PhysicalParameters new_parameters( *m_physical_parameters );
-
-
+  new_parameters.orientation = direction;
   new_parameters.coordinate = transform_center_of_mass_relative_to_absolute(
       relative_coordinate(),
       m_physical_parameters->coordinate,
       m_physical_parameters->orientation );
-
-  new_parameters.orientation += m_orientation;
 
   thelog( log::debug )( "shooting: ", new_parameters );
 

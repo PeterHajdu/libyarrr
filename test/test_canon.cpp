@@ -99,6 +99,15 @@ Describe( a_canon )
     AssertThat( bullet_parameters.orientation, Equals( canon_orientation + ship_orientation ) );
   }
 
+  It( shoots_in_the_specified_direction_for_the_fire_class )
+  {
+    const yarrr::Angle fire_orientation{ 99_degrees };
+    object->dispatcher.dispatch( yarrr::Fire( fire_orientation ) );
+    const yarrr::PhysicalParameters& bullet_parameters( bullets.back() );
+
+    AssertThat( bullet_parameters.orientation, Equals( fire_orientation ) );
+  }
+
   It( serializes_and_deserializes_orientation )
   {
     yarrr::Canon& original_canon( *canons.back() );
