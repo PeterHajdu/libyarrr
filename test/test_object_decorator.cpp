@@ -1,6 +1,7 @@
 #include <yarrr/object_decorator.hpp>
 #include <yarrr/object.hpp>
 #include <yarrr/basic_behaviors.hpp>
+#include <yarrr/ship_control.hpp>
 
 #include "test_behavior.hpp"
 
@@ -12,8 +13,16 @@ Describe( an_object_decorator )
 {
   void SetUp()
   {
+    last_bullet_direction = 0_degrees;
     object = std::make_unique< yarrr::Object >();
     object->add_behavior( yarrr::ObjectBehavior::Pointer( new yarrr::PhysicalBehavior() ) );
+
+    object->dispatcher.register_listener< yarrr::Fire >(
+        [ this ]( const yarrr::Fire& fire )
+        {
+          last_bullet_direction = fire.direction;
+        });
+
     current_position = &yarrr::coordinate_of( *object );
     current_velocity = &yarrr::velocity_of( *object );
     decorator = std::make_unique< yarrr::ObjectDecorator >( *object );
@@ -47,9 +56,17 @@ Describe( an_object_decorator )
     AssertThat( *current_velocity, Equals( new_velocity ) );
   }
 
+  It( can_shoot_in_a_given_direction )
+  {
+    const yarrr::Angle direction{ 10_degrees };
+    decorator->fire( direction );
+    AssertThat( last_bullet_direction, Equals( direction ) );
+  }
+
   yarrr::Coordinate* current_position;
   yarrr::Coordinate* current_velocity;
   yarrr::Object::Pointer object;
   std::unique_ptr< yarrr::ObjectDecorator > decorator;
+  yarrr::Angle last_bullet_direction;
 };
 

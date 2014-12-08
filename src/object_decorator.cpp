@@ -3,6 +3,7 @@
 #include <yarrr/types.hpp>
 #include <yarrr/log.hpp>
 #include <yarrr/basic_behaviors.hpp>
+#include <yarrr/ship_control.hpp>
 
 namespace yarrr
 {
@@ -36,6 +37,12 @@ void
 ObjectDecorator::set_velocity( const yarrr::Velocity& new_velocity )
 {
   velocity_of( m_object ) = new_velocity;
+}
+
+void
+ObjectDecorator::fire( const yarrr::Angle& direction )
+{
+  m_object.dispatcher.dispatch( yarrr::Fire( direction ) );
 }
 
 }

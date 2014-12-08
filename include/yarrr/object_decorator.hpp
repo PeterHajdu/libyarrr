@@ -18,6 +18,7 @@ class ObjectDecorator
     void add_behavior_clone( ObjectBehavior& behavior );
     void move_to( const yarrr::Coordinate& );
     void set_velocity( const yarrr::Velocity& );
+    void fire( const yarrr::Angle& );
 
   private:
     Object& m_object;
