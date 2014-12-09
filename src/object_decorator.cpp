@@ -4,6 +4,7 @@
 #include <yarrr/log.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/ship_control.hpp>
+#include <yarrr/object_destroyed.hpp>
 
 namespace yarrr
 {
@@ -43,6 +44,12 @@ void
 ObjectDecorator::fire( const yarrr::Angle& direction )
 {
   m_object.dispatcher.dispatch( yarrr::Fire( direction ) );
+}
+
+void
+ObjectDecorator::destroy_self()
+{
+  m_object.dispatcher.dispatch( ObjectDestroyed() );
 }
 
 }

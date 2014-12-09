@@ -1,5 +1,6 @@
 #include <yarrr/inventory.hpp>
 #include <yarrr/canon.hpp>
+#include <yarrr/object_destroyed.hpp>
 #include <yarrr/collider.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/object.hpp>

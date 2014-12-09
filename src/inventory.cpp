@@ -1,5 +1,6 @@
 #include <yarrr/inventory.hpp>
 #include <yarrr/collider.hpp>
+#include <yarrr/object_destroyed.hpp>
 #include <yarrr/engine_dispatcher.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/destruction_handlers.hpp>

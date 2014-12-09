@@ -74,7 +74,8 @@ export_yarrr_stuff()
       "id", &yarrr::ObjectDecorator::id,
       "move_to", &yarrr::ObjectDecorator::move_to,
       "set_velocity", &yarrr::ObjectDecorator::set_velocity,
-      "fire", &yarrr::ObjectDecorator::fire );
+      "fire", &yarrr::ObjectDecorator::fire,
+      "destroy_self", &yarrr::ObjectDecorator::destroy_self );
 
   lua.new_userdata< yarrr::Inventory >( "Inventory" );
   lua.new_userdata< yarrr::Collider, int >( "Collider" );

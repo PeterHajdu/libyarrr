@@ -1,5 +1,5 @@
 #include <yarrr/destruction_handlers.hpp>
-#include <yarrr/collider.hpp>
+#include <yarrr/object_destroyed.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/object.hpp>
 #include <yarrr/engine_dispatcher.hpp>

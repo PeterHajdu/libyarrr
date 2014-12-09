@@ -2,6 +2,7 @@
 #include <yarrr/object.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/ship_control.hpp>
+#include <yarrr/object_destroyed.hpp>
 
 #include "test_behavior.hpp"
 
@@ -21,6 +22,13 @@ Describe( an_object_decorator )
         [ this ]( const yarrr::Fire& fire )
         {
           last_bullet_direction = fire.direction;
+        });
+
+    was_object_destroyed = false;
+    object->dispatcher.register_listener< yarrr::ObjectDestroyed >(
+        [ this ]( const yarrr::ObjectDestroyed& )
+        {
+          was_object_destroyed = true;
         });
 
     current_position = &yarrr::coordinate_of( *object );
@@ -63,10 +71,17 @@ Describe( an_object_decorator )
     AssertThat( last_bullet_direction, Equals( direction ) );
   }
 
+  It( can_ask_self_destruction )
+  {
+    decorator->destroy_self();
+    AssertThat( was_object_destroyed, Equals( true ) );
+  }
+
   yarrr::Coordinate* current_position;
   yarrr::Coordinate* current_velocity;
   yarrr::Object::Pointer object;
   std::unique_ptr< yarrr::ObjectDecorator > decorator;
   yarrr::Angle last_bullet_direction;
+  bool was_object_destroyed;
 };
 

@@ -14,12 +14,6 @@ class Collide
     yarrr::Object& with;
 };
 
-class ObjectDestroyed
-{
-  public:
-    add_ctci( "yarrr_object_destroyed" );
-};
-
 class Collider : public ObjectBehavior
 {
   public:

@@ -19,6 +19,7 @@ class ObjectDecorator
     void move_to( const yarrr::Coordinate& );
     void set_velocity( const yarrr::Velocity& );
     void fire( const yarrr::Angle& );
+    void destroy_self();
 
   private:
     Object& m_object;

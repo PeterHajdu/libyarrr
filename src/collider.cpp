@@ -3,6 +3,7 @@
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/object.hpp>
 #include <yarrr/object_identity.hpp>
+#include <yarrr/object_destroyed.hpp>
 
 namespace yarrr
 {
