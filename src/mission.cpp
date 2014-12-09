@@ -245,5 +245,11 @@ Mission::create( const Info& info )
   return Pointer( new Mission( info ) );
 }
 
+void
+Mission::fail()
+{
+  m_state = failed;
+}
+
 }
 

@@ -59,6 +59,13 @@ Describe( a_mission )
   }
 
 
+  It( can_be_failed_explicitly )
+  {
+    mission->fail();
+    AssertThat( mission->state(), Equals( yarrr::failed ) );
+  }
+
+
   void add_objectives_and_update_once( size_t count )
   {
     for ( size_t i( 0 ); i < count; ++i )

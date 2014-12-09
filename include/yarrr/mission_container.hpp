@@ -11,6 +11,7 @@ class MissionContainer final
     typedef std::function< void( const Mission& ) > FinishedCallback;
     MissionContainer( FinishedCallback );
     void add_mission( Mission::Pointer&& mission );
+    void fail_missions();
 
     typedef std::vector< Mission::Pointer > Missions;
     const Missions& missions() const;

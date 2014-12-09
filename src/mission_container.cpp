@@ -63,5 +63,15 @@ MissionContainer::delete_finished_missions()
   }
 }
 
+void
+MissionContainer::fail_missions()
+{
+  for( const auto& mission : m_missions )
+  {
+    mission->fail();
+  }
+  delete_finished_missions();
+}
+
 }
 

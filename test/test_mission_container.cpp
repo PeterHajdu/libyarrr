@@ -37,6 +37,7 @@ Describe( a_mission_container )
           [ this ]( const yarrr::Mission& finished_mission )
           {
             was_mission_finished_callback_called = true;
+            finished_mission_state = finished_mission.state();
             mission_finished_id = finished_mission.id();
           } ) );
     was_mission_updated = false;
@@ -113,6 +114,14 @@ Describe( a_mission_container )
     AssertThat( container_contains( new_mission_id ), Equals( false ) );
   }
 
+  It( can_mark_all_missions_failed )
+  {
+    container->fail_missions();
+    AssertThat( was_mission_finished_callback_called, Equals( true ) );
+    AssertThat( finished_mission_state, Equals( yarrr::failed ) );
+    AssertThat( container->missions(), IsEmpty() );
+  }
+
   std::unique_ptr< yarrr::MissionContainer > container;
   bool was_mission_updated;
   yarrr::TaskState mission_state;
@@ -120,5 +129,6 @@ Describe( a_mission_container )
   yarrr::Mission::Id mission_id;
   yarrr::Mission::Id mission_finished_id;
   bool was_mission_finished_callback_called;
+  yarrr::TaskState finished_mission_state;
 };
 

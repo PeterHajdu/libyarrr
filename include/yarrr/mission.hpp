@@ -59,6 +59,7 @@ class Mission final : public Entity
 
     const TaskState state() const;
     void update();
+    void fail();
 
   private:
     void calculate_mission_state();
