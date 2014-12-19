@@ -74,6 +74,7 @@ export_yarrr_stuff()
       "id", &yarrr::ObjectDecorator::id,
       "move_to", &yarrr::ObjectDecorator::move_to,
       "set_velocity", &yarrr::ObjectDecorator::set_velocity,
+      "rotates_with", &yarrr::ObjectDecorator::rotates_with,
       "fire", &yarrr::ObjectDecorator::fire,
       "destroy_self", &yarrr::ObjectDecorator::destroy_self );
 

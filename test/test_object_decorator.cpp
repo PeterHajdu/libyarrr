@@ -31,8 +31,10 @@ Describe( an_object_decorator )
           was_object_destroyed = true;
         });
 
-    current_position = &yarrr::coordinate_of( *object );
-    current_velocity = &yarrr::velocity_of( *object );
+    auto& parameters( yarrr::component_of< yarrr::PhysicalBehavior >( *object ).physical_parameters );
+    current_position = &parameters.coordinate;
+    current_velocity = &parameters.velocity;
+    current_angular_velocity = &parameters.angular_velocity;
     decorator = std::make_unique< yarrr::ObjectDecorator >( *object );
   }
 
@@ -57,6 +59,13 @@ Describe( an_object_decorator )
     AssertThat( *current_position, Equals( new_position ) );
   }
 
+  It( can_spin_an_object )
+  {
+    const yarrr::Angle new_angular_velocity{ *current_angular_velocity + 100 };
+    decorator->rotates_with( new_angular_velocity );
+    AssertThat( *current_angular_velocity, Equals( new_angular_velocity ) );
+  }
+
   It( can_set_an_objects_velocity )
   {
     const yarrr::Velocity new_velocity{ *current_velocity + yarrr::Velocity{ 100, 200 } };
@@ -79,6 +88,7 @@ Describe( an_object_decorator )
 
   yarrr::Coordinate* current_position;
   yarrr::Coordinate* current_velocity;
+  yarrr::Angle* current_angular_velocity;
   yarrr::Object::Pointer object;
   std::unique_ptr< yarrr::ObjectDecorator > decorator;
   yarrr::Angle last_bullet_direction;

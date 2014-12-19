@@ -41,6 +41,13 @@ ObjectDecorator::set_velocity( const yarrr::Velocity& new_velocity )
 }
 
 void
+ObjectDecorator::rotates_with( const yarrr::Angle& new_angular_velocity )
+{
+  component_of< yarrr::PhysicalBehavior >( m_object ).physical_parameters.angular_velocity =
+    new_angular_velocity;
+}
+
+void
 ObjectDecorator::fire( const yarrr::Angle& direction )
 {
   m_object.dispatcher.dispatch( yarrr::Fire( direction ) );
