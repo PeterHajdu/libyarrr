@@ -58,10 +58,10 @@ Describe( a_text_token )
 
   It( calculates_token_width )
   {
-    AssertThat( text_token.width(), Equals( text_length * yarrr::GraphicalEngine::font_width ) );
+    AssertThat( text_token.width(), Equals( text_length ) );
   }
 
   const yarrr::TextToken text_token{ "dogfood", {} };
-  const int text_length{ static_cast< int >( text_token.text.length() ) };
+  const int text_length{ static_cast< int >( text_token.text.length() * yarrr::GraphicalEngine::font_width ) };
 };
 
