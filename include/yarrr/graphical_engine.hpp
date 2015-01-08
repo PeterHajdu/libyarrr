@@ -47,6 +47,9 @@ class GraphicalEngine
 {
   public:
     add_polymorphic_ctci( "yarrr_graphical_engine" );
+    virtual void draw_line( int x1, int y1, int x2, int y2, const Colour& ) = 0;
+
+
     virtual void draw_particle( const PhysicalParameters&, uint64_t age ) = 0;
     virtual void draw_object_with_shape( const Object& ) = 0;
     virtual void draw_laser( const Object& ) = 0;
