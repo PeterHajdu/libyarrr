@@ -7,6 +7,7 @@ namespace yarrr
 class DummyGraphicalEngine : public yarrr::GraphicalEngine
 {
   public:
+    virtual void draw_rectangle( int x1, int y1, int x2, int y2, const Colour& ) override {}
     virtual void draw_line( int x1, int y1, int x2, int y2, const Colour& ) override {}
     virtual void draw_particle( const PhysicalParameters&, uint64_t ) override {}
     virtual void draw_object_with_shape( const Object& ) override {}

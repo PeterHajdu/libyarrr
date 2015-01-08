@@ -27,6 +27,12 @@ class GraphicalEngine : public yarrr::GraphicalEngine
       last_line_data = { x1, y1, x2, y2, colour };
     }
 
+    LineData last_rectangle_data;
+    virtual void draw_rectangle( int x1, int y1, int x2, int y2, const yarrr::Colour& colour ) override
+    {
+      last_rectangle_data = { x1, y1, x2, y2, colour };
+    }
+
     const yarrr::Object* last_drawn_object_with_shape{ nullptr };
     virtual void draw_object_with_shape( const yarrr::Object& object ) override
     {
