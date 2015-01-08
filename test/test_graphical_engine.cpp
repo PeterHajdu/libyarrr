@@ -53,3 +53,15 @@ Describe(a_graphical_engine)
   std::unique_ptr< yarrr::GraphicalEngine > test_engine;
 };
 
+Describe( a_text_token )
+{
+
+  It( calculates_token_width )
+  {
+    AssertThat( text_token.width(), Equals( text_length * yarrr::GraphicalEngine::font_width ) );
+  }
+
+  const yarrr::TextToken text_token{ "dogfood", {} };
+  const int text_length{ static_cast< int >( text_token.text.length() ) };
+};
+

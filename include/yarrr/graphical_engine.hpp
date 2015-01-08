@@ -37,6 +37,8 @@ class Colour
 class TextToken
 {
   public:
+    using Container = std::vector< TextToken >;
+    int width() const;
     std::string text;
     Colour colour;
 };
@@ -66,7 +68,8 @@ class GraphicalEngine
     void register_object( const GraphicalObject& );
     void delete_object( const GraphicalObject& );
 
-    static const size_t font_height;
+    static size_t font_height;
+    static size_t font_width;
   private:
     std::vector< std::reference_wrapper< const GraphicalObject > > m_objects;
 };
