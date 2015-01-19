@@ -66,14 +66,16 @@ Describe( a_text_token )
     const std::string dogfood( "dogfood" );
     const yarrr::TextToken token( dogfood );
     AssertThat( token.text, Equals( dogfood ) );
+    AssertThat( token.colour, Equals( yarrr::Colour::White ) );
   }
 
   It( has_a_constructor_with_text_and_colour )
   {
     const std::string dogfood( "dogfood" );
-    const yarrr::TextToken token( dogfood, yarrr::Colour::White );
+    const auto colour( yarrr::Colour::Green );
+    const yarrr::TextToken token( dogfood, colour );
     AssertThat( token.text, Equals( dogfood ) );
-    AssertThat( token.colour, Equals( yarrr::Colour::White ) );
+    AssertThat( token.colour, Equals( colour ) );
   }
 
   const yarrr::TextToken text_token{ "dogfood", {} };

@@ -50,6 +50,7 @@ class TextToken
 
     TextToken( const std::string& text )
       : text( text )
+      , colour( Colour::White )
     {
     }
 
