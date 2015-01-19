@@ -53,6 +53,11 @@ class GraphicalEngine : public yarrr::GraphicalEngine
       age_of_last_drawn_particle = age;
     }
 
+    virtual yarrr::Size size_of_text( const std::string& text ) override
+    {
+      return { 0, 0 };
+    }
+
     std::vector< std::string > printed_texts;
     std::string last_printed_text;
     int x_of_printed_text{ 0 };
