@@ -61,6 +61,21 @@ Describe( a_text_token )
     AssertThat( text_token.width(), Equals( text_length ) );
   }
 
+  It( has_a_constructor_with_text )
+  {
+    const std::string dogfood( "dogfood" );
+    const yarrr::TextToken token( dogfood );
+    AssertThat( token.text, Equals( dogfood ) );
+  }
+
+  It( has_a_constructor_with_text_and_colour )
+  {
+    const std::string dogfood( "dogfood" );
+    const yarrr::TextToken token( dogfood, yarrr::Colour::White );
+    AssertThat( token.text, Equals( dogfood ) );
+    AssertThat( token.colour, Equals( yarrr::Colour::White ) );
+  }
+
   const yarrr::TextToken text_token{ "dogfood", {} };
   const int text_length{ static_cast< int >( text_token.text.length() * yarrr::GraphicalEngine::font_width ) };
 };

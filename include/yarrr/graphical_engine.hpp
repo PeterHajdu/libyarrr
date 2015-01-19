@@ -34,10 +34,31 @@ class Colour
     const static Colour Strange;
 };
 
+inline bool operator==( const Colour& l, const Colour& r )
+{
+  return
+    l.red == r.red &&
+    l.green == r.green &&
+    l.blue == r.blue &&
+    l.alpha == r.alpha;
+}
+
 class TextToken
 {
   public:
     using Container = std::vector< TextToken >;
+
+    TextToken( const std::string& text )
+      : text( text )
+    {
+    }
+
+    TextToken( const std::string& text, const Colour& colour )
+      : text( text )
+      , colour( colour )
+    {
+    }
+
     int width() const;
     std::string text;
     Colour colour;
