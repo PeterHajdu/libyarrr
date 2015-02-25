@@ -55,6 +55,7 @@ Describe( call_when_destroyed )
     yarrr::LuaFunction function( lua.state()[ "the_function" ] );
     object->add_behavior( std::make_unique< yarrr::CallWhenDestroyed >( function ) );
     object->dispatcher.dispatch( yarrr::ObjectDestroyed() );
+    object.reset();
     AssertThat( lua.assert_equals( "the_function_was_called", true ), Equals( true ) );
   }
 

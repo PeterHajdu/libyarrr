@@ -61,8 +61,8 @@ Describe( a_lua_agent )
     AssertThat( lua->assert_equals( "number_of_function_calls", 2 ), Equals( true ) );
   }
 
-  yarrr::Object::Pointer object;
   std::unique_ptr< the::model::Lua > lua;
+  yarrr::Object::Pointer object;
 
   const the::time::Time period{ 1000000u };
   const the::time::Time first_update_time{ 100u };
