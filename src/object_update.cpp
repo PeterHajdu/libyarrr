@@ -58,7 +58,7 @@ ObjectUpdate::update_object( Object& object ) const
 {
   for ( const auto& behavior : m_behaviors )
   {
-    object.update_behavior( behavior->clone() );
+    object.update_behavior( *behavior );
   }
 }
 

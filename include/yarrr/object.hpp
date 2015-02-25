@@ -34,7 +34,7 @@ class Object final
 
     void add_behavior( ObjectBehavior::Pointer&& behavior );
 
-    void update_behavior( ObjectBehavior::Pointer&& behavior );
+    void update_behavior( const ObjectBehavior& behavior );
 
     std::unique_ptr< ObjectUpdate > generate_update() const;
 

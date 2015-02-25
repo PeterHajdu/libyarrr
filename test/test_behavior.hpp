@@ -24,9 +24,6 @@ class Behavior : public yarrr::ObjectBehavior
     {
     }
 
-    size_t number_of_test_behavior_registrations{ 1 };
-    bool was_registered{ false };
-
     const test::Event* dispatched_event{ nullptr };
     void handle_event( const test::Event& event )
     {
@@ -58,6 +55,8 @@ class Behavior : public yarrr::ObjectBehavior
 
     Id some_data;
 
+    bool was_registered{ false };
+    size_t number_of_test_behavior_registrations{ 1 };
   private:
     virtual void do_register_to( yarrr::Object& owner ) override
     {

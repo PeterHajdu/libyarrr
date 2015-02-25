@@ -84,24 +84,31 @@ Describe(an_object)
 
   It( can_update_a_behavior )
   {
-    test::Behavior* update_behavior( new test::Behavior( rarely_synchronized_behavior->id() ) );
-    object->update_behavior( yarrr::ObjectBehavior::Pointer( update_behavior ) );
+    auto update_behavior( std::make_unique< test::Behavior >( rarely_synchronized_behavior->id() ) );
+    object->update_behavior( *update_behavior );
     AssertThat( rarely_synchronized_behavior->was_updated(), Equals( true ) );
-    AssertThat( rarely_synchronized_behavior->updated_with, Equals( update_behavior ) );
+    AssertThat( rarely_synchronized_behavior->updated_with, Equals( update_behavior.get() ) );
+  }
+
+  It( does_not_clone_behavior_for_an_update )
+  {
+    auto update_behavior( std::make_unique< test::Behavior >( rarely_synchronized_behavior->id() ) );
+    object->update_behavior( *update_behavior );
+    AssertThat( update_behavior->was_cloned, Equals( false ) );
   }
 
   It( updates_only_behavior_with_matching_id )
   {
-    test::Behavior* update_behavior( new test::Behavior( not_existing_behavior_id ) );
-    object->update_behavior( yarrr::ObjectBehavior::Pointer( update_behavior ) );
+    auto update_behavior( std::make_unique< test::Behavior >( not_existing_behavior_id ) );
+    object->update_behavior( *update_behavior );
     AssertThat( rarely_synchronized_behavior->was_updated(), Equals( false ) );
   }
 
   It( adds_updating_behavior_if_id_is_unknown )
   {
-    test::Behavior* new_behavior( new test::Behavior( not_existing_behavior_id ) );
-    object->update_behavior( yarrr::ObjectBehavior::Pointer( new_behavior ) );
-    AssertThat( new_behavior->was_registered, Equals( true ) );
+    auto new_behavior( std::make_unique< test::Behavior >( not_existing_behavior_id ) );
+    object->update_behavior( *new_behavior );
+    AssertThat( new_behavior->was_cloned, Equals( true ) );
   }
 
   It( generates_object_initializer_as_first_update )

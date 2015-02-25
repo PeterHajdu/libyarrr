@@ -72,9 +72,9 @@ Object::add_behavior( ObjectBehavior::Pointer&& behavior )
 }
 
 void
-Object::update_behavior( ObjectBehavior::Pointer&& updater_behavior )
+Object::update_behavior( const ObjectBehavior& updater_behavior )
 {
-  const ObjectBehavior::Id behavior_id( updater_behavior->id() );
+  const ObjectBehavior::Id behavior_id( updater_behavior.id() );
   BehaviorContainer::const_iterator found_behavior( std::find_if(
         std::begin( m_behaviors ), std::end( m_behaviors ),
         [ behavior_id ]( const ObjectBehavior::Pointer& behavior )
@@ -84,11 +84,11 @@ Object::update_behavior( ObjectBehavior::Pointer&& updater_behavior )
 
   if ( found_behavior == m_behaviors.end() )
   {
-    add_behavior( std::move( updater_behavior ) );
+    add_behavior( updater_behavior.clone() );
     return;
   }
 
-  (*found_behavior)->update( *updater_behavior );
+  (*found_behavior)->update( updater_behavior );
 }
 
 void
