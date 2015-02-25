@@ -1,4 +1,5 @@
 #include <yarrr/mission_container.hpp>
+#include <yarrr/log.hpp>
 
 namespace yarrr
 {
@@ -54,6 +55,7 @@ MissionContainer::delete_finished_missions()
     const bool is_finished( ongoing != (*mission)->state() );
     if ( is_finished )
     {
+      thelog( yarrr::log::debug )( "Deleting finished mission", ( *mission )->id() );
       m_finished_callback( **mission );
       mission = m_missions.erase( mission );
       continue;

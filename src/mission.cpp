@@ -49,7 +49,8 @@ Mission::id() const
 }
 
 Mission::Mission()
-  : m_id( next_id() )
+  : m_state( ongoing )
+  , m_id( next_id() )
 {
 }
 
