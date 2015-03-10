@@ -53,32 +53,3 @@ Describe(a_graphical_engine)
   std::unique_ptr< yarrr::GraphicalEngine > test_engine;
 };
 
-Describe( a_text_token )
-{
-
-  It( calculates_token_width )
-  {
-    AssertThat( text_token.width(), Equals( text_length ) );
-  }
-
-  It( has_a_constructor_with_text )
-  {
-    const std::string dogfood( "dogfood" );
-    const yarrr::TextToken token( dogfood );
-    AssertThat( token.text, Equals( dogfood ) );
-    AssertThat( token.colour, Equals( yarrr::Colour::White ) );
-  }
-
-  It( has_a_constructor_with_text_and_colour )
-  {
-    const std::string dogfood( "dogfood" );
-    const auto colour( yarrr::Colour::Green );
-    const yarrr::TextToken token( dogfood, colour );
-    AssertThat( token.text, Equals( dogfood ) );
-    AssertThat( token.colour, Equals( colour ) );
-  }
-
-  const yarrr::TextToken text_token{ "dogfood", {} };
-  const int text_length{ static_cast< int >( text_token.text.length() * yarrr::GraphicalEngine::font_width ) };
-};
-

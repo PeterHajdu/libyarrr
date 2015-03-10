@@ -50,30 +50,6 @@ class Size
     int height;
 };
 
-//todo: move to yarrrclient after the ui rewrite
-class TextToken
-{
-  public:
-    using Container = std::vector< TextToken >;
-
-    TextToken( const std::string& text )
-      : text( text )
-      , colour( Colour::White )
-    {
-    }
-
-    TextToken( const std::string& text, const Colour& colour )
-      : text( text )
-      , colour( colour )
-    {
-    }
-
-    int width() const;
-    std::string text;
-    Colour colour;
-};
-
-typedef std::vector< TextToken > TextTokens;
 
 class GraphicalEngine
 {
@@ -88,8 +64,6 @@ class GraphicalEngine
     virtual void draw_laser( const Object& ) = 0;
     virtual Size size_of_text( const std::string& text ) = 0;
     virtual void print_text( uint16_t x, uint16_t y, const std::string&, const Colour& ) = 0;
-    //todo: remove after the ui rewrite
-    virtual void print_text_tokens( uint16_t x, uint16_t y, const TextTokens& ) = 0;
     virtual void focus_to( const Object& ) = 0;
     virtual ~GraphicalEngine() = default;
     virtual void update_screen() = 0;
@@ -100,9 +74,6 @@ class GraphicalEngine
     void register_object( const GraphicalObject& );
     void delete_object( const GraphicalObject& );
 
-    //todo: remove after the ui rewrite
-    static size_t font_height;
-    static size_t font_width;
   private:
     std::vector< std::reference_wrapper< const GraphicalObject > > m_objects;
 };

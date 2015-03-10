@@ -9,8 +9,6 @@ const Colour Colour::White{ 255, 255, 255, 255 };
 const Colour Colour::Red{ 255, 0, 0, 255 };
 const Colour Colour::Green{ 0, 255, 0, 255 };
 const Colour Colour::Strange{ 255, 255, 0, 255 };
-size_t GraphicalEngine::font_height{ 15 };
-size_t GraphicalEngine::font_width{ 10 };
 
 GraphicalObject::GraphicalObject( GraphicalEngine& graphical_engine )
   : m_graphical_engine( graphical_engine )
@@ -52,12 +50,6 @@ GraphicalEngine::draw_objects() const
   {
     object.get().draw();
   }
-}
-
-int
-TextToken::width() const
-{
-  return text.length() * GraphicalEngine::font_width;
 }
 
 }

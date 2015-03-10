@@ -83,16 +83,6 @@ class GraphicalEngine : public yarrr::GraphicalEngine
           } );
     }
 
-    virtual void print_text_tokens( uint16_t x, uint16_t y, const yarrr::TextTokens& tokens ) override
-    {
-      std::string accumulated_text;
-      for ( const auto& token : tokens )
-      {
-        accumulated_text += token.text;
-      }
-      print_text( x, y, accumulated_text, { 255, 255, 255, 255 } );
-    }
-
     const yarrr::Object* last_focused_to;
     virtual void focus_to( const yarrr::Object& object ) override
     {
