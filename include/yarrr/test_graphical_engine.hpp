@@ -21,9 +21,10 @@ class GraphicalEngine : public yarrr::GraphicalEngine
         yarrr::Colour colour;
     };
 
+    yarrr::Size rendered_text_size;
     virtual yarrr::Size calculate_rendered_text_size( const std::string& ) override
     {
-      return { 0, 0 };
+      return rendered_text_size;
     }
 
     LineData last_line_data;
