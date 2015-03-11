@@ -7,6 +7,7 @@ namespace yarrr
 class DummyGraphicalEngine : public yarrr::GraphicalEngine
 {
   public:
+    virtual Size calculate_rendered_text_size( const std::string& ) override { return { 0, 0 }; }
     virtual void draw_rectangle( int x1, int y1, int x2, int y2, const Colour& ) override {}
     virtual void draw_line( int x1, int y1, int x2, int y2, const Colour& ) override {}
     virtual void draw_particle( const PhysicalParameters&, uint64_t ) override {}
