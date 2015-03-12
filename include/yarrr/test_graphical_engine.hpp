@@ -21,12 +21,6 @@ class GraphicalEngine : public yarrr::GraphicalEngine
         yarrr::Colour colour;
     };
 
-    yarrr::Size rendered_text_size;
-    virtual yarrr::Size calculate_rendered_text_size( const std::string& ) override
-    {
-      return rendered_text_size;
-    }
-
     LineData last_line_data;
     virtual void draw_line( int x1, int y1, int x2, int y2, const yarrr::Colour& colour ) override
     {
@@ -59,9 +53,11 @@ class GraphicalEngine : public yarrr::GraphicalEngine
       age_of_last_drawn_particle = age;
     }
 
+
+    yarrr::Size text_size;
     virtual yarrr::Size size_of_text( const std::string& text ) override
     {
-      return { 0, 0 };
+      return text_size;
     }
 
     std::vector< std::string > printed_texts;
