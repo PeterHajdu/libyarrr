@@ -54,7 +54,7 @@ class GraphicalEngine : public yarrr::GraphicalEngine
     }
 
 
-    yarrr::Size text_size;
+    yarrr::Size text_size{ 1, 1 };
     virtual yarrr::Size size_of_text( const std::string& text ) override
     {
       return text_size;
@@ -93,13 +93,11 @@ class GraphicalEngine : public yarrr::GraphicalEngine
 
     virtual void update_screen() override {}
 
+    yarrr::Coordinate resolution{ 1000, 500 };
     virtual const yarrr::Coordinate& screen_resolution() const override
     {
       return resolution;
     }
-
-  private:
-    const yarrr::Coordinate resolution{ 0, 0 };
 };
 
 }
