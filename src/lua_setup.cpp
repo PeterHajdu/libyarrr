@@ -105,6 +105,7 @@ export_yarrr_stuff()
   lua[ "ongoing" ] = int( yarrr::ongoing );
   lua[ "succeeded" ] = int( yarrr::succeeded );
   lua[ "failed" ] = int( yarrr::failed );
+  lua[ "na" ] = int( yarrr::na );
 
   lua.new_userdata< yarrr::LuaFunction, sol::function >( "LuaFunction" );
   lua.new_userdata< yarrr::CallWhenDestroyed, yarrr::LuaFunction >( "CallWhenDestroyed" );

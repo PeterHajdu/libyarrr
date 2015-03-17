@@ -46,6 +46,7 @@ mission:add_objective( objective )
 assert( ongoing )
 assert( succeeded )
 assert( failed )
+assert( na )
 
 function a( object )
 end

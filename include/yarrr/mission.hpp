@@ -15,7 +15,8 @@ enum TaskState : char
 {
   ongoing,
   failed,
-  succeeded
+  succeeded,
+  na
 };
 
 class Mission final : public Entity

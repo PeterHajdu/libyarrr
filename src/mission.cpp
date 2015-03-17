@@ -89,7 +89,12 @@ Mission::calculate_mission_state()
 {
   initiate_new_objectives();
   if ( std::all_of( std::begin( m_objectives ), std::end( m_objectives ),
-        []( const Objective& objective ){ return objective.state() == succeeded; } ) )
+        []( const Objective& objective )
+        {
+          return
+            objective.state() == succeeded ||
+            objective.state() == na;
+        } ) )
   {
     thelog( log::debug )( "Mission succeeded:", m_id, m_info.name );
     m_state = succeeded;

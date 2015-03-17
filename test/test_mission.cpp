@@ -85,7 +85,6 @@ Describe( a_mission )
       mission->add_objective( an_objective );
     }
     mission->update();
-    AssertThat( mission->objectives(), HasLength( count ) );
   }
 
   It( has_objectives )
@@ -132,6 +131,15 @@ Describe( a_mission )
     mission->update();
     AssertThat( mission->state(), Equals( yarrr::ongoing ) );
     std::fill( std::begin( objective_return_values ), std::end( objective_return_values ), yarrr::succeeded );
+    mission->update();
+    AssertThat( mission->state(), Equals( yarrr::succeeded ) );
+  }
+
+  It( ignores_objectives_with_na_state )
+  {
+    add_objectives_and_update_once( 5u );
+    std::fill( std::begin( objective_return_values ), std::end( objective_return_values ), yarrr::succeeded );
+    objective_return_values.back() = yarrr::na;
     mission->update();
     AssertThat( mission->state(), Equals( yarrr::succeeded ) );
   }
