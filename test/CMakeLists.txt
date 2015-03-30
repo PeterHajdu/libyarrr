@@ -57,6 +57,7 @@ set(TEST_SOURCE_FILES
     test_clock_exporter.cpp
     test_object_identity.cpp
     test_lua_agent.cpp
+    test_crypto.cpp
     )
 
 

@@ -42,6 +42,8 @@ set(SOURCE_FILES
   mission_container.cpp
   clock_exporter.cpp
   lua_agent.cpp
+  crypto.cpp
+  sha256.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
