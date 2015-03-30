@@ -43,6 +43,7 @@ set(SOURCE_FILES
   lua_agent.cpp
   crypto.cpp
   sha256.cpp
+  protocol.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
