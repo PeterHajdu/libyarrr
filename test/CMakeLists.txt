@@ -8,7 +8,6 @@ set(TEST_SOURCE_FILES
     test_vector.cpp
     test_clock_synchronizer.cpp
     test_bitmagic.cpp
-    test_login.cpp
     test_entity.cpp
     test_ship_control.cpp
     test_command.cpp
