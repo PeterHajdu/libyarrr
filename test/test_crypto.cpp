@@ -14,3 +14,19 @@ Describe( the_authentication_hash )
 
 };
 
+Describe_Only( the_random_number_generator )
+{
+  It ( has_one )
+  {
+    const std::string random_data( yarrr::random( 10 ) );
+  }
+
+  It ( can_be_hashed_directly )
+  {
+    for ( int i( 0 ); i < 10; ++i )
+    {
+      std::cout << yarrr::auth_hash( yarrr::random( 512 ) ) << std::endl;
+    }
+  }
+};
+
