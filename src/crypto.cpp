@@ -19,13 +19,13 @@ std::string
 random( size_t len )
 {
   thelog( log::debug )( "Generating random data of length.", len );
-  std::fstream random_stream( "/dev/random", std::ios::in | std::ios::binary );
+  std::fstream random_stream( "/dev/urandom", std::ios::in | std::ios::binary );
   std::string random_data( len, 0 );
   random_stream.read( &random_data[0], len );
 
   if ( !random_stream.good() )
   {
-    assert( "Failed to generate random data.  Please give read access to /dev/random." == nullptr );
+    assert( "Failed to generate random data.  Please give read access to /dev/urandom." == nullptr );
   }
 
   return random_data;
