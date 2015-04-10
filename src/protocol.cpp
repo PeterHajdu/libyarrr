@@ -16,3 +16,6 @@ yarrr::Protocol::authentication_request( "authentication request" );
 const std::string
 yarrr::Protocol::authentication_response( "authentication response" );
 
+const std::string
+yarrr::Protocol::error( "error" );
+

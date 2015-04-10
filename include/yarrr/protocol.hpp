@@ -13,6 +13,7 @@ class Protocol
     const static std::string registration_request;
     const static std::string authentication_request;
     const static std::string authentication_response;
+    const static std::string error;
 };
 
 }
