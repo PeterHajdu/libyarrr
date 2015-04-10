@@ -14,7 +14,7 @@ Describe( the_authentication_hash )
 
 };
 
-Describe_Only( the_random_number_generator )
+Describe( the_random_number_generator )
 {
   It ( has_one )
   {
