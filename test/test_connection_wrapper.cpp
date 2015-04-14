@@ -19,6 +19,7 @@ namespace
   class TestConnection
   {
     public:
+      using Pointer = std::shared_ptr< TestConnection >;
 
       bool has_one_invalid_entity{ false };
       ssize_t number_of_messages{ 0 };
@@ -60,10 +61,10 @@ Describe(a_connection_wrapper)
 {
   void SetUp()
   {
-    test_connection.reset( new TestConnection() );
+    test_connection = std::make_shared< TestConnection >();
     test_connection->number_of_messages = number_of_entities;
 
-    test_wrapper.reset( new TestWrapper( *test_connection ) );
+    test_wrapper = std::make_unique< TestWrapper >( test_connection );
 
     number_of_test_entity_dispatches_1 = 0;
     test_wrapper->register_dispatcher( test_dispatcher_1 );
@@ -86,7 +87,7 @@ Describe(a_connection_wrapper)
 
   It( exposes_the_wrapped_connection )
   {
-    AssertThat( &(test_wrapper->connection), Equals( test_connection.get() ) );
+    AssertThat( test_wrapper->connection.get(), Equals( test_connection.get() ) );
   }
 
   It( processes_all_waiting_messages )
@@ -118,7 +119,7 @@ Describe(a_connection_wrapper)
   const size_t number_of_entities{ 10 };
   size_t number_of_test_entity_dispatches_1{ 0 };
   size_t number_of_test_entity_dispatches_2{ 0 };
-  std::unique_ptr< TestConnection > test_connection;
+  std::shared_ptr< TestConnection > test_connection;
   TestWrapper::Pointer test_wrapper;
   the::ctci::Dispatcher test_dispatcher_1;
   the::ctci::Dispatcher test_dispatcher_2;

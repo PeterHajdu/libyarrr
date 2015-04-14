@@ -13,7 +13,7 @@ class ConnectionWrapper : public the::ctci::Dispatcher
 {
   public:
     typedef std::unique_ptr< ConnectionWrapper > Pointer;
-    ConnectionWrapper( Connection& connection )
+    ConnectionWrapper( typename Connection::Pointer connection )
       : connection( connection )
     {
     }
@@ -21,13 +21,13 @@ class ConnectionWrapper : public the::ctci::Dispatcher
     void process_incoming_messages() const
     {
       yarrr::Data message;
-      while( connection.receive( message ) )
+      while( connection->receive( message ) )
       {
         Entity::Pointer entity( EntityFactory::create( message ) );
 
         if ( !entity )
         {
-          connection.drop();
+          connection->drop();
           return;
         }
 
@@ -35,10 +35,12 @@ class ConnectionWrapper : public the::ctci::Dispatcher
       }
     }
 
-    Connection& connection;
+    typename Connection::Pointer connection;
 
     ConnectionWrapper( const ConnectionWrapper& ) = delete;
     ConnectionWrapper& operator=( const ConnectionWrapper& ) = delete;
+    ConnectionWrapper( ConnectionWrapper&& ) = delete;
+    ConnectionWrapper& operator=( ConnectionWrapper&& ) = delete;
 };
 
 }
