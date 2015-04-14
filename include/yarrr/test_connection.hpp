@@ -11,9 +11,11 @@ namespace test
 class Connection
 {
   public:
+    using Pointer = std::shared_ptr< Connection >;
+
     Connection()
       : socket( test::Socket::create() )
-      , connection( *socket )
+      , connection( std::make_shared< the::net::Connection >( *socket ) )
       , wrapper( connection )
       , m_packetizer( *this )
     {
@@ -21,7 +23,7 @@ class Connection
 
     void process_messages()
     {
-      connection.wake_up_on_network_thread();
+      connection->wake_up_on_network_thread();
       const yarrr::Data buffer( socket->sent_message() );
       m_packetizer.receive( &buffer[0], buffer.size() );
     }
@@ -74,7 +76,7 @@ class Connection
     }
 
     std::unique_ptr< test::Socket > socket;
-    mutable the::net::Connection connection;
+    the::net::Connection::Pointer connection;
     yarrr::ConnectionWrapper< the::net::Connection > wrapper;
 
   private:
