@@ -44,6 +44,7 @@ set(SOURCE_FILES
   crypto.cpp
   sha256.cpp
   protocol.cpp
+  db.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
