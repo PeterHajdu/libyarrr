@@ -45,6 +45,7 @@ set(SOURCE_FILES
   sha256.cpp
   protocol.cpp
   db.cpp
+  id_generator.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

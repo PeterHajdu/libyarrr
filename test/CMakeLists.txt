@@ -57,6 +57,7 @@ set(TEST_SOURCE_FILES
     test_object_identity.cpp
     test_lua_agent.cpp
     test_crypto.cpp
+    test_id_generator.cpp
     )
 
 
