@@ -46,6 +46,7 @@ set(SOURCE_FILES
   protocol.cpp
   db.cpp
   id_generator.cpp
+  modell.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})
