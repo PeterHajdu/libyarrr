@@ -4,9 +4,9 @@ namespace yarrr
 {
 
 std::string
-user_key_from_id( const std::string& user_id )
+player_key_from_id( const std::string& player_id )
 {
-  return std::string( "user:" ) + user_id;
+  return std::string( "player:" ) + player_id;
 }
 
 }

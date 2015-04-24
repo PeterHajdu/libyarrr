@@ -1,6 +1,7 @@
 #pragma once
 #include <thectci/id.hpp>
 #include <string>
+#include <vector>
 
 namespace yarrr
 {
@@ -26,10 +27,19 @@ class Db
         const std::string& value ) = 0;
 
     virtual bool key_exists( const std::string& key ) = 0;
+
+    using Values = std::vector< std::string >;
+    virtual bool get_set_members(
+        const std::string& key,
+        Values& ) = 0;
+
+    virtual bool get_hash_fields(
+        const std::string& key,
+        Values& ) = 0;
 };
 
 std::string
-user_key_from_id( const std::string& user_id );
+player_key_from_id( const std::string& player_id );
 
 }
 

@@ -90,6 +90,45 @@ class Db : public yarrr::Db
       return set.find( value ) != std::end( set );
     }
 
+    bool get_set_members(
+        const std::string& key,
+        Values& values ) override
+    {
+      auto set_iterator( m_sets.find( key ) );
+      if ( std::end( m_sets ) == set_iterator )
+      {
+        return false;
+      }
+
+      auto& set( set_iterator->second );
+      std::copy(
+          std::begin( set ), std::end( set ),
+          std::back_inserter( values ) );
+
+      return true;
+    }
+
+    virtual bool get_hash_fields(
+        const std::string& key,
+        Values& values ) override
+    {
+      auto hash_iterator( m_hashes.find( key ) );
+      if ( hash_iterator  == std::end( m_hashes ) )
+      {
+        return false;
+      }
+
+      std::transform(
+          std::begin( hash_iterator->second ), std::end( hash_iterator->second ),
+          std::back_inserter( values ),
+          []( const FieldValue::value_type& key_value )
+          {
+            return key_value.first;
+          } );
+
+      return true;
+    }
+
   private:
     using Value = std::string;
 
