@@ -31,6 +31,7 @@ Describe( a_modell_serializer )
   It( is_an_entity )
   {
     yarrr::Entity& serializer_as_entity{ *serializer };
+    (void)serializer_as_entity;
     AssertThat( yarrr::EntityFactory::is_registered( yarrr::ModellSerializer::ctci ), Equals( true ) );
   }
 
@@ -111,6 +112,7 @@ Describe( a_modell_container )
   It( creates_hashes_with_category )
   {
     const auto& a_character = modell_container->create( "character" );
+    (void)a_character;
   }
 
   It( creates_hashes_with_id_and_category )
