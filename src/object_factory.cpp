@@ -61,7 +61,9 @@ ObjectFactory::create_a( const std::string& key ) const
     return nullptr;
   }
 
-  return m_creators.at( key )();
+  auto new_object( (creator->second)() );
+  new_object->add_behavior( delete_when_destroyed() );
+  return std::move( new_object );
 }
 
 void
@@ -93,7 +95,6 @@ ObjectFactory::create_object( const std::string& key, sol::function decorator ) 
   }
 
   decorator( ObjectDecorator( *new_object ) );
-  new_object->add_behavior( delete_when_destroyed() );
   engine_dispatch( ObjectCreated( std::move( new_object ) ) );
 }
 

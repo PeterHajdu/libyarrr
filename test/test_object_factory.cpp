@@ -85,7 +85,7 @@ Describe( an_object_factory )
         [ &was_another_creator_called ]()
         {
           was_another_creator_called = true;
-          return yarrr::Object::Pointer( nullptr );
+          return std::make_unique< yarrr::Object >();
         } );
     object_factory->create_a( key );
     AssertThat( was_another_creator_called, Equals( false ) );
