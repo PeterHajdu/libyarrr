@@ -62,6 +62,12 @@ ObjectFactory::create_a( const std::string& key ) const
   }
 
   auto new_object( (creator->second)() );
+
+  if ( !new_object )
+  {
+    return nullptr;
+  }
+
   new_object->add_behavior( delete_when_destroyed() );
   return std::move( new_object );
 }

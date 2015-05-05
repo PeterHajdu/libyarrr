@@ -72,6 +72,16 @@ Describe( an_object_factory )
         } );
   }
 
+  It( handles_null_objects_returned_from_a_creator )
+  {
+    object_factory->register_creator( key,
+        []()
+        {
+          return yarrr::Object::Pointer( nullptr );
+        } );
+    object_factory->create_a( key );
+  }
+
   It( creates_an_object_by_key )
   {
     yarrr::Object::Pointer object( object_factory->create_a( key ) );
