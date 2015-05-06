@@ -1,4 +1,5 @@
 #include <yarrr/shape_behavior.hpp>
+#include <yarrr/collider.hpp>
 #include <yarrr/bitmagic.hpp>
 #include <yarrr/entity_factory.hpp>
 
@@ -88,6 +89,17 @@ ShapeBehavior::deserialize_coordinate( Deserializer& deserializer ) const
   const int16_t y( deserializer.pop_front< int16_t >() );
 
   return Tile::Coordinate{ x, y };
+}
+
+void
+ShapeBehavior::do_register_to( Object& owner )
+{
+  if ( !has_component< DamageCauser >( owner ) )
+  {
+    return;
+  }
+
+  component_of< DamageCauser >( owner ).reset_integrity();
 }
 
 }

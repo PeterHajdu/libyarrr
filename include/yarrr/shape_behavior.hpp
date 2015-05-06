@@ -21,6 +21,8 @@ class ShapeBehavior : public ObjectBehavior
     Shape shape;
 
   private:
+    virtual void do_register_to( Object& ) override;
+
     virtual void serialize_behavior( Serializer& serializer ) const override;
     virtual void deserialize_behavior( Deserializer& deserializer ) override;
 

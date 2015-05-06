@@ -43,8 +43,8 @@ void
 ObjectBehavior::register_to( Object& owner )
 {
   m_object = &owner;
-  do_register_to( owner );
   owner.components.register_polymorphic_component( *this );
+  do_register_to( owner );
 }
 
 void

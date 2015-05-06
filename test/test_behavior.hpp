@@ -56,20 +56,14 @@ class Behavior : public yarrr::ObjectBehavior
     Id some_data;
 
     bool was_registered{ false };
-    size_t number_of_test_behavior_registrations{ 1 };
+    static size_t number_of_test_behavior_registrations;
   private:
     virtual void do_register_to( yarrr::Object& owner ) override
     {
       owner.dispatcher.register_listener< test::Event >( std::bind(
             &Behavior::handle_event, this, std::placeholders::_1 ) );
       was_registered = true;
-
-      const bool was_already_registered( owner.components.has_component< Behavior >() );
-      if ( was_already_registered )
-      {
-        number_of_test_behavior_registrations =
-          ++owner.components.component< Behavior >().number_of_test_behavior_registrations;
-      }
+      ++number_of_test_behavior_registrations;
     }
 
     virtual void serialize_behavior( yarrr::Serializer& serializer ) const override
@@ -84,7 +78,6 @@ class Behavior : public yarrr::ObjectBehavior
 
     std::function< void() > m_call_when_deleted;
 };
-
 
 class NonSynchronizableBehavior : public yarrr::ObjectBehavior
 {

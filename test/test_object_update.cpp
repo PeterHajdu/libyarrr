@@ -35,6 +35,8 @@ Describe( an_object_initializer )
     }
 
     object_update = object->generate_update();
+
+    test::Behavior::number_of_test_behavior_registrations = 0;
     serialize_and_deserialize();
   }
 
@@ -61,11 +63,9 @@ Describe( an_object_initializer )
 
   It( can_create_new_objects_with_the_same_behaviors )
   {
-    test::Behavior* behavior_spy( new test::Behavior() );
-    recreated_object->add_behavior( yarrr::ObjectBehavior::Pointer( behavior_spy ) );
     AssertThat(
-        behavior_spy->number_of_test_behavior_registrations,
-        Equals( number_of_behaviors_to_add + 1u ) );
+        test::Behavior::number_of_test_behavior_registrations,
+        Equals( number_of_behaviors_to_add ) );
   }
 
   It( updates_objects_by_updating_the_contained_behaviors )

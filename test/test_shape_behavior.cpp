@@ -2,6 +2,8 @@
 #include <yarrr/shape_behavior.hpp>
 #include <yarrr/shape.hpp>
 #include <yarrr/object.hpp>
+#include <yarrr/basic_behaviors.hpp>
+#include <yarrr/collider.hpp>
 #include <igloo/igloo_alt.h>
 
 using namespace igloo;
@@ -39,6 +41,22 @@ Describe( a_shape_behavior )
     yarrr::ShapeBehavior deserialized_shape_behavior;
     deserialized_shape_behavior.deserialize( serialized_data );
     AssertThat( deserialized_shape_behavior.shape, Equals( shape_behavior->shape ) );
+  }
+
+  It( initiates_integrity_recalculation_if_damage_causer_exists )
+  {
+    yarrr::Object an_object;
+    auto physical_behavior( std::make_unique< yarrr::PhysicalBehavior >() );
+    auto& integrity( physical_behavior->physical_parameters.integrity );
+    an_object.add_behavior( std::move( physical_behavior ) );
+    an_object.add_behavior( std::make_unique< yarrr::DamageCauser >() );
+
+    auto shape( create_shape() );
+    auto mass( shape.mass() );
+    AssertThat( integrity, !Equals( mass ) );
+
+    an_object.add_behavior( std::make_unique< yarrr::ShapeBehavior >( shape ) );
+    AssertThat( integrity, Equals( mass ) );
   }
 
   const yarrr::Tile a_tile{ { 0, 0 }, { 1, 1 } };
