@@ -4,6 +4,7 @@
 #include <yarrr/object.hpp>
 #include <yarrr/object_identity.hpp>
 #include <yarrr/object_destroyed.hpp>
+#include <yarrr/shape_behavior.hpp>
 
 namespace yarrr
 {
@@ -88,9 +89,8 @@ Collider::collide_with( const Collider& other ) const
 }
 
 
-DamageCauser::DamageCauser( int initial_integrity )
+DamageCauser::DamageCauser()
   : ObjectBehavior( do_not_synchronize() )
-  , m_initial_integrity( initial_integrity )
   , m_integrity( nullptr )
 {
 }
@@ -110,7 +110,7 @@ DamageCauser::do_register_to( Object& owner )
 ObjectBehavior::Pointer
 DamageCauser::clone() const
 {
-  return Pointer( new DamageCauser( m_initial_integrity ) );
+  return Pointer( new DamageCauser() );
 }
 
 
@@ -118,7 +118,8 @@ void
 DamageCauser::handle_collision( const Collide& ) const
 {
   assert( m_integrity );
-  (*m_integrity) -= 10;
+  const int caused_damage{ 1 };
+  (*m_integrity) -= caused_damage;
 
   const bool destroyed( *m_integrity <= 0 );
   if ( destroyed )
@@ -131,7 +132,15 @@ DamageCauser::handle_collision( const Collide& ) const
 void
 DamageCauser::reset_integrity() const
 {
-  *m_integrity = m_initial_integrity;
+  if ( !has_component< ShapeBehavior >( *m_object ) )
+  {
+    const int default_integrity_of_shapeless_objects{ 1 };
+    *m_integrity = default_integrity_of_shapeless_objects;
+    return;
+  }
+
+  auto& shape( component_of< ShapeBehavior >( *m_object ) );
+  *m_integrity = shape.shape.mass();
 }
 
 }

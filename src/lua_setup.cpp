@@ -81,7 +81,7 @@ export_yarrr_stuff()
   lua.new_userdata< yarrr::Inventory >( "Inventory" );
   lua.new_userdata< yarrr::Collider, int >( "Collider" );
   lua[ "ship_layer" ] = int( yarrr::Collider::ship_layer );
-  lua.new_userdata< yarrr::DamageCauser, int >( "DamageCauser" );
+  lua.new_userdata< yarrr::DamageCauser >( "DamageCauser" );
   lua.new_userdata< yarrr::LootDropper >( "LootDropper" );
   lua.new_userdata< yarrr::Shape >( "Shape", "add_tile", &yarrr::Shape::add_tile );
   lua.new_userdata< yarrr::ShapeBehavior, yarrr::Shape >( "ShapeBehavior", "shape", &yarrr::ShapeBehavior::shape );

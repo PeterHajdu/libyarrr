@@ -47,17 +47,15 @@ class DamageCauser : public ObjectBehavior
 {
   public:
     add_polymorphic_ctci( "yarrr_damage_causer" );
-    DamageCauser( int initial_integrity );
+    DamageCauser();
     virtual ~DamageCauser() = default;
-
     virtual Pointer clone() const override;
+    void reset_integrity() const;
 
   private:
     virtual void do_register_to( Object& ) override;
     void handle_collision( const Collide& ) const;
-    void reset_integrity() const;
 
-    const int m_initial_integrity;
     int16_t* m_integrity;
 };
 

@@ -18,7 +18,7 @@ Inventory.new()
 
 assert( ship_layer )
 Collider.new( ship_layer )
-DamageCauser.new( 100 )
+DamageCauser.new()
 LootDropper.new()
 ObjectIdentity.new( "imperial duck" )
 

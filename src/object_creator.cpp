@@ -47,7 +47,6 @@ create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& i
   loot->add_behavior( std::make_unique< Inventory >() );
   loot->add_behavior( std::make_unique< PhysicalBehavior >( new_physical_parameters ) );
   loot->add_behavior( std::make_unique< Collider >( Collider::loot_layer ) );
-  loot->add_behavior( std::make_unique< DamageCauser >( 30 ) );
   loot->add_behavior( std::make_unique< LootAttacher >() );
   loot->add_behavior( std::make_unique< SelfDestructor >( loot->id(), 36000000u ) );
   loot->add_behavior( delete_when_destroyed() );
@@ -56,6 +55,8 @@ create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& i
   shape->shape.add_tile( Tile{ { 0, 0 }, { 0, 0 } } );
   loot->add_behavior( std::move( shape ) );
   loot->add_behavior( std::make_unique< ShapeGraphics >() );
+
+  loot->add_behavior( std::make_unique< DamageCauser >() );
 
   loot->add_behavior( item.clone() );
 
@@ -77,7 +78,7 @@ create_laser( const PhysicalParameters& laser_parameters, const ObjectIdentity& 
 
   laser->add_behavior( std::make_unique< LaserGraphics >() );
   laser->add_behavior( std::make_unique< Collider >( Collider::laser_layer ) );
-  laser->add_behavior( std::make_unique< DamageCauser >( 10 ) );
+  laser->add_behavior( std::make_unique< DamageCauser >() );
   laser->add_behavior( std::make_unique< SelfDestructor >( laser->id(), 3000000u ) );
   laser->add_behavior( std::make_unique< ObjectIdentity >( identity.captain() ) );
   laser->add_behavior( delete_when_destroyed() );
@@ -122,7 +123,7 @@ create_ship()
 
   ship->add_behavior( ObjectBehavior::Pointer( new Canon() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new Collider( Collider::ship_layer ) ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new DamageCauser( 100 ) ) );
+  ship->add_behavior( ObjectBehavior::Pointer( new DamageCauser() ) );
   ship->add_behavior( ObjectBehavior::Pointer( new LootDropper() ) );
   ship->add_behavior( kill_player_when_destroyed() );
 
