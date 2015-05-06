@@ -60,6 +60,7 @@ set(TEST_SOURCE_FILES
     test_id_generator.cpp
     test_modell.cpp
     test_behavior_init.cpp
+    test_cargo.cpp
     )
 
 

@@ -3,6 +3,7 @@
 #include <yarrr/object.hpp>
 #include <yarrr/shape.hpp>
 #include <yarrr/bitmagic.hpp>
+#include <yarrr/item.hpp>
 
 namespace test
 {

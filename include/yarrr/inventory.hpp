@@ -22,7 +22,6 @@ class Inventory : public ObjectBehavior
     const ItemContainer& items() const;
 
   private:
-    virtual void do_register_to( Object& ) override;
     ItemContainer m_items;
 };
 
