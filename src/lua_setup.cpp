@@ -46,6 +46,7 @@ void initialize_lua_engine()
 #include <yarrr/shape.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/inventory.hpp>
+#include <yarrr/cargo.hpp>
 #include <yarrr/loot.hpp>
 #include <yarrr/collider.hpp>
 #include <yarrr/destruction_handlers.hpp>
@@ -80,6 +81,7 @@ export_yarrr_stuff()
       "destroy_self", &yarrr::ObjectDecorator::destroy_self );
 
   lua.new_userdata< yarrr::Inventory >( "Inventory" );
+  lua.new_userdata< yarrr::CargoSpace >( "CargoSpace" );
   lua.new_userdata< yarrr::Collider, int >( "Collider" );
   lua[ "ship_layer" ] = int( yarrr::Collider::ship_layer );
   lua.new_userdata< yarrr::DamageCauser >( "DamageCauser" );

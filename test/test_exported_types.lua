@@ -15,6 +15,7 @@ ShapeGraphics.new()
 PhysicalBehavior.new()
 
 Inventory.new()
+CargoSpace.new()
 
 assert( ship_layer )
 Collider.new( ship_layer )
