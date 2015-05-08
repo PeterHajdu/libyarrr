@@ -82,15 +82,13 @@ create_laser( const PhysicalParameters& laser_parameters, const ObjectIdentity& 
   std::unique_ptr< PhysicalBehavior > physical_behavior( new PhysicalBehavior( laser_parameters ) );
   physical_behavior->physical_parameters.angular_velocity = 0;
   physical_behavior->physical_parameters.velocity += heading( laser_parameters, laser_speed );
-  //todo: remove after solving suicide issue
-  physical_behavior->physical_parameters.coordinate += heading( laser_parameters, 10_metres );
+  laser->add_behavior( std::make_unique< ObjectIdentity >( identity.captain() ) );
   laser->add_behavior( ObjectBehavior::Pointer( physical_behavior.release() ) );
 
   laser->add_behavior( std::make_unique< LaserGraphics >() );
   laser->add_behavior( std::make_unique< Collider >( Collider::laser_layer ) );
   laser->add_behavior( std::make_unique< DamageCauser >() );
   laser->add_behavior( std::make_unique< SelfDestructor >( laser->id(), 3000000u ) );
-  laser->add_behavior( std::make_unique< ObjectIdentity >( identity.captain() ) );
   laser->add_behavior( delete_when_destroyed() );
 
   return laser;
