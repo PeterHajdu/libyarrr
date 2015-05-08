@@ -46,6 +46,7 @@ void initialize_lua_engine()
 #include <yarrr/shape.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/inventory.hpp>
+#include <yarrr/loot.hpp>
 #include <yarrr/collider.hpp>
 #include <yarrr/destruction_handlers.hpp>
 #include <yarrr/shape_behavior.hpp>

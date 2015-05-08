@@ -61,6 +61,7 @@ set(TEST_SOURCE_FILES
     test_modell.cpp
     test_behavior_init.cpp
     test_cargo.cpp
+    test_loot.cpp
     )
 
 

@@ -11,6 +11,8 @@ namespace yarrr
 {
 class PhysicalParameters;
 class ObjectIdentity;
+class Tile;
+class Goods;
 
 Object::Pointer create_laser(
     const PhysicalParameters&,
@@ -18,7 +20,8 @@ Object::Pointer create_laser(
 
 Object::Pointer create_loot(
     PhysicalParameters,
-    const ObjectBehavior& );
+    const Tile&,
+    const std::vector< Goods >& );
 
 }
 

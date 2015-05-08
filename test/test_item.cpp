@@ -26,7 +26,7 @@ Describe( an_item )
     object->add_behavior( yarrr::ObjectBehavior::Pointer( shape_behavior ) );
     shape->add_tile( yarrr::Tile( { 0, 1 }, { 1, 0 } ) );
 
-    item = new test::TestItem( tile_coordinate, serialized_member_value );
+    item = new test::Item( tile_coordinate, serialized_member_value );
     object->add_behavior( yarrr::ObjectBehavior::Pointer( item ) );
   }
 
@@ -51,7 +51,7 @@ Describe( an_item )
   It( serializes_and_deserializes_tile_coordinate )
   {
     const auto serialized_item( item->serialize() );
-    test::TestItem deserialized_item;
+    test::Item deserialized_item;
     deserialized_item.deserialize( serialized_item );
     AssertThat( deserialized_item.tile_coordinate(), Equals( item->tile_coordinate() ) );
   }
@@ -59,7 +59,7 @@ Describe( an_item )
   It( calls_serialize_and_deserialize_item_when_serializing )
   {
     const auto serialized_item( item->serialize() );
-    test::TestItem deserialized_item;
+    test::Item deserialized_item;
     deserialized_item.deserialize( serialized_item );
     AssertThat( deserialized_item.serialized_member, Equals( serialized_member_value ) );
   }

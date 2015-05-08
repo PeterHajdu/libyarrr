@@ -1,9 +1,8 @@
 #include <yarrr/object_creator.hpp>
 #include <yarrr/object_identity.hpp>
-#include <yarrr/inventory.hpp>
-#include <yarrr/canon.hpp>
+#include <yarrr/loot.hpp>
+#include <yarrr/cargo.hpp>
 #include <yarrr/basic_behaviors.hpp>
-#include <yarrr/thruster.hpp>
 #include <yarrr/physical_parameters.hpp>
 #include <yarrr/collider.hpp>
 #include <yarrr/destruction_handlers.hpp>
@@ -72,17 +71,7 @@ Describe( loot_creator )
 {
   void SetUp()
   {
-    object = yarrr::create_loot( loots_physical_parameters, canon );
-  }
-
-  It( creates_objects_with_inventory )
-  {
-    AssertThat( object->components.has_component< yarrr::Inventory >(), Equals( true ) );
-  }
-
-  It( creates_objects_with_one_item_of_the_owner )
-  {
-    AssertThat( object->components.component< yarrr::Inventory >().items(), HasLength( 1u ) );
+    object = yarrr::create_loot( loots_physical_parameters, tile, goods );
   }
 
   It( creates_objects_with_collider )
@@ -95,6 +84,16 @@ Describe( loot_creator )
     AssertThat( object->components.has_component< yarrr::DamageCauser >(), Equals( true ) );
   }
 
+  It( creates_objects_with_cargo_space )
+  {
+    AssertThat( object->components.has_component< yarrr::CargoSpace >(), Equals( true ) );
+  }
+
+  It( creates_objects_with_the_loot_passed )
+  {
+    AssertThat( yarrr::component_of< yarrr::CargoSpace >( *object ).goods(), Contains( good ) );
+  }
+
   It( creates_objects_with_loot_attacher )
   {
     AssertThat( object->components.has_component< yarrr::LootAttacher >(), Equals( true ) );
@@ -105,14 +104,17 @@ Describe( loot_creator )
     AssertThat( object->components.has_component< yarrr::SelfDestructor >(), Equals( true ) );
   }
 
-  It ( creates_objects_with_shape_graphics_with_at_least_one_tile )
+  It ( creates_objects_with_shape_graphics_with_the_given_tile )
   {
     AssertThat( object->components.has_component< yarrr::ShapeGraphics >(), Equals( true ) );
-    AssertThat( yarrr::component_of< yarrr::ShapeBehavior >( *object ).shape.tiles().size(), !Equals( 0u ) );
+    AssertThat( yarrr::component_of< yarrr::ShapeBehavior >( *object ).shape.tiles().size(), Equals( 1u ) );
+    AssertThat( yarrr::component_of< yarrr::ShapeBehavior >( *object ).shape.tiles().back(), Equals( tile ) );
   }
 
+  const yarrr::Goods good{ "a", "b", 10 };
+  const std::vector< yarrr::Goods > goods{ good };
+  const yarrr::Tile tile{ { 1, 1 }, { 2, 2 } };
   yarrr::PhysicalParameters loots_physical_parameters;
-  yarrr::Canon canon;
   yarrr::Object::Pointer object;
 };
 

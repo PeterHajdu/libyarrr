@@ -48,6 +48,7 @@ set(SOURCE_FILES
   id_generator.cpp
   modell.cpp
   cargo.cpp
+  loot.cpp
     )
 
 add_library(yarrr STATIC ${SOURCE_FILES})

@@ -2,6 +2,8 @@
 #include <yarrr/object.hpp>
 #include <yarrr/object_identity.hpp>
 #include <yarrr/inventory.hpp>
+#include <yarrr/cargo.hpp>
+#include <yarrr/loot.hpp>
 #include <yarrr/canon.hpp>
 #include <yarrr/basic_behaviors.hpp>
 #include <yarrr/thruster.hpp>
@@ -40,11 +42,20 @@ namespace yarrr
 {
 
 Object::Pointer
-create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& item )
+create_loot(
+    PhysicalParameters new_physical_parameters,
+    const Tile& tile,
+    const std::vector< Goods >& goods )
 {
   add_random_parameters( new_physical_parameters );
   auto loot( std::make_unique< Object >() );
-  loot->add_behavior( std::make_unique< Inventory >() );
+  auto cargo_space( std::make_unique< CargoSpace >() );
+  for ( const auto& good : goods )
+  {
+    cargo_space->add_goods( good );
+  }
+  loot->add_behavior( std::move( cargo_space ) );
+
   loot->add_behavior( std::make_unique< PhysicalBehavior >( new_physical_parameters ) );
   loot->add_behavior( std::make_unique< Collider >( Collider::loot_layer ) );
   loot->add_behavior( std::make_unique< LootAttacher >() );
@@ -52,13 +63,12 @@ create_loot( PhysicalParameters new_physical_parameters, const ObjectBehavior& i
   loot->add_behavior( delete_when_destroyed() );
 
   auto shape( std::make_unique< ShapeBehavior >() );
-  shape->shape.add_tile( Tile{ { 0, 0 }, { 0, 0 } } );
+  shape->shape.add_tile( tile );
   loot->add_behavior( std::move( shape ) );
   loot->add_behavior( std::make_unique< ShapeGraphics >() );
 
   loot->add_behavior( std::make_unique< DamageCauser >() );
 
-  loot->add_behavior( item.clone() );
 
   return loot;
 }
@@ -96,15 +106,16 @@ yarrr::Object::Pointer
 create_ship()
 {
   using namespace yarrr;
-  Object::Pointer ship( new Object() );
-  ship->add_behavior( ObjectBehavior::Pointer( new Inventory() ) );
-  ship->add_behavior( ObjectBehavior::Pointer( new PhysicalBehavior() ) );
+  auto ship( std::make_unique< Object >() );
+  ship->add_behavior( std::make_unique< Inventory >() );
+  ship->add_behavior( std::make_unique< CargoSpace >() );
+  ship->add_behavior( std::make_unique< PhysicalBehavior >() );
 
-  ShapeBehavior* shape( new ShapeBehavior() );
+  auto shape( std::make_unique< ShapeBehavior >() );
   shape->shape.add_tile( Tile{ { -1, 0 }, { 2, 0 } } );
   shape->shape.add_tile( Tile{ { 0, 1 }, { 0, 1 } } );
   shape->shape.add_tile( Tile{ { 0, -1 }, { 0, -1 } } );
-  ship->add_behavior( ObjectBehavior::Pointer( shape ) );
+  ship->add_behavior( std::move( shape ) );
 
   ship->add_behavior( ObjectBehavior::Pointer( new Thruster(
           ShipControl::main_thruster,
