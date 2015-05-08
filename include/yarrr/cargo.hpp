@@ -17,6 +17,8 @@ class CargoSpace : public ObjectBehavior
 
     void add_goods( Goods );
 
+    virtual void update( const ObjectBehavior& ) override;
+
     using GoodsContainer = std::vector< Goods >;
     const GoodsContainer& goods() const;
 

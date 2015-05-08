@@ -86,5 +86,12 @@ CargoSpace::deserialize_behavior( Deserializer& deserializer )
 }
 
 
+void
+CargoSpace::update( const ObjectBehavior& behavior )
+{
+  const auto& remote_cargo( static_cast< const CargoSpace& >( behavior ) );
+  std::vector< Goods >( remote_cargo.goods() ).swap( m_goods );
+}
+
 }
 

@@ -46,6 +46,13 @@ Describe( a_cargo_space )
     AssertThat( cargo_space->should_synchronize(), Equals( true ) );
   }
 
+  It( updates_remote_cargo_object )
+  {
+    yarrr::CargoSpace remote_cargo_space;
+    remote_cargo_space.update( *cargo_space );
+    AssertThat( remote_cargo_space.goods(), Contains( goods ) );
+  }
+
   std::unique_ptr< yarrr::CargoSpace > cargo_space;
   const yarrr::Goods goods{ "canon", "item", 1 };
 };
