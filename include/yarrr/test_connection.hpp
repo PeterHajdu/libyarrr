@@ -54,6 +54,26 @@ class Connection
     }
 
     template < typename EntityType >
+    std::vector< std::unique_ptr< EntityType > > entities()
+    {
+      std::vector< std::unique_ptr< EntityType > > entities;
+
+      process_messages();
+      for ( const auto& message : sent_messages )
+      {
+        yarrr::Entity::Pointer entity( yarrr::EntityFactory::create( message ) );
+        if ( EntityType::ctci != entity->polymorphic_ctci() )
+        {
+          continue;
+        }
+
+        entities.emplace_back( static_cast< EntityType* >( entity.release() ) );
+      }
+
+      return entities;
+    }
+
+    template < typename EntityType >
     bool has_entity()
     {
       return get_entity< EntityType >().get();
