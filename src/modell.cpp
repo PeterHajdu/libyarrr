@@ -9,8 +9,6 @@ namespace
 {
 
 yarrr::AutoEntityRegister<yarrr::ModellSerializer> register_modell_serializer;
-const std::string category_key{ "category" };
-const std::string id_key{ "id" };
 const std::string categories_key{ "categories" };
 
 std::string
@@ -79,13 +77,13 @@ ModellSerializer::~ModellSerializer() = default;
 std::string
 ModellSerializer::id() const
 {
-  return retrieve_value( id_key );
+  return retrieve_value( model::id );
 }
 
 std::string
 ModellSerializer::category() const
 {
-  return retrieve_value( category_key );
+  return retrieve_value( model::category );
 }
 
 std::string
@@ -165,11 +163,11 @@ ModellContainer::create_with_id_if_needed( const std::string& category, const st
           id,
           std::make_unique< Hash >( id, category_parent( category ) ) ) );
   m_database.add_to_set( category, id );
-  m_database.set_hash_field( modell_key_from( category, id ), id_key, id );
+  m_database.set_hash_field( modell_key_from( category, id ), model::id, id );
 
   auto& hash_reference( *modell_iterator->second );
-  hash_reference[ id_key ] = id;
-  hash_reference[ category_key ] = category;
+  hash_reference[ model::id ] = id;
+  hash_reference[ model::category ] = category;
 
   add_observer( hash_reference );
 
@@ -182,7 +180,7 @@ ModellContainer::add_observer( Hash& hash )
   hash.observe(
       [ &db = m_database ]( const yarrr::Hash& h )
       {
-        const std::string key{ modell_key_from( h.get( category_key ), h.get( id_key ) ) };
+        const std::string key{ modell_key_from( h.get( model::category ), h.get( model::id ) ) };
         for ( auto i( h.cbegin() ); i!=h.cend(); ++i )
         {
           const auto field( i->first );

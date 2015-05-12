@@ -22,8 +22,8 @@ Describe( a_modell_serializer )
     remote = std::make_unique< the::model::OwningNode >( remote_name, *lua );
     hash = std::make_unique< yarrr::Hash >( id_value, *lua );
     (*hash)[ key ] = value;
-    (*hash)[ id_key ] = id_value;
-    (*hash)[ category_key ] = category_value;
+    (*hash)[ yarrr::model::id ] = id_value;
+    (*hash)[ yarrr::model::category ] = category_value;
 
     serializer = std::make_unique< yarrr::ModellSerializer >( *hash );
   }
@@ -66,11 +66,9 @@ Describe( a_modell_serializer )
   std::unique_ptr< yarrr::ModellSerializer > serializer;
 
   const std::string remote_name{ "remote_name" };
-  const std::string id_key{ "id" };
   const std::string id_value{ "the_modell_id" };
   const std::string key{ "a_key" };
   const std::string value{ "a_value" };
-  const std::string category_key{ "category" };
   const std::string category_value{ "the_modell_category" };
 };
 
@@ -83,7 +81,7 @@ Describe( a_modell_container )
     character_ids.clear();
     for ( auto i( 0 ); i < number_of_hashes; ++i )
     {
-      character_ids.push_back( modell_container->create( category ).get( "id" ) );
+      character_ids.push_back( modell_container->create( category ).get( yarrr::model::id ) );
     }
   }
 
@@ -103,7 +101,7 @@ Describe( a_modell_container )
   void assert_modell_exists( const std::string& category, const std::string& id )
   {
     const auto path(
-        the::model::path_from( { "modells", category, id, "id" } ) );
+        the::model::path_from( { "modells", category, id, yarrr::model::id } ) );
     AssertThat(
         lua->assert_equals( path, id ),
         Equals( true ) );
@@ -118,15 +116,15 @@ Describe( a_modell_container )
   It( creates_hashes_with_id_and_category )
   {
     auto& a_character = modell_container->create( category );
-    AssertThat( a_character.has( "id" ), Equals( true ) );
-    AssertThat( a_character.has( "category" ), Equals( true ) );
-    AssertThat( a_character[ "category" ].get(), Equals( category ) );
+    AssertThat( a_character.has( yarrr::model::id ), Equals( true ) );
+    AssertThat( a_character.has( yarrr::model::category ), Equals( true ) );
+    AssertThat( a_character[ yarrr::model::category ].get(), Equals( category ) );
   }
 
   It( exports_hashes_under_modells )
   {
     auto& a_character = modell_container->create( category );
-    assert_modell_exists( category, a_character.get( "id" ) );
+    assert_modell_exists( category, a_character.get( yarrr::model::id ) );
   }
 
   It( contains_many_hashes )
@@ -153,8 +151,8 @@ Describe( a_modell_container )
   {
     const auto id( "something" );
     yarrr::Hash a_hash( id, *lua );
-    a_hash[ "id" ] = id;
-    a_hash[ "category" ] = category;
+    a_hash[ yarrr::model::id ] = id;
+    a_hash[ yarrr::model::category ] = category;
 
     const std::string another_value( "another value" );
     const std::string another_member( "another_member" );
@@ -188,7 +186,7 @@ Describe( a_modell_container )
     {
       std::string value;
       AssertThat(
-          database->get_hash_field( category + ":" + id, "id", value ),
+          database->get_hash_field( category + ":" + id, yarrr::model::id, value ),
           Equals( true ) );
       AssertThat(
           value,
@@ -205,7 +203,7 @@ Describe( a_modell_container )
 
     std::string value_in_database;
     AssertThat(
-        database->get_hash_field( category + ":" + a_character.get( "id" ), new_key, value_in_database ),
+        database->get_hash_field( category + ":" + a_character.get( yarrr::model::id ), new_key, value_in_database ),
         Equals( true ) );
     AssertThat(
         value_in_database,
@@ -223,7 +221,7 @@ Describe( a_modell_container )
   It( initializes_modells_from_the_database_when_created )
   {
     auto& a_character = modell_container->create( category );
-    const std::string id{ a_character[ "id" ] };
+    const std::string id{ a_character[ yarrr::model::id ] };
     const std::string new_key{ "new_data_key" };
     const std::string new_value{ "new data value" };
     a_character[ new_key ] = new_value;
