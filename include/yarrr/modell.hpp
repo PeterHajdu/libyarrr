@@ -99,6 +99,13 @@ const key_type player{ "_player" };
 const key_type availability{ "_availability" };
 const key_type name{ "name" };
 const key_type object_type{ "_object_type" };
+const key_type player_controlled{ "player_controlled" };
+const key_type ship_type{ "_ship_type" };
+const key_type hidden_x{ "_x" };
+const key_type hidden_y{ "_y" };
+const key_type hidden_angular_velocity{ "_angular_velocity" };
+const key_type auth_token{ "!auth_token" };
+
 }
 
 }
