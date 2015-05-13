@@ -91,12 +91,14 @@ using key_type = std::string;
 const key_type id{ "_id" };
 const key_type category{ "_category" };
 const key_type object_id{ "_object_id" };
+const key_type realtime_object_id{ "_realtime_object_id" };
 const key_type character_id{ "_character_id" };
 const key_type object{ "_object" };
 const key_type character{ "_character" };
 const key_type player{ "_player" };
 const key_type availability{ "_availability" };
 const key_type name{ "name" };
+const key_type object_type{ "_object_type" };
 }
 
 }
