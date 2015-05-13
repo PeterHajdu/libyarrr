@@ -31,6 +31,7 @@ class Colour
     const static Colour White;
     const static Colour Green;
     const static Colour Red;
+    const static Colour Blue;
     const static Colour Strange;
 };
 

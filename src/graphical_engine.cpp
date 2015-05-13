@@ -8,6 +8,7 @@ namespace yarrr
 const Colour Colour::White{ 255, 255, 255, 255 };
 const Colour Colour::Red{ 255, 0, 0, 255 };
 const Colour Colour::Green{ 0, 255, 0, 255 };
+const Colour Colour::Blue{ 100, 100, 255, 255 };
 const Colour Colour::Strange{ 255, 255, 0, 255 };
 
 GraphicalObject::GraphicalObject( GraphicalEngine& graphical_engine )
