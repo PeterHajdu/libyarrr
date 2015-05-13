@@ -22,6 +22,7 @@ Describe( a_modell_serializer )
     remote = std::make_unique< the::model::OwningNode >( remote_name, *lua );
     hash = std::make_unique< yarrr::Hash >( id_value, *lua );
     (*hash)[ key ] = value;
+    (*hash)[ secret_key ] = value;
     (*hash)[ yarrr::model::id ] = id_value;
     (*hash)[ yarrr::model::category ] = category_value;
 
@@ -35,18 +36,31 @@ Describe( a_modell_serializer )
     AssertThat( yarrr::EntityFactory::is_registered( yarrr::ModellSerializer::ctci ), Equals( true ) );
   }
 
-  It( serializes_and_deserializes_the_original_hash )
+  std::unique_ptr< yarrr::Hash > remote_hash()
   {
     const auto serialized_modell( serializer->serialize() );
     const auto entity( yarrr::EntityFactory::create( serialized_modell ) );
     const auto& deserialized_serializer( static_cast< yarrr::ModellSerializer& >( *entity ) );
+    auto deserialized_hash(
+        std::make_unique< yarrr::Hash >( deserialized_serializer.id(), *remote ) );
 
-    yarrr::Hash deserialized_hash( deserialized_serializer.id(), *remote );
-    deserialized_serializer.update_hash( deserialized_hash );
-    AssertThat( deserialized_hash.get( key ), Equals( value ) );
+    deserialized_serializer.update_hash( *deserialized_hash );
+    return deserialized_hash;
+  }
+
+  It( serializes_and_deserializes_the_original_hash )
+  {
+    auto deserialized_hash( remote_hash() );
+    AssertThat( deserialized_hash->get( key ), Equals( value ) );
     AssertThat(
         lua->assert_equals( the::model::path_from( { remote_name, id_value, key } ), value ),
         Equals( true ) );
+  }
+
+  It( does_not_serialize_secret_keys )
+  {
+    auto deserialized_hash( remote_hash() );
+    AssertThat( deserialized_hash->has( secret_key ), Equals( false ) );
   }
 
   It( allows_direct_access_to_id_value )
@@ -68,6 +82,7 @@ Describe( a_modell_serializer )
   const std::string remote_name{ "remote_name" };
   const std::string id_value{ "the_modell_id" };
   const std::string key{ "a_key" };
+  const std::string secret_key{ "!a_key" };
   const std::string value{ "a_value" };
   const std::string category_value{ "the_modell_category" };
 };

@@ -53,7 +53,14 @@ ModellSerializer::do_serialize( Serializer& serializer ) const
   thelog( log::debug )( "Serializing modell serializer." );
   for ( const auto& key_value : m_hash )
   {
-    serializer.push_back( key_value.first );
+    const auto& key( key_value.first );
+    const bool is_secret{ '!' == key.front() };
+    if ( is_secret )
+    {
+      continue;
+    }
+
+    serializer.push_back( key );
     serializer.push_back( key_value.second );
     thelog( log::debug )( "key:", key_value.first, "value:", key_value.second );
   }
