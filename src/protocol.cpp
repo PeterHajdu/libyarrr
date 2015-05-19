@@ -19,3 +19,12 @@ yarrr::Protocol::authentication_response( "authentication response" );
 const std::string
 yarrr::Protocol::error( "error" );
 
+const std::string
+yarrr::Protocol::dock( "dock" );
+
+const std::string
+yarrr::Protocol::enter_dock( "enter_dock" );
+
+const std::string
+yarrr::Protocol::left_dock( "left_dock" );
+

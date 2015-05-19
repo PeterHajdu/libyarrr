@@ -14,6 +14,9 @@ class Protocol
     const static std::string authentication_request;
     const static std::string authentication_response;
     const static std::string error;
+    const static std::string dock;
+    const static std::string enter_dock;
+    const static std::string left_dock;
 };
 
 }

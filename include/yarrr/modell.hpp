@@ -105,6 +105,8 @@ const key_type hidden_x{ "_x" };
 const key_type hidden_y{ "_y" };
 const key_type hidden_angular_velocity{ "_angular_velocity" };
 const key_type auth_token{ "!auth_token" };
+const key_type characters_onboard{ "_characters_onboard" };
+const key_type in_dock_of{ "_in_dock_of" };
 
 }
 
